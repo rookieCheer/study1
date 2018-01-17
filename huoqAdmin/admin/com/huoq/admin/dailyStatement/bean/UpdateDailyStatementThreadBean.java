@@ -1,4 +1,4 @@
-package com.huoq.admin.dailyStatement;
+package com.huoq.admin.dailyStatement.bean;
 
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
@@ -8,7 +8,6 @@ import com.huoq.util.MyLogger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

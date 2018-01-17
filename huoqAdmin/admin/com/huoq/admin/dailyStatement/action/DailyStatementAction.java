@@ -1,5 +1,6 @@
-package com.huoq.admin.dailyStatement;
+package com.huoq.admin.dailyStatement.action;
 
+import com.huoq.admin.dailyStatement.bean.UpdateDailyStatementThreadBean;
 import com.huoq.common.action.BaseAction;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
@@ -19,8 +20,6 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import static org.apache.struts2.ServletActionContext.getRequest;
 
 /**
  * 运营日报表
