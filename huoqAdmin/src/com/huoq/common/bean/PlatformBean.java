@@ -210,6 +210,7 @@ public class PlatformBean {
                     String id = (String) array[0];
                     // 募集总金额
                     double dtotal = (Double) array[2];
+                    //实际总投资金额
                     double inv = (Double) array[3];
                     if (inv > dtotal * 0.9) {
                         productId.add(id);
