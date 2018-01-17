@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.huoq.orm.BorrowerRepayment" table="borrower_repayment">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="thirdTransaction" type="java.lang.String" column="thirdTransaction"/>
+        <property name="payMentTransaction" type="java.lang.String" column="payMentTransaction"/>
+        <property name="repaymentTransaction" type="java.lang.String" column="repaymentTransaction"/>
+        <property name="totalAmount" type="big_decimal" column="totalAmount"/>
+        <property name="repayAmount" type="big_decimal" column="repayAmount"/>
+        <property name="interest" type="big_decimal" column="interest"/>
+        <property name="fine" type="big_decimal" column="fine"/>
+        <property name="stages" type="java.lang.String" column="stages"/>
+        <property name="isLastStages" type="java.lang.Integer" column="isLastStages"/>
+        <property name="isOverdue" type="java.lang.Integer" column="isOverdue"/>
+        <property name="status" type="java.lang.Integer" column="status"/>
+        <property name="returnCode" type="java.lang.String" column="return_code"/>
+        <property name="returnMsg" type="java.lang.String" column="return_msg"/>
+        <property name="returnRes" type="text" column="return_res"/>
+        <property name="dtCreate" type="java.sql.Timestamp" column="dtCreate"/>
+        <property name="dtModify" type="java.sql.Timestamp" column="dtModify"/>
+    </class>
+</hibernate-mapping>

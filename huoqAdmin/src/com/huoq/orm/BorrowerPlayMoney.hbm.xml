@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.huoq.orm.BorrowerPlayMoney" table="borrower_play_money">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="productId" type="java.lang.String" column="productId"/>
+        <property name="borrowerInfoId" type="java.lang.Integer" column="borrowerInfoId"/>
+        <property name="thirdTransaction" type="java.lang.String" column="thirdTransaction"/>
+        <property name="payMentTransaction" type="java.lang.String" column="payMentTransaction"/>
+        <property name="payAmount" type="big_decimal" column="payAmount"/>
+        <property name="status" type="java.lang.Integer" column="status"/>
+        <property name="returnCode" type="java.lang.String" column="return_code"/>
+        <property name="returnMsg" type="java.lang.String" column="return_msg"/>
+        <property name="returnRes" type="text" column="return_res"/>
+        <property name="dtCreate" type="java.sql.Timestamp" column="dtCreate"/>
+        <property name="dtModify" type="java.sql.Timestamp" column="dtModify"/>
+    </class>
+</hibernate-mapping>

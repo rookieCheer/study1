@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.huoq.orm.DailyStatement" table="daily_statement" >
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="insertTime" type="java.util.Date">
+            <column name="insert_time" >
+                <comment>插入时间</comment>
+            </column>
+        </property>
+        <property name="tradingVolume" type="java.lang.Double">
+            <column name="tradingVolume">
+                <comment>交易额</comment>
+            </column>
+        </property>
+        <property name="loanAmountAll" type="java.lang.Double">
+            <column name="loanAmountAll">
+                <comment>在贷金额（含零钱罐）</comment>
+            </column>
+        </property>
+        <property name="loanAmount" type="java.lang.Double">
+            <column name="loanAmount">
+                <comment>在贷金额（不含零钱罐）</comment>
+            </column>
+        </property>
+        <property name="reimbursementAmount" type="java.lang.Double">
+            <column name="reimbursementAmount">
+                <comment>回款金额（不含零钱罐）</comment>
+            </column>
+        </property>
+        <property name="reimbursementAmountAll" type="java.lang.Double">
+             <column name="reimbursementAmountAll">
+               <comment>回款金额（含零钱罐及余额）</comment>
+             </column>
+        </property>
+        <property name="interestpayment" type="java.lang.Double">
+            <column name="interestpayment">
+                <comment>支付利息</comment>
+            </column>
+        </property>
+        <property name="todayOutCashMoney" type="java.lang.Double">
+            <column name="todayOutCashMoney">
+                <comment>今日提现金额</comment>
+            </column>
+        </property>
+        <property name="returnInvestmentRate" type="java.lang.Double">
+            <column name="returnInvestmentRate">
+                <comment>回款用户投资率</comment>
+            </column>
+        </property>
+        <property name="capitalInflow" type="java.lang.Double">
+            <column name="capitalInflow">
+                <comment>资金流入额</comment>
+            </column>
+        </property>
+        <property name="netInflow" type="java.lang.Double">
+            <column name="netInflow">
+                <comment>净流入金额</comment>
+            </column>
+        </property>
+        <property name="capitalStock" type="java.lang.Double">
+            <column name="capitalStock">
+                <comment>资金存量</comment>
+            </column>
+        </property>
+        <property name="activationCount" type="java.lang.Integer">
+            <column name="activationCount">
+                <comment>激活用户数</comment>
+            </column>
+        </property>
+        <property name="investCount" type="java.lang.Integer">
+            <column name="investCount">
+                <comment>投资用户数</comment>
+            </column>
+        </property>
+        <property name="todayregisterCount" type="java.lang.Integer">
+            <column name="todayregisterCount">
+                <comment>今日注册人数</comment>
+            </column>
+        </property>
+        <property name="todaycertificationCount" type="java.lang.Integer">
+            <column name="todaycertificationCount">
+                <comment>今日认证用户</comment>
+            </column>
+        </property>
+        <property name="todayNewBuyNumber" type="java.lang.Integer">
+            <column name="todayNewBuyNumber">
+                <comment>今日首投用户</comment>
+            </column>
+        </property>
+        <property name="firstPercentConversion" type="java.lang.Double">
+            <column name="firstPercentConversion">
+                <comment>首投用户转化率</comment>
+            </column>
+        </property>
+        <property name="firstInvestmentTotalMoney" type="java.lang.Double">
+            <column name="firstInvestmentTotalMoney">
+                <comment>首次投资的总金额</comment>
+            </column>
+        </property>
+
+        <property name="firstInvestmentMoney" type="java.lang.Double">
+            <column name="firstInvestmentMoney">
+                <comment>首投客单金额（元）</comment>
+            </column>
+        </property>
+        <property name="reInvestmentMoney" type="java.lang.Double">
+            <column name="reInvestmentMoney">
+                <comment>复投金额（元）</comment>
+            </column>
+        </property>
+        <property name="amountNewMoney" type="java.lang.Double">
+            <column name="amountNewMoney">
+                <comment>零钱罐新增金额（元）</comment>
+            </column>
+        </property>
+        <property name="reInvestmentCount" type="java.lang.Integer">
+            <column name="reInvestmentCount">
+                <comment>复投用户数</comment>
+            </column>
+        </property>
+        <property name="addReInvestmentCount" type="java.lang.Integer">
+            <column name="addReInvestmentCount">
+                <comment>新增复投用户数</comment>
+            </column>
+        </property>
+        <property name="addReInvestmentMoney" type="java.lang.Double">
+            <column name="addReInvestmentMoney">
+                <comment>新增复投用户投资总额（元）</comment>
+            </column>
+        </property>
+        <property name="reInvestmentAmount" type="java.lang.Integer">
+            <column name="reInvestmentAmount">
+                <comment>复投次数</comment>
+            </column>
+        </property>
+        <property name="multipleRate" type="java.lang.Double">
+            <column name="multipleRate">
+                <comment>新增复投率（%）</comment>
+            </column>
+        </property>
+        <property name="occupationRatio" type="java.lang.Double">
+            <column name="occupationRatio">
+                <comment>复投用户占比（%）</comment>
+            </column>
+        </property>
+        <property name="reInvestmentRate" type="java.lang.Double">
+            <column name="reInvestmentRate">
+                <comment>复投金额占比（%）</comment>
+            </column>
+        </property>
+        <property name="sumMoney" type="java.lang.Double">
+            <column name="sumMoney">
+                <comment>复投客单金额（元）</comment>
+            </column>
+        </property>
+        <property name="capitaInvestmentMoney" type="java.lang.Double">
+            <column name="capitaInvestmentMoney">
+                <comment>人均投资金额（元）</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

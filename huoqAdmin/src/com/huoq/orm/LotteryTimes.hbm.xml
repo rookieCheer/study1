@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 
+    author: wxl
+    createTime: 2017年4月25日13:24:55
+-->
+<hibernate-mapping>
+    <class name="com.huoq.orm.LotteryTimes" table="lottery_times" >
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+         <property name="usersId" type="java.lang.Long">
+            <column name="users_id" default="0">
+                <comment>用户id</comment>
+            </column>
+        </property>
+         <property name="freeNum" type="java.lang.Long">
+            <column name="free_num" default="0">
+                <comment>免费抽奖次数</comment>
+            </column>
+        </property>
+         <property name="payNum" type="java.lang.Long">
+            <column name="pay_num" default="0">
+                <comment>付费抽奖次数</comment>
+            </column>
+        </property>
+        <property name="insertTime" type="java.util.Date">
+            <column name="insert_time" length="19" >
+                <comment>插入时间</comment>
+            </column>
+        </property>
+        <property name="updateTime" type="java.util.Date">
+            <column name="update_time" length="19">
+                <comment>更新时间</comment>
+            </column>
+        </property>
+        <property name="type" type="java.lang.String">
+            <column name="type">
+                <comment>活动类型 null:五月挖宝 1：微信抽奖 2端午活动</comment>
+            </column>
+        </property>
+        <many-to-one name="users" class="com.huoq.orm.Users"   lazy="false"  insert="false"  update="false" fetch="join" not-found="ignore" cascade="save-update">
+            <column name="users_id" />
+        </many-to-one> 
+    </class>
+</hibernate-mapping>

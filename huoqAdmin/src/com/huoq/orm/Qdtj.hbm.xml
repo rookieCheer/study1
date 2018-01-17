@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.huoq.orm.Qdtj" table="qdtj">
+    	<id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        
+        <property name="channel" type="java.lang.String">
+            <column name="channel" >
+                <comment>渠道号</comment>
+            </column>
+        </property>
+        <property name="channelName" type="java.lang.String">
+            <column name="channelName" >
+                <comment>渠道名称</comment>
+            </column>
+        </property>
+        <property name="channelCode" type="java.lang.String">
+            <column name="channelCode" >
+                <comment>渠道编码</comment>
+            </column>
+        </property>
+        <property name="activityCount" type="java.lang.String">
+            <column name="activityCount" >
+                <comment>激活人数</comment>
+            </column>
+        </property>
+        <property name="regCount" type="java.lang.String">
+            <column name="regCount" >
+                <comment>注册人数</comment>
+            </column>
+        </property>
+        <property name="bindCount" type="java.lang.String">
+            <column name="bindCount" >
+                <comment>绑定人数</comment>
+            </column>
+        </property>
+        <property name="qdzhl" type="java.lang.String">
+            <column name="qdzhl" >
+                <comment>渠道转换率</comment>
+            </column>
+        </property>
+        <property name="strs" type="java.lang.String">
+            <column name="strs" >
+                <comment>首投人数</comment>
+            </column>
+        </property>
+        <property name="stje" type="java.lang.String">
+            <column name="stje" >
+                <comment>首投金额</comment>
+            </column>
+        </property>
+        <property name="ftrs" type="java.lang.String">
+            <column name="ftrs" >
+                <comment>复投人数</comment>
+            </column>
+        </property>
+        <property name="ftje" type="java.lang.String">
+            <column name="ftje" >
+                <comment>复投金额</comment>
+            </column>
+        </property>
+        <property name="tzje" type="java.lang.String">
+            <column name="tzje" >
+                <comment>投资金额</comment>
+            </column>
+        </property>
+        <property name="cftzl" type="java.lang.String">
+            <column name="cftzl" >
+                <comment>重复投资率</comment>
+            </column>
+        </property>
+        <property name="tzrs" type="java.lang.String">
+            <column name="tzrs" >
+                <comment>投资人数</comment>
+            </column>
+        </property>
+        <property name="czcount" type="java.lang.String">
+            <column name="czcount" >
+                <comment>充值次数</comment>
+            </column>
+        </property>
+        <property name="czje" type="java.lang.String">
+            <column name="czje" >
+                <comment>充值金额</comment>
+            </column>
+        </property>
+        <property name="date" type="java.util.Date">
+            <column name="date" >
+                <comment>渠道日期 精确到天</comment>
+            </column>
+        </property>
+        <property name="insertTime" type="java.util.Date">
+            <column name="insert_time"  not-null="true">
+                <comment>插入时间</comment>
+            </column>
+        </property>
+        <property name="xzftyh" type="java.lang.String">
+            <column name="xzftyh"  >
+                <comment>新增复投用户</comment>
+            </column>
+        </property>
+        <property name="xhftyhtzze" type="java.lang.String">
+            <column name="xhftyhtzze" >
+                <comment>新增复投用户投资总额</comment>
+            </column>
+        </property>
+        <property name="rzstzhl" type="java.lang.String">
+            <column name="rzstzhl" >
+                <comment>认证首投转换率</comment>
+            </column>
+        </property>
+        <property name="rjstje" type="java.lang.String">
+            <column name="rjstje" >
+                <comment>人均首投金额</comment>
+            </column>
+        </property>
+        <property name="xzftl" type="java.lang.String">
+            <column name="xzftl" >
+                <comment>新增复投率</comment>
+            </column>
+        </property>
+        <property name="rjftje" type="java.lang.String">
+            <column name="rjftje" >
+                <comment>人均复投金额</comment>
+            </column>
+        </property>
+        <property name="rjtzje" type="java.lang.String">
+            <column name="rjtzje">
+                <comment>人均投资金额</comment>
+            </column>
+        </property>
+        <property name="zcjhzhl" type="java.lang.String">
+            <column name="zcjhzhl" >
+                <comment>注册激活转换率</comment>
+            </column>
+        </property>
+        <property name="lqgje" type="java.lang.String">
+            <column name="lqgje">
+                <comment>零钱罐转入金额</comment>
+            </column>
+        </property>
+        <property name="lqgrs" type="java.lang.String">
+            <column name="lqgrs">
+                <comment>零钱罐转入人数</comment>
+            </column>
+        </property>
+        <property name="channelType" type="java.lang.String">
+            <column name="channel_type" >
+                <comment>渠道标识</comment>
+            </column>
+        </property>
+        <property name="channelCost" type="java.lang.String">
+            <column name="channel_cost" >
+                <comment>渠道费用</comment>
+            </column>
+        </property>
+        <property name="activityCost" type="java.lang.String">
+            <column name="activity_cost" >
+                <comment>激活成本</comment>
+            </column>
+        </property>
+        <property name="fristBuyCost" type="java.lang.String">
+            <column name="frist_buy_cost">
+                <comment>首投成本</comment>
+            </column>
+        </property>
+        <property name="fristBuyROI" type="java.lang.String">
+            <column name="frist_buy_ROI">
+                <comment>首投ROI</comment>
+            </column>
+        </property>
+        <property name="secondCost" type="java.lang.String">
+            <column name="second_cost">
+                <comment>复投成本</comment>
+            </column>
+        </property>
+        <property name="secondROI" type="java.lang.String">
+            <column name="second_ROI" >
+                <comment>复投ROI</comment>
+            </column>
+        </property>
+        <property name="buyROI" type="java.lang.String">
+            <column name="buy_ROI" >
+                <comment>投资ROI</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

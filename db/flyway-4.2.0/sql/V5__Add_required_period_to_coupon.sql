@@ -1,0 +1,1 @@
+alter table coupon add column required_period int null;

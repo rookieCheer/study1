@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.huoq.newbranch.orm.SysLogs" table="sys_logs">
+        <id name="id" type="java.lang.Integer">
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+        <property name="req_url" type="java.lang.String">
+            <column name="req_url" length="1000">
+                <comment>请求地址</comment>
+            </column>
+        </property>
+        <property name="req_type" type="java.lang.String">
+            <column name="req_type">
+                <comment>请求类型（post、get）</comment>
+            </column>
+        </property>
+        <property name="req_app" type="java.lang.String">
+            <column name="req_app">
+                <comment>请求端（api、admin）</comment>
+            </column>
+        </property>
+        <property name="req_params" type="java.lang.String">
+            <column name="req_params" length="5000">
+                <comment>日志请求参数列表</comment>
+            </column>
+        </property>
+        <property name="user_id" type="java.lang.String">
+            <column name="user_id" length="1">
+                <comment>用户账号</comment>
+            </column>
+        </property>
+        <property name="is_delete" type="java.lang.Character">
+            <column name="is_delete" length="1" default="0">
+                <comment>是否删除,1:已删除，0：未删除'</comment>
+            </column>
+        </property>
+        <property name="creator" type="java.lang.String">
+            <column name="creator" length="100">
+                <comment>创建人</comment>
+            </column>
+        </property>
+        <property name="create_time" type="java.util.Date">
+            <column name="create_time">
+                <comment>添加时间</comment>
+            </column>
+        </property>
+        <property name="modifier" type="java.lang.String">
+            <column name="modifier" length="100">
+                <comment>更新人</comment>
+            </column>
+        </property>
+        <property name="update_time" type="java.util.Date">
+            <column name="update_time">
+                <comment>更新时间</comment>
+            </column>
+        </property>
+        <property name="req_ip" type="java.lang.String">
+            <column name="req_ip">
+                <comment>客户端IP地址</comment>
+            </column>
+        </property>
+        <property name="resp_time" type="java.lang.String">
+            <column name="resp_time">
+                <comment>客户端IP地址</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- author: qwy createTime: 2015-04-14 21:33:00 -->
+<hibernate-mapping>
+	<class name="com.huoq.orm.ThirdTouTiaoUserInfo" table="third_toutiao_userinfo">
+		<id name="id" type="java.lang.Long">
+			<column name="id" />
+			<generator class="identity" />
+		</id>
+		<property name="adid" type="java.lang.String">
+			<column name="adid" length="200">
+				<comment>广告计划id</comment>
+			</column>
+		</property>
+		<property name="cid" type="java.lang.String">
+			<column name="cid" length="200">
+				<comment>广告创意id</comment>
+			</column>
+		</property>
+		<property name="csite" type="java.lang.String">
+			<column name="csite" length="200">
+				<comment>广告投放位置</comment>
+			</column>
+		</property>
+		<property name="ctype" type="java.lang.String">
+			<column name="ctype" length="200">
+				<comment>创意样式</comment>
+			</column>
+		</property>
+		<property name="mac" type="java.lang.String">
+			<column name="mac" length="200">
+				<comment>用户终端的mac地址</comment>
+			</column>
+		</property>
+		<property name="ua" type="java.lang.String">
+			<column name="ua" length="200">
+				<comment>客户终端上报数据时http的header中的user_agent</comment>
+			</column>
+		</property>
+		<property name="androidid" type="java.lang.String">
+			<column name="androidid" length="200">
+				<comment>用户终端的andeoidID,md5加密</comment>
+			</column>
+		</property>
+		<property name="os" type="java.lang.Integer">
+			<column name="os">
+				<comment>客户端类型,0-Android,1-IOS,2-WP,3-Others</comment>
+			</column>
+		</property>
+			<property name="imei" type="java.lang.String">
+			<column name="imei">
+				<comment>安卓唯一标识</comment>
+			</column>
+		</property>
+		<property name="idfa" type="java.lang.String">
+			<column name="idfa">
+				<comment>ios唯一标识</comment>
+			</column>
+		</property>
+		<property name="uuid" type="java.lang.String">
+			<column name="uuid">
+				<comment>用户终端的uuid;(iosmd5加密)</comment>
+			</column>
+		</property>
+		<property name="openudid" type="java.lang.String">
+			<column name="openudid">
+				<comment>open udid</comment>
+			</column>
+		</property>
+		<property name="ip" type="java.lang.String">
+			<column name="ip">
+				<comment>媒体投放系统获取的用户终端的公共ip地址</comment>
+			</column>
+		</property>
+		<property name="convert_id" type="java.lang.String">
+			<column name="convert_id">
+				<comment>转化跟踪id</comment>
+			</column>
+		</property>
+		<property name="callbackParam" type="java.lang.String">
+			<column name="callbackParam">
+				<comment>回调参数</comment>
+			</column>
+		</property>
+		<property name="insertTime" type="java.util.Date">
+			<column name="insert_time">
+				<comment>时间戳</comment>
+			</column>
+		</property>
+		<property name="callback_url" type="java.lang.String">
+			<column name="callback_url">
+				<comment>回掉地址</comment>
+			</column>
+		</property>
+	</class>
+</hibernate-mapping>

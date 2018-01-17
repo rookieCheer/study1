@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.huoq.orm.BookingKeyword" table="booking_keyword" >
+<!--          -->
+        <id name="id" type="java.lang.String">
+            <column name="id" length="50" />
+            <generator class="uuid.hex" />
+        </id>
+        <property name="keyword" type="java.lang.String">
+            <column name="key_word" length="20" >
+                <comment>预约关键字  如新手 月息宝 周利宝</comment>
+            </column>
+        </property>
+        <property name="status" type="java.lang.String">
+            <column name="status" length="5" >
+                <comment>0 已启动  1 未启动</comment>
+            </column>
+        </property>
+        <property name="type" type="java.lang.String">
+            <column name="type" length="5" >
+                <comment>类型 默认为0</comment>
+            </column>
+        </property>
+        <property name="insertTime" type="java.util.Date">
+            <column name="insert_time" >
+                <comment>插入时间</comment>
+            </column>
+        </property>
+        <property name="updateTime" type="java.util.Date">
+            <column name="update_time" >
+                <comment>修改时间</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

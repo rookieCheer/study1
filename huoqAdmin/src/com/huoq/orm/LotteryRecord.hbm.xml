@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 
+    author: wxl
+    createTime: 2017年4月27日10:29:05
+-->
+<hibernate-mapping>
+    <class name="com.huoq.orm.LotteryRecord" table="lottery_record" >
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+         <property name="usersId" type="java.lang.Long">
+            <column name="users_id" default="0">
+                <comment>用户id</comment>
+            </column>
+        </property>
+          <property name="type" type="java.lang.String">
+            <column name="type" >
+                <comment>类型 0:增加机会次数;1:使用机会次数</comment>
+            </column>
+        </property>
+        <property name="insertTime" type="java.util.Date">
+            <column name="insert_time" length="19" >
+                <comment>插入时间</comment>
+            </column>
+        </property>
+        <property name="updateTime" type="java.util.Date">
+        	<column name="update_time" length="19">
+        		<comment>修改时间</comment>
+        	</column>
+        </property>
+          <property name="note" type="java.lang.String">
+            <column name="note" >
+                <comment>备注</comment>
+            </column>
+        </property>
+        <property name="address" type="java.lang.String">
+        	<column name="address">
+        		<comment>兑换地址</comment>
+        	</column>
+        </property>
+    </class>
+</hibernate-mapping>

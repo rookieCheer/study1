@@ -1,0 +1,48 @@
+group 'com.xinhuajindian'
+version '1.1.0'
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.7
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+repositories {
+    jcenter()
+}
+
+def env = System.getProperty('profile') ?: 'local'
+
+println "### building env $env ###"
+
+project.webAppDirName = 'WebContent'
+
+war {
+    baseName = 'huoqAdmin'
+    version = '1.1.0'
+    archiveName = 'xhjd.war'
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src', 'admin'] // 指定源码目录
+        }
+        resources {
+            srcDirs = ['spring', 'src', 'admin', "config/$env"] //资源目录
+        }
+    }
+}
+
+
+dependencies {
+    compile fileTree(dir: 'WebContent/WEB-INF/lib', include: '*.jar')
+
+    testCompile 'junit:junit:4.11'
+
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+
+}

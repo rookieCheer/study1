@@ -1,0 +1,179 @@
+.loan-table{
+    border-collapse: collapse;
+}
+.loan-table td{
+    padding-right: 10px;
+}
+#investment-type,#title{
+    width: 200px;
+    height: 22px;
+}
+.loan-table tr{
+    height:50px;
+}
+.loan-info{
+    height: 60px;
+    line-height: 60px;
+    padding: 0 10px;
+}
+.modal-content{
+    width: 700px;
+    height: 500px;
+    overflow: hidden;
+}
+.p30{
+    padding:0 30px;
+}
+.p10{
+    padding:0 10px;
+}
+.mr25{
+    margin-right:25px;
+}
+.al{
+    text-align: left;
+}
+.ac{
+    text-align: center;
+}
+.mr10{
+    margin-right: 10px;
+}
+.red{
+    color: red;
+}
+input[type=text]{
+    height: 22px;
+}
+.m-top {
+    width: 100%;
+    height: 70px;
+    line-height: 70px;
+    box-sizing: border-box;
+}
+.loan-deadline {
+    margin-right: 35px;
+    height: 24px;
+}
+input.loan-number {
+    height: 24px;
+    margin-right: 25px;
+}
+#frm {
+    text-align: center;
+}
+input.confirm {
+    width: 100px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    vertical-align: text-top;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.borrower-list .loan-msg td{
+    border:none;
+}
+.loan-msg {
+    text-align: center;
+    height: 70px;
+    line-height: 70px;
+    background: #f2f2f2;
+    color:red;
+    font-size: 16px;
+}
+.borrower-list{
+    width: 100%;
+    max-height:280px;
+    overflow: auto;
+    border-collapse: collapse;
+    box-sizing: border-box;
+}
+.m-title th{
+    color: #797979;
+    font-size: 13px;
+    font-weight: 500;
+}
+.borrower-list tr{
+    height: 35px;
+}
+.borrower-list tbody tr{
+    border-bottom: 1px solid #333;
+}
+.bold{
+    color:#333;
+    font-weight: 700;
+    font-size: 14px;
+}
+.borrower-list input{
+    vertical-align: middle;
+}
+.borrower-list label{
+    font-size: 14px;
+}
+.loan-list{
+    height:288px;
+    overflow: auto;
+}
+#appointment-pb{
+    width: 848px;
+    text-align: center;
+    margin-left: 301px;
+    height: 150px;
+    border: 1px solid #ccc;
+}
+.loan-deadline {
+    width: 200px;
+    height: 30px;
+    border-radius: 5px;
+}
+.publish{
+    display: inline-block;
+    width: 120px;
+    height: 35px;
+    border: none;
+    background: #169bd5;
+    border-radius: 5px;
+    margin-top: 55px;
+    cursor: pointer;
+}
+/*借款人信息*/
+.borrower {
+    width: 80%;
+    margin:0 auto;
+    border-collapse: collapse;
+}
+.center {
+    width: 1500px;
+    margin: 150px auto;
+}
+.title {
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    /*font-size: 20px;*/
+}
+.borrower tr {
+    height: 35px;
+    line-height: 35px;
+}
+.borrower th {
+    font-size: 16px;
+    font-weight: 500;
+}
+.borrower th, .borrower td {
+    border: 1px solid #ccc;
+}
+.a {
+    color: blue;
+    text-decoration: underline;
+}
+.btns {
+    text-align: center;
+}
+.btns input:first-child {
+    margin-right: 20px;
+}
+.btns .publish {
+    margin-top:20px;
+}

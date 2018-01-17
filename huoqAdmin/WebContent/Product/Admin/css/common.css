@@ -1,0 +1,16 @@
+*{
+    margin:0;
+    padding: 0;
+}
+html,body,p,h1,h2,h3,h4,h5,h6,tr,td,dl,dd,ul,li,ol,span,a{
+    font-family: "微软雅黑";
+}
+input{
+    outline: none;
+}
+a{
+    text-decoration: none;
+}
+li{
+    list-style: none;
+}
