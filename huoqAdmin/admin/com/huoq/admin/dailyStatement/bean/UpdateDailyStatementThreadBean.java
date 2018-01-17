@@ -144,4 +144,325 @@ public class UpdateDailyStatementThreadBean {
         }
         return null;
     }
+
+
+    /**
+     * 更新平台资金概览
+     */
+    public void updateDailyStatement(Date yestady) {
+        List<Date> time = new ArrayList<>();
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            long a1 = System.currentTimeMillis();
+            //查询昨日
+            String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -2).getTime());
+            if(!QwyUtil.isNullAndEmpty(yestady)){
+                time.add(yestady);
+            }
+            for (Date date : time) {
+                String today = sd.format(date);
+                //根据时间去补全所有数据
+                DailyStatement dailyStatement = new DailyStatement();
+                dailyStatement.setInsertTime(yestady);
+
+                // 今日提现金额
+                Double updateTodayOutCashMoney = uodateTodayOutCashMoney(today);
+                dailyStatement.setTodayOutCashMoney(Double.valueOf(updateTodayOutCashMoney.toString().replaceAll(",", "")));
+                //激活用户数
+                Integer updateActivationCount = updateActivationCount(today);
+                dailyStatement.setActivationCount(Integer.valueOf(updateActivationCount.toString().replaceAll(",","")));
+
+                //平台今日资金存量总额
+                Double todayCapitalStock = updateTodayCapitalStock(today);
+                dailyStatement.setCapitalStock(Double.valueOf(todayCapitalStock.toString().replaceAll(",", "")));
+
+                // 今日注册用户
+                Integer updateTodayregisterCount = updateTodayregisterCount(today);
+                dailyStatement.setTodayregisterCount(Integer.valueOf(updateTodayregisterCount.toString().replaceAll(",", "")));
+                // 今日首投人数
+                Integer updateTodayfirstBuyNumber = updateTodayfirstBuyNumber(today);
+                dailyStatement.setTodayNewBuyNumber(Integer.valueOf(updateTodayfirstBuyNumber.toString().replaceAll(",", "")));
+                //首投总金额
+                Double firstInvestmentTotalMoney = updateFirstInvestmentTotalMoney(today);
+                dailyStatement.setFirstInvestmentTotalMoney(Double.valueOf(firstInvestmentTotalMoney.toString().replaceAll(",", "")));
+
+                //复投用户数
+                Integer reInvestmentCount = updateReInvestmentCount(today);
+                dailyStatement.setReInvestmentCount(Integer.valueOf(reInvestmentCount.toString().replaceAll(",", "")));
+                //复投总金额
+                Double reInvestmentMoney = updateReInvestmentMoney(today);
+                dailyStatement.setReInvestmentMoney(Double.valueOf(reInvestmentMoney.toString().replaceAll(",", "")));
+
+                //新增复投用户数
+                Integer addReInvestmentCount = updateAddReInvestmentCount(today);
+                dailyStatement.setAddReInvestmentCount(Integer.valueOf(addReInvestmentCount.toString().replaceAll(",", "")));
+                //新增复投总金额
+                Double addReInvestmentMoney =updateAddReInvestmentMoney(today);
+                dailyStatement.setAddReInvestmentMoney(Double.valueOf(reInvestmentMoney.toString().replaceAll(",", "")));
+
+                dao.saveOrUpdate(dailyStatement);
+            }
+            long a2 = System.currentTimeMillis();
+            log.info("-------------updateAllCapitalStock【更新平台资金概览DailyStatement】耗时:" + (a2 - a1));
+        } catch (Exception e) {
+        e.printStackTrace();
+        log.error(e);
+    }
+}
+
+
+
+
+    /**
+     *  更新今日提现金额
+     * @param insertTime
+     * @return
+     */
+    private Double uodateTodayOutCashMoney(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT FORMAT(SUM(tr.money/100),2) FROM tx_record tr "
+                    + "WHERE tr.is_check = '1' AND tr.status = '1'  AND tr.check_time "
+                    + "BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00')  AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double allMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                allMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return allMoney;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
+        return null;
+    }
+
+    /**
+     * 更新今日激活用户数
+     * @param insertTime
+     * @return
+     */
+    private Integer updateActivationCount(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(q.activityCount) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer registerCount = 0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                registerCount = Integer.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return registerCount;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
+        return null;
+    }
+
+    /**
+     * 平台今日资金存量总额
+     * @param insertTime
+     * @return
+     */
+    private Double updateTodayCapitalStock(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT FORMAT(SUM(money),2) FROM(  ");
+            sql.append(
+                    "SELECT SUM(cz.money)/100 money FROM cz_record cz WHERE cz.STATUS = '1'  AND TYPE = '1' AND cz.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append("UNION ALL ");
+            sql.append(
+                    "SELECT SUM(-tr.money/100) money FROM tx_record tr WHERE tr.is_check = '1'  AND tr.status = '1' AND tr.check_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59'))t ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double todayCapitalStock = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                todayCapitalStock = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return todayCapitalStock;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
+        return null;
+    }
+
+
+    /**
+     * 更新今日注册人数
+     */
+    private Integer updateTodayregisterCount(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT COUNT(1) FROM users u WHERE u.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT (?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer registerCount = 0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                registerCount = Integer.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return registerCount;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
+        return null;
+    }
+
+    /**
+     * 更新平台今日首投用户数
+     * @param insertTime
+     * @return
+     */
+    private Integer updateTodayfirstBuyNumber(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(q.strs) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer todayNewBuyNumber = 0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                todayNewBuyNumber = Integer.valueOf((loadAllSql.get(0) + ""));
+            }
+            return todayNewBuyNumber;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    /**
+     * 更新首投总金额
+     * @param insertTime
+     * @return
+     */
+    private Double updateFirstInvestmentTotalMoney(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(q.stje) FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double firstInvestmentTotalMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                firstInvestmentTotalMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return firstInvestmentTotalMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+
+    /**
+     * 更新复投用户数
+     * @param insertTime
+     * @return
+     */
+    private Integer updateReInvestmentCount(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(q.ftrs) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer reInvestmentCount = 0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                reInvestmentCount = Integer.valueOf((loadAllSql.get(0) + ""));
+            }
+            return reInvestmentCount;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    /**
+     * 更新复投总金额
+     * @param insertTime
+     * @return
+     */
+    private Double updateReInvestmentMoney(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(q.ftje) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double reInvestmentMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                reInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return reInvestmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+
+    /**
+     * 更新新增复投用户
+     * @param insertTime
+     * @return
+     */
+    private Integer updateAddReInvestmentCount(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(q.xzftyh) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer addReInvestmentCount = 0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                addReInvestmentCount = Integer.valueOf((loadAllSql.get(0) + ""));
+            }
+            return addReInvestmentCount;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    /**
+     * 更新新增复投用户投资总额
+     * @param insertTime
+     * @return
+     */
+    private Double updateAddReInvestmentMoney(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(q.xhftyhtzze) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double addReInvestmentMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                addReInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return addReInvestmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+
+
 }
