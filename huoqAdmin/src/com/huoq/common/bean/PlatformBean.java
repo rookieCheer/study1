@@ -163,10 +163,6 @@ public class PlatformBean {
             for (Object obj : list) {
                 if (obj instanceof Object[]) {
                     Object[] array = (Object[]) obj;
-                    // BigDecimal total = new BigDecimal(array[1].toString());
-                    // double dtotal = total.doubleValue();
-                    // dtotal = dtotal / 100 / 10000;
-
                     String id = (String) array[0];// id
                     productId.add(id);
                 }
@@ -178,13 +174,49 @@ public class PlatformBean {
             List<String> productIds = ArrayUtils.converArrayToList(productId.toArray(new String[size]));
             List virualList = virtualService.getBySql(sql.toString(), param, "ids", productIds);
             if (virualList != null && virualList.size() > 0) {
-                for (Object obj : list) {
+                int sizeOne = list.size();
+                for (int i = 0; i < sizeOne; i++) {
+                    Object obj = list.get(i);
                     if (obj instanceof Object[]) {
-
+                        Object[] array = (Object[]) obj;
+                        // 产品id
+                        String id = (String) array[0];
+                        // 募集总金额
+                        BigDecimal total = new BigDecimal(array[2].toString());
+                        double dtotal = total.doubleValue();
+                        // 循环虚拟机投资集合
+                        for (Object vobj : virualList) {
+                            if (vobj instanceof Object[]) {
+                                Object[] varray = (Object[]) vobj;
+                                String productIdV = (String) varray[0];
+                                if (productIdV.equals(id)) {
+                                    double virtualMoney = (Double) varray[1];
+                                    dtotal = dtotal - virtualMoney;
+                                }
+                            }
+                        }
+                        // 循环完成
+                        array[2] = dtotal;
+                        obj = array;
+                        list.set(i, obj);
                     }
                 }
             }
-
+            productId.clear();
+            for (Object obj : list) {
+                if (obj instanceof Object[]) {
+                    Object[] array = (Object[]) obj;
+                    // 产品id
+                    String id = (String) array[0];
+                    // 募集总金额
+                    double dtotal = (Double) array[2];
+                    double inv = (Double) array[3];
+                    if (inv > dtotal * 0.9) {
+                        productId.add(id);
+                    }
+                }
+            }
+            return productId.size();
         }
         return 0;
     }
