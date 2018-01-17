@@ -119,6 +119,55 @@ public class DailyStatementAction extends BaseAction {
             cell.setCellStyle(style);
             cell = row.createCell(1);
             cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(2);
+            cell.setCellValue("交易额");
+            cell.setCellStyle(style);
+            cell = row.createCell(3);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("查询日期");
+
+
+
+
+
+
+
 
 
             List<DailyStatement> list = bean.findDailyStatement(pageUtil, insertTime).getList();
@@ -132,7 +181,13 @@ public class DailyStatementAction extends BaseAction {
                 row.createCell(0).setCellValue((int) i + 1);//序号
                 row.createCell(1).setCellValue(format);//查询日期
             }
-
+            String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_data_overview.xls";
+            String realPath = request.getServletContext().getRealPath("/report/" + pathname);
+            log.info("运营日报表表地址：" + realPath);
+            FileOutputStream fout = new FileOutputStream(realPath);
+            wb.write(fout);
+            fout.close();
+            response.getWriter().write("/report/" + pathname);
         } catch (Exception e) {
             log.error("操作异常: ", e);
         }
