@@ -126,8 +126,8 @@ function ireportDo(){
 				<td>实际投资金额(元)</td>
 				
 			</tr>
-			<c:if test="${not empty czRecordList}">
-			<c:forEach items="${czRecordList}" var="list" varStatus="i">
+			<c:if test="${not empty companyList}">
+			<c:forEach items="${companyList}" var="list" varStatus="i">
 				<tr>
 					<td width="5%" rowspan="4">${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
 					<td width="6%" rowspan="4">

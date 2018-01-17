@@ -1042,7 +1042,7 @@ public class RechargeAction extends BaseAction {
                     message.setInnerMessage(innerMessage);
                     companyList.add(message);
                 }
-               getRequest().setAttribute("list", companyList);
+               getRequest().setAttribute("companyList", companyList);
             }
 
             return "todayFullScaleUserDetail";
