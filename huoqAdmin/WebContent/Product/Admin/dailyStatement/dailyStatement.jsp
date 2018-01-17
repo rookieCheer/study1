@@ -25,9 +25,10 @@
     <script src="${pageContext.request.contextPath}/js/artDialog4.1.7/jquery.artDialog.js?skin=blue"></script>
     <style type="text/css">
         .sereach {
-            width: 200px;
-            height: 32px;
-            line-height: 32px;
+            width: 82px;
+            display: inline-block;
+            height: 22px;
+            line-height: 22px;
             text-align: center;
             border: 1px solid #009DDA;
             border-radius: 5px;
@@ -120,7 +121,7 @@
         <input id="insertTime" name="insertTime" type="text" value="${insertTime}"/>
         <a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
         <input type="button" value="导出报表" onclick="ireportDo()">
-        <table border="1" width="80%">
+        <table border="1" width="100%" style="text-align:center;">
             <tr>
                 <td>序号</td>
                 <td width="70px;">查询日期</td>
@@ -140,20 +141,20 @@
                 <td>注册用户数</td>
                 <td>认证用户数</td>
                 <td>首投用户数</td>
-                <td>首投用户转化率（%）</td>
-                <td>首投总金额（元）</td>
-                <td>首投客单金额（元）</td>
-                <td>复投金额（元）</td>
-                <td>零钱罐新增金额（元）</td>
+                <td>首投用户转化率</td>
+                <td>首投总金额</td>
+                <td>首投客单金额</td>
+                <td>复投金额</td>
+                <td>零钱罐新增金额</td>
                 <td>复投用户数</td>
                 <td>新增复投用户数</td>
-                <td>新增复投用户投资总额（元）</td>
+                <td>新增复投用户投资总额</td>
                 <td>复投次数</td>
-                <td>新增复投率（%）</td>
-                <td>复投用户占比（%）</td>
-                <td>复投金额占比（%）</td>
-                <td>复投客单金额（元）</td>
-                <td>人均投资金额（元）</td>
+                <td>新增复投率</td>
+                <td>复投用户占比</td>
+                <td>复投金额占比</td>
+                <td>复投客单金额</td>
+                <td>人均投资金额</td>
             </tr>
             <c:forEach items="${list}" var="mylist" varStatus="status">
                 <tr>
@@ -166,7 +167,7 @@
                     <td><fmt:formatNumber value="${mylist.reimbursementAmountAll}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.interestpayment}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.todayOutCashMoney}" pattern="#.##"/></td>
-                    <td><fmt:formatNumber value="${mylist.returnInvestmentRate}" pattern="#.##"/></td>
+                    <td><fmt:formatNumber value="${mylist.returnInvestmentRate*100}" pattern="#.##"/>%</td>
                     <td><fmt:formatNumber value="${mylist.capitalInflow}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.netInflow}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.capitalStock}" pattern="#.##"/></td>
@@ -175,7 +176,7 @@
                     <td><fmt:formatNumber value="${mylist.todayregisterCount}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.todaycertificationCount}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.todayNewBuyNumber}" pattern="#.##"/></td>
-                    <td><fmt:formatNumber value="${mylist.firstPercentConversion}" pattern="#.##"/></td>
+                    <td><fmt:formatNumber value="${mylist.firstPercentConversion*100}" pattern="#.##"/>%</td>
                     <td><fmt:formatNumber value="${mylist.firstInvestmentTotalMoney}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.firstInvestmentMoney}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.reInvestmentMoney}" pattern="#.##"/></td>
@@ -184,9 +185,9 @@
                     <td><fmt:formatNumber value="${mylist.addReInvestmentCount}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.addReInvestmentMoney}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.reInvestmentAmount}" pattern="#.##"/></td>
-                    <td><fmt:formatNumber value="${mylist.multipleRate}" pattern="#.##"/></td>
-                    <td><fmt:formatNumber value="${mylist.occupationRatio}" pattern="#.##"/></td>
-                    <td><fmt:formatNumber value="${mylist.reInvestmentRate}" pattern="#.##"/></td>
+                    <td><fmt:formatNumber value="${mylist.multipleRate*100}" pattern="#.##"/>%</td>
+                    <td><fmt:formatNumber value="${mylist.occupationRatio*100}" pattern="#.##"/>%</td>
+                    <td><fmt:formatNumber value="${mylist.reInvestmentRate*100}" pattern="#.##"/>%</td>
                     <td><fmt:formatNumber value="${mylist.sumMoney}" pattern="#.##"/></td>
                     <td><fmt:formatNumber value="${mylist.capitaInvestmentMoney}" pattern="#.##"/></td>
                 </tr>
