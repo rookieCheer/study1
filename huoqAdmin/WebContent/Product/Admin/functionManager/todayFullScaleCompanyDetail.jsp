@@ -166,8 +166,8 @@ function ireportDo(){
 					  </c:forEach>
 				
 				
-					<td width="10%" rowspan="4"><fmt:formatDate value="${list.companyDueTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-					<td width="10%" rowspan="4"><fmt:formatDate value="${list.backMoneyTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+					<td width="10%" rowspan="4"><fmt:formatDate value="${list.companyDueTime}" pattern="yyyy-MM-dd"/></td>
+					<td width="10%" rowspan="4"><fmt:formatDate value="${list.backMoneyTime}" pattern="yyyy-MM-dd"/></td>
 				
 				
                       <c:forEach items="${list.innerMessage}" var="innerList" varStatus="p">
