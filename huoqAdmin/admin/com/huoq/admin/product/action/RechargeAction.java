@@ -71,7 +71,7 @@ import com.huoq.product.bean.ProductBean;
            @Result(name = "rootTxRecord", value = "/Product/Admin/fundsManager/rootTxRecord.jsp"), @Result(name = "err", value = "/Product/Admin/err.jsp"),
 
            // 今日满标企业详情
-           @Result(name = "todayFullScaleUserDetail", value = "/Product/Admin/functionManager/todayFullScaleUserDetail.jsp"),
+           @Result(name = "todayFullScaleUserDetail", value = "/Product/Admin/functionManager/todayFullScaleCompanyDetail.jsp"),
            // 未审核提现总额
            @Result(name = "uncheckedUserDetail", value = "/Product/Admin/functionManager/uncheckedUserDetail.jsp"),
            // 平台总交易额
@@ -1003,6 +1003,12 @@ public class RechargeAction extends BaseAction {
                         message.setCompanyDueTime(insert_time);
                         Date backMoneyTime = DateUtils.getAddDay(insert_time, 1);
                         message.setBackMoneyTime(backMoneyTime);// insert_time+1天
+                        String title = (String) element[2];
+                        int index = title.indexOf("N");
+                        if (index != -1) {
+                            title = title.substring(0,index);
+                        }
+                        message.setType(title);
                     }
                     List<InnerCompanyMessage> innerMessage = new ArrayList<InnerCompanyMessage>(childSize);
                     Double totalRaiseMoney = 0.0;// 总借款额度（元）
@@ -1017,7 +1023,17 @@ public class RechargeAction extends BaseAction {
                                 title = title.substring(index + 1);
                             }
                             innermessage.setNumber(title);
-                            // totalRaiseMoney = totalRaiseMoney+
+                            Double virtualInvest=(Double)innerEle[5];
+                            innermessage.setVirtualInvest(new BigDecimal(virtualInvest.toString()));
+                            Double invMoney =(Double)innerEle[4];
+                           totalInvMoney = totalInvMoney+invMoney;
+                           BigDecimal raiseMoneyBig = new BigDecimal(innerEle[3].toString());
+                           Double raiseMoney = raiseMoneyBig.doubleValue();
+                           totalRaiseMoney = totalRaiseMoney + raiseMoney;
+                           Date fullTagDate = (Date) innerEle[6];
+                           innermessage.setFullTagDate(fullTagDate);
+                           Date expirTime = DateUtils.getAddDay(fullTagDate, 1);
+                           innermessage.setExpiringDate(expirTime);
                         }
                         innerMessage.add(innermessage);
                     }
@@ -1026,25 +1042,7 @@ public class RechargeAction extends BaseAction {
                     message.setInnerMessage(innerMessage);
                     companyList.add(message);
                 }
-
-                // List<FullScaleCompanyMessage> companyList = new ArrayList<FullScaleCompanyMessage>(size);
-                // for(Object obj:list){
-                // FullScaleCompanyMessage message = new FullScaleCompanyMessage();
-                // if(obj instanceof Object[]){
-                // Object[] element = (Object[])obj;
-                // String companyName =(String)element[1];
-                // String title =(String)element[2];
-                // int index = title.indexOf("N");
-                // if(index!=-1){
-                // title = title.substring(0,index);
-                // }
-                // message.setCompanyName(companyName);//公司名称
-                // message.setBrowLimit(new BigDecimal(element[3].toString()));//募集金额
-                // message.setType(title);
-                // }
-                // companyList.add(message);
-                // }
-                getRequest().setAttribute("list", companyList);
+               getRequest().setAttribute("list", companyList);
             }
 
             return "todayFullScaleUserDetail";
