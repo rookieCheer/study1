@@ -159,6 +159,7 @@ group by id,real_name
         sql.append(" SELECT pro.id,pro.real_name,sum(pro.all_copies) raiseMoney,sum(inv.in_money)/100 invMoney ")
         .append(" FROM product pro ")
         .append(" JOIN investors inv ON inv.product_id = pro.id ")
+        .append(" inv.investor_status ='1' ")
         .append(" AND inv.insert_time >=? AND  inv.insert_time <=? ")
         .append(" group by id,real_name");
         Object[] param = new Object[2];
@@ -166,6 +167,9 @@ group by id,real_name
         Date end = new Date(DateUtils.getEndTime());
         param[0] = begin;
         param[1] = end;
+        
+        
+        
         List list = investorsService.getInvestorsBySqlSecond(sql.toString(), param);
         if (list != null && list.size() > 0) {
             // 存储公司id
@@ -181,6 +185,7 @@ group by id,real_name
                         productId.add(id);
                 }
             }
+            
             int size = productId.size();
             return size;
         }
