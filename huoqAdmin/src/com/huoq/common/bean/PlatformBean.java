@@ -149,14 +149,6 @@ public class PlatformBean {
      */
     public Integer updateTodayFullScaleCompanyNumber() {
         StringBuffer sql = new StringBuffer();
-        /**
-         * SELECT pro.id, pro.real_name, sum(pro.all_copies) raiseMoney, sum(inv.in_money)/100 invMoney FROM product pro
-         * JOIN investors inv ON inv.product_id = pro.id AND inv.insert_time >='2018-01-17 00:00:00' AND inv.insert_time
-         * <='2018-01-17 23:59:59' group by id,real_name
-         */
-        // sql.append("SELECT inv.product_id,sum(in_money) total FROM investors inv join product pro ").append(" on
-        // pro.id=inv.product_id where inv.investor_status='1' ").append(" and inv.insert_time>=? and inv.insert_time<=?
-        // ").append(" group by inv.product_id");
         sql.append(" SELECT pro.id,pro.real_name,sum(pro.all_copies) raiseMoney,sum(inv.in_money)/100 invMoney ").append(" FROM product pro ").append(" JOIN investors inv ON inv.product_id = pro.id ").append(" AND inv.investor_status ='1' ").append(" AND inv.insert_time >=? AND  inv.insert_time <=? ").append(" group by id,real_name");
         Object[] param = new Object[2];
         Date begin = new Date(DateUtils.getStartTime());
@@ -181,10 +173,17 @@ public class PlatformBean {
             }
             sql.delete(0, sql.length());
 
-            sql.append(" select product_id,sum(pay_in_mony)/100 virtualMoney from virtual_ins_record ").append(" where  insert_time >=? AND   insert_time <=? ").append(" and product_id exists(:ids) group by product_id ");
+            sql.append(" select product_id,sum(pay_in_mony)/100 virtualMoney from virtual_ins_record ").append(" where  insert_time >=?  AND   insert_time <=? ").append(" and product_id in(:ids) group by product_id ");
             int size = productId.size();
             List<String> productIds = ArrayUtils.converArrayToList(productId.toArray(new String[size]));
             List virualList = virtualService.getBySql(sql.toString(), param, "ids", productIds);
+            if (virualList != null && virualList.size() > 0) {
+                for (Object obj : list) {
+                    if (obj instanceof Object[]) {
+
+                    }
+                }
+            }
 
         }
         return 0;
