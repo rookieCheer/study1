@@ -157,7 +157,7 @@ public class PlatformBean {
         // sql.append("SELECT inv.product_id,sum(in_money) total FROM investors inv join product pro ").append(" on
         // pro.id=inv.product_id where inv.investor_status='1' ").append(" and inv.insert_time>=? and inv.insert_time<=?
         // ").append(" group by inv.product_id");
-        sql.append(" SELECT pro.id,pro.real_name,sum(pro.all_copies) raiseMoney,sum(inv.in_money)/100 invMoney ").append(" FROM product pro ").append(" JOIN investors inv ON inv.product_id = pro.id ").append(" inv.investor_status ='1' ").append(" AND inv.insert_time >=? AND  inv.insert_time <=? ").append(" group by id,real_name");
+        sql.append(" SELECT pro.id,pro.real_name,sum(pro.all_copies) raiseMoney,sum(inv.in_money)/100 invMoney ").append(" FROM product pro ").append(" JOIN investors inv ON inv.product_id = pro.id ").append(" AND inv.investor_status ='1' ").append(" AND inv.insert_time >=? AND  inv.insert_time <=? ").append(" group by id,real_name");
         Object[] param = new Object[2];
         Date begin = new Date(DateUtils.getStartTime());
         Date end = new Date(DateUtils.getEndTime());
