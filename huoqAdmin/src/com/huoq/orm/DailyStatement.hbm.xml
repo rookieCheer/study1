@@ -99,7 +99,7 @@
         </property>
         <property name="firstInvestmentTotalMoney" type="java.lang.Double">
             <column name="firstInvestmentTotalMoney">
-                <comment>首次投资的总金额</comment>
+                <comment>首投的总金额</comment>
             </column>
         </property>
 

@@ -27,7 +27,7 @@ public class DailyStatement implements Serializable {
     private Integer todaycertificationCount;// 今日认证用户
     private Integer todayNewBuyNumber;// 今日首投用户
     private Double  firstPercentConversion;// 首投用户转化率
-    private Double  firstInvestmentTotalMoney;//首次投资的总金额
+    private Double  firstInvestmentTotalMoney;//首投总金额
     private Double  firstInvestmentMoney ;// 首投客单金额（元）
     private Double  reInvestmentMoney;// 复投金额（元）
     private Double  amountNewMoney;// 零钱罐新增金额（元）
