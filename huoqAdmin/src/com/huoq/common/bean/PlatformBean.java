@@ -142,8 +142,25 @@ public class PlatformBean {
      */
     public Integer updateTodayFullScaleCompanyNumber() {
         StringBuffer sql = new StringBuffer();
-
-        sql.append("SELECT inv.product_id,sum(in_money) total FROM investors inv join product pro ").append(" on pro.id=inv.product_id where inv.investor_status='1' ").append(" and inv.insert_time>=? and inv.insert_time<=? ").append(" group by inv.product_id");
+       /**
+        * SELECT
+    pro.id,
+    pro.real_name,
+    sum(pro.all_copies) raiseMoney,
+  sum(inv.in_money)/100 invMoney
+ FROM
+    product pro
+JOIN investors inv ON inv.product_id = pro.id
+AND inv.insert_time >='2018-01-17 00:00:00'
+AND inv.insert_time <='2018-01-17 23:59:59'
+group by id,real_name
+        */
+        //sql.append("SELECT inv.product_id,sum(in_money) total FROM investors inv join product pro ").append(" on pro.id=inv.product_id where inv.investor_status='1' ").append(" and inv.insert_time>=? and inv.insert_time<=? ").append(" group by inv.product_id");
+        sql.append(" SELECT pro.id,pro.real_name,sum(pro.all_copies) raiseMoney,sum(inv.in_money)/100 invMoney ")
+        .append(" FROM product pro ")
+        .append(" JOIN investors inv ON inv.product_id = pro.id ")
+        .append(" AND inv.insert_time >=? AND  inv.insert_time <=? ")
+        .append(" group by id,real_name");
         Object[] param = new Object[2];
         Date begin = new Date(DateUtils.getStartTime());
         Date end = new Date(DateUtils.getEndTime());
@@ -156,14 +173,12 @@ public class PlatformBean {
             for (Object obj : list) {
                 if (obj instanceof Object[]) {
                     Object[] array = (Object[]) obj;
-                    BigDecimal total = new BigDecimal(array[1].toString());
-                    double dtotal = total.doubleValue();
-                    dtotal = dtotal / 100 / 10000;
-                    if (dtotal > 90) {
+//                    BigDecimal total = new BigDecimal(array[1].toString());
+//                    double dtotal = total.doubleValue();
+//                    dtotal = dtotal / 100 / 10000;
+                    
                         String id = (String) array[0];// id
                         productId.add(id);
-                    }
-
                 }
             }
             int size = productId.size();
