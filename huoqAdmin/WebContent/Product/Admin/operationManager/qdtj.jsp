@@ -242,8 +242,8 @@
                 <td></td>
                 <td></td>
                 <td><fmt:formatNumber value="${tj.activityCount}" pattern="#,##0.##"/></td>
-                <td></td>
-                <td></td>
+                <td><fmt:formatNumber value="${tj.channelCost}" pattern="#,##0.##"/></td>
+                <td><fmt:formatNumber value="${tj.activityCost}" pattern="#,##0.##"/></td>
                 <td><fmt:formatNumber value="" pattern="#,##0.##"/></td>
                 <td><fmt:formatNumber value="${tj.regCount}" pattern="#,##0.##"/></td>
                 <td></td>
@@ -251,7 +251,7 @@
                 <td><fmt:formatNumber value="" pattern="0.##"/></td>
                 <td></td>
                 <td><fmt:formatNumber value="${tj.strs}" pattern="#,##0.##"/></td>
-                <td></td>
+                <td><fmt:formatNumber value="${tj.fristBuyCost}" pattern="#,##0.##"/></td>
                 <td><fmt:formatNumber value="${tj.stje}" pattern="#,##0.##"/></td>
                 <c:choose>
                 	<c:when test="${tj.strs eq '0'}">
@@ -261,7 +261,7 @@
 		                <td><fmt:formatNumber value="${tj.stje/tj.strs}" pattern="#,##0.##"/></td>
                 	</c:otherwise>
                 </c:choose>
-                <td></td>
+                <td><fmt:formatNumber value="${tj.fristBuyROI}" pattern="#,##0.##"/></td>
                 <td><fmt:formatNumber value="${tj.ftrs}" pattern="#,##0.##"/></td>
                 <td></td>
                 <td><fmt:formatNumber value="${tj.ftje}" pattern="#,##0.##"/></td>
@@ -288,7 +288,7 @@
 		                <td><fmt:formatNumber value="${tj.tzje/tj.tzrs}" pattern="#,##0.##"/></td>
                 	</c:otherwise>
                 </c:choose>
-                <td></td>
+                <td><fmt:formatNumber value="${tj.buyROI}" pattern="#,##0.##"/></td>
             </tr>
             <c:forEach items="${list}" var="item">
                 <tr>
@@ -302,8 +302,8 @@
                     <td></td>
                     <td></td>
                     <td><fmt:formatNumber value="${item.activityCount}" pattern="#,##0.##"/></td>
-                    <td></td>
-                    <td></td>
+                    <td><fmt:formatNumber value="${item.channelCost}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${item.activityCost}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${item.qdzhl}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${item.regCount}" pattern="#,##0.##"/></td>
                     <td></td>
@@ -311,10 +311,10 @@
 			        <td><fmt:formatNumber value="${item.zcjhzhl}" pattern="0.##"/></td>
                     <td><fmt:formatNumber value="${item.rzstzhl}" pattern="0.##"/></td>
                     <td><fmt:formatNumber value="${item.strs}" pattern="#,##0.##"/></td>
-                    <td></td>
+                    <td><fmt:formatNumber value="${item.fristBuyCost}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${item.stje}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${item.rjstje}" pattern="#,##0.##"/></td>
-                    <td></td>
+                    <td><fmt:formatNumber value="${item.fristBuyROI}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${item.ftrs}" pattern="#,##0.##"/></td>
                     <td></td>
                     <td><fmt:formatNumber value="${item.ftje}" pattern="#,##0.##"/></td>
@@ -327,7 +327,7 @@
                     <td><fmt:formatNumber value="${item.tzje}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${item.lqgje}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${item.rjtzje}" pattern="#,##0.##"/></td>
-                    <td></td>
+                    <td><fmt:formatNumber value="${item.buyROI}" pattern="#,##0.##"/></td>
                 </tr>
             </c:forEach>
             </tbody>
