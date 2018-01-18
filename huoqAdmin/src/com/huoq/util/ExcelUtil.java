@@ -398,13 +398,42 @@ public class ExcelUtil<T> {
             index++;
             // 创建一行
             row = sheet.createRow(index);
+
             // 获取单个数据
             FullScaleCompanyMessage message = it.next();
+            int childBidNumber = message.getChildBidNumber();
+            List<InnerCompanyMessage> innerList = message.getInnerMessage();
+            if (innerList != null) {
+                int j = 5;
+                int k = index * childBidNumber - 1;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                for (InnerCompanyMessage innerMessage : innerList) {
+                    HSSFRow innerRow = sheet.createRow(k);
+                    k++;
+                    HSSFCell cell6 = innerRow.createCell(j); //
+
+                    cell6.setCellValue(innerMessage.getNumber());
+                    HSSFCell cell7 = innerRow.createCell(j + 1); //
+
+                    Date fullTagTime = (Date) innerMessage.getFullTagDate();
+                    cell7.setCellValue(sdf.format(fullTagTime));
+
+                    HSSFCell cell8 = innerRow.createCell(j + 2); //
+                    Date expirTime = (Date) innerMessage.getExpiringDate();
+                    cell8.setCellValue(sdf.format(expirTime));
+
+                    HSSFCell cell11 = innerRow.createCell(j + 5); //
+                    Double virtualInvest = (Double) innerMessage.getVirtualInvest().doubleValue();
+                    cell11.setCellValue(virtualInvest);
+
+                }
+            }
+
             HSSFCell cell = row.createCell(0); // 序号
 
             HSSFRichTextString no = new HSSFRichTextString(message.getNo());
             cell.setCellValue(no);
-            int childBidNumber = message.getChildBidNumber();
+
             // 四个参数分别是：起始行，结束行，开始列，结束列
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 0, 0));
             cell.setCellStyle(style1);
@@ -428,20 +457,6 @@ public class ExcelUtil<T> {
 
             cell5.setCellValue(childBidNumber);
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 4, 4));
-
-            // for(int j=0;i<childBidNumber;j++){
-            List<InnerCompanyMessage> innerList = message.getInnerMessage();
-            if (innerList != null) {
-                int j = 5;
-                for (InnerCompanyMessage innerMessage : innerList) {
-                    HSSFCell cell6 = row.createCell(j); // 创建第5个单元格
-
-                    cell6.setCellValue(innerMessage.getNumber());
-                    j++;
-                }
-            }
-
-            // }
 
             //
             HSSFCell cell9 = row.createCell(8); // 企业到期时间
