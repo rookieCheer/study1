@@ -163,6 +163,11 @@
                 <comment>激活成本</comment>
             </column>
         </property>
+        <property name="registerCost" type="java.lang.String">
+            <column name="register_cost" >
+                <comment>注册成本</comment>
+            </column>
+        </property>
         <property name="fristBuyCost" type="java.lang.String">
             <column name="frist_buy_cost">
                 <comment>首投成本</comment>

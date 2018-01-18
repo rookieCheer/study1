@@ -44,6 +44,7 @@ public class Qdtj {
 	private String channelType;//渠道状态
 	private String channelCost;//渠道费用
 	private String activityCost;//激活成本
+	private String registerCost;//激活成本
 	private String fristBuyCost;//首投成本
 	private String fristBuyROI;//首投ROI
 	private String secondCost;//复投成本
@@ -87,6 +88,7 @@ public class Qdtj {
 		this.dateStr="0";
 		this.lqgje="0";
 		this.lqgrs="0";
+		this.registerCost="0";
 	}
 	public Long getId() {
 		return id;
@@ -403,4 +405,12 @@ public class Qdtj {
 	public void setBuyROI(String buyROI) {
 		this.buyROI = buyROI;
 	}
+
+    public String getRegisterCost() {
+        return registerCost;
+    }
+
+    public void setRegisterCost(String registerCost) {
+        this.registerCost = registerCost;
+    }
 }

@@ -109,7 +109,8 @@
     <div class="main" align="center">
         <h3>渠道费用表</h3>
         <form id="frm" action="${pageContext.request.contextPath}/Product/Admin/activity!addAndroidChannelData.action">
-            <span>查询期间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}" onchange="changeTime()">
+            <span>渠道名称:</span> <input id="channelName" name="channelName" type="text" value="${channelName}">
+            <span>查询期间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
             <select id="channelType" name="channelType">
                 <c:choose>
                     <c:when test="${channelType == 1}">
@@ -139,7 +140,8 @@
                 <td>操作</td>
             </tr>
             </thead>
-            <form id="frm1" action="${pageContext.request.contextPath}/Product/Admin/activity!updateQdtjData.action">
+            <form id="frm1" action="${pageContext.request.contextPath}/Product/Admin/activity!updateQdtjData.action"
+            onsubmit="submit()">
                 <c:forEach items="${list}" var="item" varStatus="i">
                     <tr>
                         <td>${i.index+1}</td>
@@ -147,13 +149,21 @@
                             <input type="hidden" name="qdtjlist[${i.index}].channelName" value="${item[1]}" >
                         <td>
                             <span class="channelVal"></span>
-                            <input type="text" value="" name="qdtjlist[${i.index}].channelCost" id="ChannelCost">
+                            <input type="text" value="${item[2]}" name="qdtjlist[${i.index}].channelCost" id="ChannelCost">
+                        </td>
+                        <c:choose>
+                            <c:when test="${item[3] == '0'}">
+                                <td></td>
+                            </c:when>
+                            <c:otherwise>
+                                <td><fmt:formatDate value="${item[3]}" pattern="yyyy-MM-dd" /></td>
+                            </c:otherwise>
+                        </c:choose>
+                        <td>
+                            <a href="javascript:update('${item[4]}');" class="link">修改费用</a>
                         </td>
                         <td>
                             <input type="hidden" id="qdtjTime"  name="qdtjlist[${i.index}].insertTime">
-                        </td>
-                        <td>
-                            <a href="javascript:update('${item[4]}');" class="link">修改费用</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -192,9 +202,14 @@
         window.location.href = "${pageContext.request.contextPath}/Product/Admin/activity!updateChannelData.action?qdtjId=" + qdtjId;
     };
 
-    function changeTime(){
+    function submit(){
         var insetTime = $("#insertTime").val();
         $("#qdtjTime").val(insetTime);
+        if(insetTime = null || insetTime==''){
+            alert("请选择时间");
+            return false;
+        }
+        return true;
     }
 </script>
 </body>

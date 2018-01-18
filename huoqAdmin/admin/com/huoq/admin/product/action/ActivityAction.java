@@ -56,6 +56,7 @@ public class ActivityAction extends BaseAction {
     private Integer pageSize = 50;
     private String channelCode;//渠道编码
     private String date;//单个渠道查询日期
+    private String channelName;//渠道名称
     private List<Qdtj> qdtjlist;
 
     /**
@@ -356,27 +357,32 @@ public class ActivityAction extends BaseAction {
             //List<Qdtj> list = this.list;
             Qdtj qdtj = this.qdtj;
             getRequest().setAttribute("insertTime", insertTime);
-            String sDate = "";
-            String eDate = "";
+            String Date = "";
             String[] time = QwyUtil.splitTime(insertTime);
-            if (!QwyUtil.isNullAndEmpty(time))
+            if (!QwyUtil.isNullAndEmpty(time)) {
                 if (time.length > 1) {
-                    sDate = QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmMMddyyyy.parse(time[0] + " 00:00:00"));
-                    eDate = QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                    Date = QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmMMddyyyy.parse(time[0] + " 00:00:00"));
                 } else {
-                    sDate = QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    eDate = QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                    Date = QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                 }
-
+            }
             PageUtil<Qdtj> pageUtil = new PageUtil<Qdtj>();
             pageUtil.setCurrentPage(currentPage);
             pageUtil.setPageSize(pageSize);
             StringBuffer url = new StringBuffer();
             url.append(getRequest().getServletContext().getContextPath());
-            url.append("/Product/Admin/activity!addAndroidChannelData.action");
+            url.append("/Product/Admin/activity!addAndroidChannelData.action?");
+            if(!QwyUtil.isNullAndEmpty(insertTime)){
+                url.append("insertTime=");
+                url.append(insertTime+"&");
+            }
+            if(!QwyUtil.isNullAndEmpty(channelName)){
+                url.append("channelName=");
+                url.append(channelName+"&");
+            }
 
             pageUtil.setPageUrl(url.toString());
-            pageUtil = bean.loadQdtj(pageUtil, sDate, eDate, channelType);
+            pageUtil = bean.loadQdtj(pageUtil, Date, channelType,channelName);
             if (!QwyUtil.isNullAndEmpty(pageUtil)) {
                 getRequest().setAttribute("pageUtil", pageUtil);
                 getRequest().setAttribute("channelType", channelType);
@@ -413,19 +419,13 @@ public class ActivityAction extends BaseAction {
                 String channelName = qgdj.getChannelName();
                 //查询出相关数据
                 List<Qdtj> newqdtjlist = bean.loadQdtj(insertTime, channelName);
-                Qdtj newqdtj = newqdtjlist.get(0);
-                String channelCost = newqdtj.getChannelCost();//获取渠道成本,根据渠道成本计算其他相关数据
-                //获取激活人数
-                String activityCount = newqdtj.getActivityCount();
-                //获取注册人数
-                String regCount = newqdtj.getRegCount();
-                //获取首投人数
-                newqdtj.getFtrs();
-                //获取首投总金额
-                newqdtj.getStje();
-                //获取投资金额
-                newqdtj.getTzje();
+                if(!QwyUtil.isNullAndEmpty(newqdtjlist)){
+                    Qdtj newqdtj = newqdtjlist.get(0);
+                    bean.updateQdtj(newqdtj);
+                }
+
             }
+            return "addQdtj";
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -803,5 +803,13 @@ public class ActivityAction extends BaseAction {
 
     public void setQdtjlist(List<Qdtj> qdtjlist) {
         this.qdtjlist = qdtjlist;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 }
