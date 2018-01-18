@@ -1232,20 +1232,21 @@ public class RechargeAction extends BaseAction {
         fieldMap.put("借款额度(元)", "browLimit");
         fieldMap.put("标的类型", "type");
         fieldMap.put("子标数目", "childBidNumber");
-        
-        fieldMap.put("标的编号", "realInvest");
-        fieldMap.put("满标时间", "realInvest");
-        fieldMap.put("到期时间", "realInvest");
-        
+        fieldMap.put("标的编号", "innerMessage.number");
+        fieldMap.put("满标时间", "innerMessage.fullTagDate");
+        fieldMap.put("到期时间", "innerMessage.expiringDate");
         fieldMap.put("企业到期时间", "companyDueTime");
         fieldMap.put("企业回款时间", "backMoneyTime");
-        fieldMap.put("虚拟投资金额(元)", "realInvest");
+        fieldMap.put("虚拟投资金额(元)", "innerMessage.virtualInvest");
         fieldMap.put("实际投资金额(元)", "realInvest");
         List<FullScaleCompanyMessage> companyList = companyList();
         if (companyList != null) {
             Map<String,String> dataStyle = new HashMap<String,String>(1);
-            dataStyle.put(ExcelUtil.DATE_STYLE,"yyyy-MM-dd");
-            ExcelUtil.exportExcelNew(outputStream, "满标企业详情表", fieldMap, companyList, dataStyle);
+            dataStyle.put("companyDueTime","yyyy-MM-dd");
+            dataStyle.put("backMoneyTime","yyyy-MM-dd");
+            dataStyle.put("innerMessage.fullTagDate","yyyy-MM-dd HH:mm:ss");
+            dataStyle.put("innerMessage.expiringDate","yyyy-MM-dd HH:mm:ss");
+            ExcelUtil.exportExcelSecond(outputStream, "满标企业详情表", fieldMap, companyList, dataStyle);
         }
 
     }

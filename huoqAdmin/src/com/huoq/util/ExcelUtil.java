@@ -25,6 +25,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.huoq.common.util.DateUtils;
+import com.huoq.orm.FullScaleCompanyMessage;
 import com.alibaba.fastjson.JSON;
 
 
@@ -48,12 +49,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.servlet.ServletOutputStream;
 
 /**
  * 导入导出Excel工具测试成功 导出类型只支持xls格式
@@ -300,11 +304,14 @@ public class ExcelUtil<T> {
 						if (dataStyle == null) {
 							throw new NullPointerException("dataStyle对象为null");
 						}
-						if (!dataStyle.containsKey(ExcelUtil.DATE_STYLE)) {
-							throw new RuntimeException("日期转换格式未指定");
+//						if (!dataStyle.containsKey(ExcelUtil.DATE_STYLE)) {
+//							throw new RuntimeException("日期转换格式未指定");
+//						}
+						String fildNamedateStyle = dataStyle.get(fieldName);
+						if(fildNamedateStyle == null){
+						    throw new RuntimeException("属性名为:"+fieldName+"日期转换格式未指定");
 						}
-						String dateStyle = dataStyle.get(ExcelUtil.DATE_STYLE);
-						SimpleDateFormat sdf = new SimpleDateFormat(dateStyle);
+						SimpleDateFormat sdf = new SimpleDateFormat(fildNamedateStyle);
 						cell.setCellValue(sdf.format(date)); //
 
 					} else if (value instanceof byte[]) { // 是否是字节型数组
@@ -358,6 +365,103 @@ public class ExcelUtil<T> {
 
 	}
 
+	
+	
+	public static  HSSFWorkbook getWorkbook(String title, LinkedHashMap<String, String> fieldMap, List<FullScaleCompanyMessage> data,
+	                                           Map<String, String> dataStyle)
+	                                         throws NullPointerException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException {
+
+	                                     // 工作薄
+	                                     @SuppressWarnings("resource")
+	                                     HSSFWorkbook workbook = new HSSFWorkbook();
+
+	                                     // 表格
+	                                     HSSFSheet sheet = workbook.createSheet(title);
+
+	                                     HSSFCellStyle style = workbook.createCellStyle();
+	                                     // 设置这些样式
+	                                     style.setFillForegroundColor(HSSFColor.WHITE.index);
+	                                     style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+	                                     style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+	                                     style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+	                                     style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+	                                     style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+	                                     style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+	                                     // 生成一个字体
+	                                     HSSFFont font = workbook.createFont();
+	                                     font.setColor(HSSFColor.BLACK.index);
+	                                     font.setFontHeightInPoints((short) 12);
+	                                     font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+	                                     // 把字体应用到当前的样式
+	                                     style.setFont(font);
+	                                     // 生成并设置另一个样式
+	                                     HSSFCellStyle style2 = workbook.createCellStyle();
+	                                     style2.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+	                                     style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+	                                     style2.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+	                                     style2.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+	                                     style2.setBorderRight(HSSFCellStyle.BORDER_THIN);
+	                                     style2.setBorderTop(HSSFCellStyle.BORDER_THIN);
+	                                     style2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+	                                     style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+	                                     // 生成另一个字体
+	                                     HSSFFont font2 = workbook.createFont();
+	                                     font2.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+	                                     // 把字体应用到当前的样式
+	                                     style2.setFont(font2);
+	                                     // 产生表格标题行
+	                                     HSSFRow row = sheet.createRow(0);
+	                                     Iterator<Map.Entry<String, String>> iter = fieldMap.entrySet().iterator();
+	                                     int i = 0;
+	                                     while (iter.hasNext()) {
+	                                         Map.Entry<String, String> entry = iter.next();
+	                                         HSSFCell cell = row.createCell(i);
+	                                         cell.setCellStyle(style);
+	                                         HSSFRichTextString text = new HSSFRichTextString(entry.getKey());
+	                                         cell.setCellValue(text);
+	                                         i++;
+	                                     }
+
+	                                     Iterator<FullScaleCompanyMessage> it = data.iterator();
+	                                     int index = 0;
+	                                     while (it.hasNext()) {
+	                                        index++;
+	                                        //创建一行
+	                                        row = sheet.createRow(index);
+	                                        // 获取单个数据
+	                                        FullScaleCompanyMessage message = it.next();
+	                                        HSSFCell cell = row.createCell(0); // 创建第一个个单元格
+	                                        HSSFRichTextString richString = new HSSFRichTextString(message.getNo());
+	                                        cell.setCellValue(richString);
+	                                        
+	                                        HSSFCell cell2 = row.createCell(1); // 创建第2个单元格
+                                            HSSFRichTextString richString1 = new HSSFRichTextString(message.getCompanyName());
+                                            cell2.setCellValue(richString1);
+                                            
+                                            HSSFCell cell3 = row.createCell(2); // 创建第3个单元格
+                                            //HSSFRichTextString richString2 = new HSSFRichTextString(message.getBrowLimit().doubleValue());
+                                            cell3.setCellValue(message.getBrowLimit().doubleValue());
+                                            
+                                            HSSFCell cell4 = row.createCell(3); // 创建第4个单元格
+                                            HSSFRichTextString richString3 = new HSSFRichTextString(message.getType());
+                                            cell4.setCellValue(richString3);
+                                            HSSFCell cell5 = row.createCell(4); // 创建第5个单元格
+                                           // HSSFRichTextString richString4 = new HSSFRichTextString(message.getChildBidNumber());
+                                            cell5.setCellValue(message.getChildBidNumber());
+	                                      
+	                                     }
+
+	                                     return workbook;
+
+	                                 }
+
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 将外部excel导入到程序后转换成指定的bean集合
 	 * 
@@ -1465,4 +1569,20 @@ public class ExcelUtil<T> {
 		}
 		return workbook;
 	}
+
+    public static void exportExcelSecond(ServletOutputStream outputStream, String title, LinkedHashMap<String, String> fieldMap, List<FullScaleCompanyMessage> companyList,
+                                         Map<String, String> dataStyle) throws NullPointerException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, IOException {
+        if (outputStream == null) {
+            throw new NullPointerException("指定的输出流为");
+        }
+        HSSFWorkbook book = getWorkbook(title, fieldMap, companyList, dataStyle);
+        if (book != null) {
+            try {
+                book.write(outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw e;
+            }
+        }
+    }
 }
