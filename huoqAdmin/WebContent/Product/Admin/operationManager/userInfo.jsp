@@ -343,6 +343,9 @@
                 <td width="80px;">绑卡时间</td>
                 <td width="50px;">注册平台</td>
                 <td width="100px;">是否绑定银行卡</td>
+                <td width="50px;">首投日期</td>
+                <td width="50px;">首投产品</td>
+                <td width="50px;">首投金额（元）</td>
                 <td width="65px;">投资总金额</td>
                 <td width="65px;">零钱罐金额</td>
                 <td width="50px;">VIP等级</td>
@@ -373,6 +376,9 @@
                             <c:otherwise>否</c:otherwise>
                         </c:choose>
                     </td>
+                    <td align="center"><fmt:formatDate value="${item.payTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td></td>
+                    <td align="center">${item.title}</td>
+                    <td align="center"><fmt:formatNumber value="${item.inMoney1}" pattern="#,##0.##"/></td>
                     <td align="center"><fmt:formatNumber value="${item.inMoney}" pattern="#,##0.##"/></td>
                     <td align="center">${item.coinPurseFundsRecordMoney}</td>
                     <td align="center">${item.level}</td>

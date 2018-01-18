@@ -79,7 +79,7 @@ public class InvestorsRecordBean {
 		List<Object> arrayList=new ArrayList<Object>();
 		StringBuffer sql=new StringBuffer();
 		
-		sql.append("SELECT platform ,SUM(jhcs),SUM(zcrs),SUM(strs),SUM(stje),SUM(tzje),SUM(czje)-SUM(txje) FROM qdtj_platform ");
+		sql.append("SELECT platform ,SUM(jhcs),SUM(zcrs),SUM(strs),SUM(stje),SUM(tzje),SUM(czje)-SUM(txje),FORMAT((SUM(strs)/(SUM(tzrs)-SUM(strs))),4) FROM qdtj_platform ");
 		sql.append(" WHERE 1=1");
 		
 		if(!QwyUtil.isNullAndEmpty(payTime)){
@@ -87,7 +87,7 @@ public class InvestorsRecordBean {
 			if(time.length>1){
 				sql.append(" AND query_date >= ? ");
 				arrayList.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-				sql.append(" AND query_date <= ? ");
+				sql.append(" AND query_date  <= ? ");
 				arrayList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1]+" 23:59:59"));
 			}else{
 				sql.append(" AND query_date >= ? ");
@@ -101,47 +101,7 @@ public class InvestorsRecordBean {
             arrayList.add(platform);
         }
 		sql.append(" GROUP BY platform");
-		
-//		sql.append(" SELECT us.regist_platform,SUM(ins.copies)  FROM USERS as us ");
-//		sql.append(" LEFT JOIN investors as ins ON us.id =  ins.users_id ");
-//		sql.append(" WHERE 1=1 ");
-//		if(!QwyUtil.isNullAndEmpty(payTime)){
-//			String [] time=QwyUtil.splitTime(payTime);
-//			if(time.length>1){
-//				sql.append(" AND ins.pay_time >= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-//				sql.append(" AND ins.pay_time <= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1]+" 23:59:59"));
-//			}else{
-//				sql.append(" AND ins.pay_time >= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0]+" 00:00:00"));
-//				sql.append(" AND ins.pay_time <= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0]+" 23:59:59"));
-//			}
-//		}
-//		if(!QwyUtil.isNullAndEmpty(insertTime)){
-//			String [] insertT=QwyUtil.splitTime(insertTime);
-//			if(insertT.length>1){
-//				sql.append(" AND us.insert_time >= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyy.parse(insertT[0]));
-//				sql.append(" AND us.insert_time <= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyyHHmmss.parse(insertT[1]+" 23:59:59"));
-//			}else{
-//				sql.append(" AND us.insert_time >= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyyHHmmss.parse(insertT[0]+" 00:00:00"));
-//				sql.append(" AND us.insert_time <= ? ");
-//				arrayList.add(QwyUtil.fmMMddyyyyHHmmss.parse(insertT[0]+" 23:59:59"));
-//			}
-//		}
-//		if(!QwyUtil.isNullAndEmpty(status)){
-//			sql.append(" AND ins.investor_status = ?  ");
-//			arrayList.add(status);
-//		}else{
-//			sql.append(" AND ins.investor_status in ('1','2','3') ");
-//		}
-//		sql.append(" GROUP BY us.regist_platform ");
 		List<Object []> list=dao.LoadAllSql(sql.toString(), arrayList.toArray());
-//		return parsePlatformInvestDetail(list);
 		return list;
 	}
 	
@@ -228,7 +188,7 @@ public class InvestorsRecordBean {
 			List<Object> arrayList=new ArrayList<Object>();
 			StringBuffer sql=new StringBuffer();
 			
-			sql.append("SELECT SUM(jhcs),SUM(zcrs),SUM(strs),SUM(stje),SUM(tzje),SUM(czje)-SUM(txje) FROM qdtj_platform");
+			sql.append("SELECT SUM(jhcs),SUM(zcrs),SUM(strs),SUM(stje),SUM(tzje),SUM(czje)-SUM(txje) FROM qdtj_platform ");
 			sql.append(" WHERE 1=1");
 			
 			if(!QwyUtil.isNullAndEmpty(payTime)){
