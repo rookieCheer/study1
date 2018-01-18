@@ -158,13 +158,16 @@ function ireportDo(){
 				    <td width="10%" ><fmt:formatDate value="${list.companyDueTime}" pattern="yyyy-MM-dd"/></td>
 					<td width="10%" ><fmt:formatDate value="${list.backMoneyTime}" pattern="yyyy-MM-dd"/></td>
 					<td>
+					 <table style="width:100%;" border="1px;">
                       <c:forEach items="${list.innerMessage}" var="innerList" varStatus="p">
+                     
                       <tr>
                           <td>
                              ${innerList.virtualInvest}&nbsp;
                           </td>
                           </tr>
                       </c:forEach>
+                       </table>
                       </td>
                     <td width="10%" >${list.realInvest}</td>
 				</tr>
