@@ -194,7 +194,7 @@ public class UpdateDailyStatementThreadBean {
                 dailyStatement.setCapitalInflow(Double.valueOf(capitalInflow.toString().replaceAll(",", "")));
                 //净流入金额(资金流入额-今日提现金额)
                 Double netInflow = updateNetInflow(today);
-                dailyStatement.setNetInflow(!QwyUtil.isNullAndEmpty(netInflow) ? ((Double.valueOf(netInflow.toString().replaceAll(",", ""))) - dailyStatement.getTodayOutCashMoney()) : 0.0);
+                dailyStatement.setNetInflow(Double.valueOf(netInflow.toString().replaceAll(",", "")));
                 //平台今日资金存量总额
                 Double todayCapitalStock = updateTodayCapitalStock(today);
                 dailyStatement.setCapitalStock(Double.valueOf(todayCapitalStock.toString().replaceAll(",", "")));
@@ -403,6 +403,25 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateNetInflow(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT FORMAT((a.money  -b.money1),2) FROM "
+                       +"(SELECT SUM(cz.money)/100 money FROM cz_record cz WHERE cz.STATUS = '1' AND TYPE = '1' AND cz.insert_time "
+                       +"BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00')  AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a,"
+                       +"(SELECT SUM(tr.money/100) money1 FROM tx_record tr  WHERE tr.is_check = '1' AND tr.status = '1' AND tr.check_time "
+                       +"BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59'))b ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double netInflow = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                netInflow = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return netInflow;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
         return null;
     }
 
@@ -584,6 +603,23 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateFirstInvestmentMoney(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT FORMAT((b.stje/a.strs),2) FROM "
+                    +"(SELECT SUM(q.strs) strs FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a,"
+                    +"(SELECT SUM(q.stje) stje FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )b ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double reInvestmentMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                reInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return reInvestmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
         return null;
     }
 
@@ -737,6 +773,22 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateSumMoney(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double addReInvestmentMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                addReInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return addReInvestmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
+
         return null;
     }
 
