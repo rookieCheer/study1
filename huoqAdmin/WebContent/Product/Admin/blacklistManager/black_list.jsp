@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="/WEB-INF/zlqEl.tld" prefix="myel" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -102,10 +103,12 @@
                     <td>${list.note}</td>
                     <td>${list.description}</td>
                     <td>
-                    <a class="a" id="a_${list.id}" href="javascript:descriptionAdd('${list.username}','${list.id}');">添加描述</a><br/>
-                    <c:if test="${list.status eq 0}">
-                    		<a class="a" id="a_${list.id}" href="javascript:updateStatus('${list.id}');">解除黑名单</a>
-                    </c:if>
+                        <c:if test="${usersLogin != 'B72CE4B29ACEEF4AD580C1814A903764BD9BB21350BCB7248E31CD76D0BEE9B42A1C0F45F85B0DE8'}">
+                            <a class="a" id="a_${list.id}" href="javascript:descriptionAdd('${list.username}','${list.id}');">添加描述</a><br/>
+                            <c:if test="${list.status eq 0}">
+                                    <a class="a" id="a_${list.id}" href="javascript:updateStatus('${list.id}');">解除黑名单</a>
+                            </c:if>
+                        </c:if>
                     </td>
                    <%-- <td>
                         <c:choose>
