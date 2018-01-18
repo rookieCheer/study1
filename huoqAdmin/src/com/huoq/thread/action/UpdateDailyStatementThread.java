@@ -18,7 +18,6 @@ public class UpdateDailyStatementThread implements Runnable{
     private static MyLogger log = MyLogger.getLogger(UpdateDailyStatementThread.class);
     @Autowired
     private UpdateDailyStatementThreadBean bean;
-
     @Override
     public synchronized void run() {
         long st = System.currentTimeMillis();
