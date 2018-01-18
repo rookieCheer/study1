@@ -97,8 +97,10 @@ $(function(){
 						<td width="200px" style="text-align: center;">注册人数(人)</td>
 						<td width="200px" style="text-align: center;">首投人数(人)</td>
 						<td width="200px" style="text-align: center;">首投金额（元）</td>
+						<td width="200px" style="text-align: center;">复投率(%)</td>
 						<td width="200px" style="text-align: center;">投资金额（元）</td>
 						<td width="300px" style="text-align: center;">累计存量（充值 - 提现）</td>
+
 					</tr>
 					
 					<c:forEach items="${list}"  var="item" varStatus="i">
@@ -117,6 +119,7 @@ $(function(){
 						<td style="text-align: center;"><fmt:formatNumber value="${item[2]}" pattern="#,##0" /></td>
 						<td style="text-align: center;"><fmt:formatNumber value="${item[3]}" pattern="#,##0" /></td>
 						<td style="text-align: center;"><fmt:formatNumber value="${item[4]*0.01}" pattern="#,##0.#" /> </td>
+						<td style="text-align: center;"><fmt:formatNumber value="${item[7]*100}" pattern="#,##0.#" />%</td>
 						<td style="text-align: center;"><fmt:formatNumber value="${item[5]*0.01}" pattern="#,##0.#" /> </td>
 						<td style="text-align: center;"><fmt:formatNumber value="${item[6]*0.01}" pattern="#,##0.#" /> </td>
 					</tr>
@@ -128,6 +131,7 @@ $(function(){
 						<td style="text-align: center;"><fmt:formatNumber value="${hj[1]}" pattern="#,##0" /></td>
 						<td style="text-align: center;"><fmt:formatNumber value="${hj[2]}" pattern="#,##0" /></td>
 						<td style="text-align: center;"><fmt:formatNumber value="${hj[3]*0.01}" pattern="#,##0.#" /></td>
+						<td style="text-align: center;"></td>
 						<td style="text-align: center;"><fmt:formatNumber value="${hj[4]*0.01}" pattern="#,##0.#" /></td>
 						<td style="text-align: center;"><fmt:formatNumber value="${hj[5]*0.01}" pattern="#,##0.#" /></td>
 					</tr>
