@@ -91,11 +91,11 @@ function ireportDo(){
 <div class="center">			
 	<jsp:include page="/Product/Admin/common/head.jsp"/>
 	<div class="main" align="center">
-		<h1 style="text-align: center;">满标企业详情</h1>
-		<div id="div_condition">
+		<h1 style="text-align: center;">今日满标企业详情</h1>
+		<!--div id="div_condition">
 		<label>满标时间:<input type="text" name="insertTime" id="insertTime" value="" maxlength="11">
 		<span>公司名称:</span> <input id="companyName" name="companyName" type="text" value="">
-		<input type="button" value="search" id="frm" onclick=""></label>&nbsp;&nbsp;
+		<!--input type="button" value="search" id="frm" onclick=""></label>&nbsp;&nbsp;
 		<!--label><input type="radio" id="" value="all" name="status" checked="checked">全部</label>&nbsp;&nbsp;
 		<label><input type="radio" value="0" name="status">待充值</label>&nbsp;&nbsp;
 		<label><input type="radio" value="1" name="status">充值成功</label>&nbsp;&nbsp;
@@ -107,6 +107,8 @@ function ireportDo(){
 			<option value="0">易宝</option>
 			<option value="1">连连</option>
 		</select> -->
+		<input type="button" value="导出报表" onclick="exportExcel()">
+
 		</div>
 
 		<table style="width:100%;margin-top: 20px;text-align: center;" border="1px;">
@@ -126,60 +128,48 @@ function ireportDo(){
 				<td>实际投资金额(元)</td>
 				
 			</tr>
-			<c:if test="${not empty czRecordList}">
-			<c:forEach items="${czRecordList}" var="list" varStatus="i">
+			<c:if test="${not empty companyList}">
+			<c:forEach items="${companyList}" var="list">
 				<tr>
-					<td width="5%" rowspan="4">${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
-					<td width="6%" rowspan="4">
+					<td width="5%" >${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
+					<td width="6%" >
 					${list.companyName}
 					</td>
-					<td width="3%" rowspan="4">${list.legalPerson}</td>
-					<td width="3%" rowspan="4">${list.browLimit}</td>
-					<td width="3%" rowspan="4">${list.type}</td>
-					<td width="3%" rowspan="4">${list.childBidNumber}</td>
-					
-					
-					   <!-- 四行一列  tr 行 td 列-->
-					  <c:forEach items="${list.innerMessage}" var="innerList" varStatus="j">
-					  
-					     
-					        <td>${innerList.number}</td>
-					   
-					    
-					     
-					    
-					      <td>
-					         <fmt:formatDate value="${innerList.expiringDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-					      </td>
-					    
-					      
-					      
-					      
-					       <td>
-					          <fmt:formatDate value="${innerList.fullTagDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-					       </td>
-					     
-					       
-					       
-					       
-					       
-					  </c:forEach>
-				
-				
-					<td width="10%" rowspan="4"><fmt:formatDate value="${list.companyDueTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-					<td width="10%" rowspan="4"><fmt:formatDate value="${list.backMoneyTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-				
-				
-                      <c:forEach items="${list.innerMessage}" var="innerList" varStatus="p">
-                       
-                          <td>
-                             ${innerList.virtualInvest}
-                          </td>
-                         
+					<td width="3%" >${list.legalPerson}</td>
+					<td width="3%" >${list.browLimit}</td>
+					<td width="3%" >${list.type}</td>
+					<td width="3%" >${list.childBidNumber}</td>
+					<!-- 四行一列  tr 行 td 列-->
+					<td colspan="3">
+					  <table style="width:100%;" border="1px;">
+					  <c:forEach items="${list.innerMessage}" var="innerList">
+					       <tr>
+					          <td width="33.3%">${innerList.number}</td>
+                              <td width="33.3%">
+                                 <fmt:formatDate value="${innerList.expiringDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                              </td>
+                               <td width="33.3%">
+                                  <fmt:formatDate value="${innerList.fullTagDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                               </td>
+                           </tr>
                       </c:forEach>
-                      
-                   
-                    <td width="10%" rowspan="4">${list.realInvest}</td>
+                      </table>
+                    </td>
+				    <td width="10%" ><fmt:formatDate value="${list.companyDueTime}" pattern="yyyy-MM-dd"/></td>
+					<td width="10%" ><fmt:formatDate value="${list.backMoneyTime}" pattern="yyyy-MM-dd"/></td>
+					<td>
+					 <table style="width:100%;" border="1px;">
+                      <c:forEach items="${list.innerMessage}" var="innerList" varStatus="p">
+                     
+                      <tr>
+                          <td>
+                             ${innerList.virtualInvest}&nbsp;
+                          </td>
+                          </tr>
+                      </c:forEach>
+                       </table>
+                      </td>
+                    <td width="10%" >${list.realInvest}</td>
 				</tr>
 			</c:forEach>
 			</c:if>

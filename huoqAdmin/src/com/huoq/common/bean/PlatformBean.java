@@ -2,13 +2,14 @@ package com.huoq.common.bean;
 
 import com.huoq.admin.product.bean.InvestorsBean;
 import com.huoq.common.dao.MyWalletDAO;
+import com.huoq.common.util.ArrayUtils;
 import com.huoq.common.util.DateUtils;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.Platform;
 import com.huoq.product.bean.ProductBean;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
-
+import com.huoq.admin.product.bean.VirtualInsRecordBean;
 import javax.annotation.Resource;
 
 import java.math.BigDecimal;
@@ -28,19 +29,25 @@ import java.util.Set;
 @Service
 public class PlatformBean {
 
-    private static Logger log = Logger.getLogger(PlatformBean.class);
+    private static Logger        log = Logger.getLogger(PlatformBean.class);
     @Resource
-    private MyWalletDAO   dao;
+    private MyWalletDAO          dao;
     /**
      * 注入产品表service
      */
     @Resource
-    private ProductBean   productService;
+    private ProductBean          productService;
     /**
      * 注入投资表service
      */
     @Resource
-    private InvestorsBean investorsService;
+    private InvestorsBean        investorsService;
+
+    /**
+     * 注入虚拟投资记录表Service
+     */
+    @Resource
+    private VirtualInsRecordBean virtualService;
 
     /**
      * 获取平台融资情况;
@@ -142,13 +149,13 @@ public class PlatformBean {
      */
     public Integer updateTodayFullScaleCompanyNumber() {
         StringBuffer sql = new StringBuffer();
-
-        sql.append("SELECT inv.product_id,sum(in_money) total FROM investors inv join product pro ").append(" on pro.id=inv.product_id where inv.investor_status='1' ").append(" and inv.insert_time>=? and inv.insert_time<=? ").append(" group by inv.product_id");
+        sql.append(" SELECT pro.id,pro.real_name,sum(pro.all_copies) raiseMoney,sum(inv.in_money)/100 invMoney ").append(" FROM product pro ").append(" JOIN investors inv ON inv.product_id = pro.id ").append(" AND inv.investor_status ='1' ").append(" AND inv.insert_time >=? AND  inv.insert_time <=? ").append(" group by id,real_name");
         Object[] param = new Object[2];
         Date begin = new Date(DateUtils.getStartTime());
         Date end = new Date(DateUtils.getEndTime());
         param[0] = begin;
         param[1] = end;
+
         List list = investorsService.getInvestorsBySqlSecond(sql.toString(), param);
         if (list != null && list.size() > 0) {
             // 存储公司id
@@ -156,18 +163,61 @@ public class PlatformBean {
             for (Object obj : list) {
                 if (obj instanceof Object[]) {
                     Object[] array = (Object[]) obj;
-                    BigDecimal total = new BigDecimal(array[1].toString());
-                    double dtotal = total.doubleValue();
-                    dtotal = dtotal / 100 / 10000;
-                    if (dtotal > 90) {
-                        String id = (String) array[0];// id
-                        productId.add(id);
-                    }
-
+                    String id = (String) array[0];// id
+                    productId.add(id);
                 }
             }
+            sql.delete(0, sql.length());
+
+            sql.append(" select product_id,sum(pay_in_mony)/100 virtualMoney from virtual_ins_record ").append(" where  insert_time >=?  AND   insert_time <=? ").append(" and product_id in(:ids) group by product_id ");
             int size = productId.size();
-            return size;
+            List<String> productIds = ArrayUtils.converArrayToList(productId.toArray(new String[size]));
+            List virualList = virtualService.getBySql(sql.toString(), param, "ids", productIds);
+            if (virualList != null && virualList.size() > 0) {
+                int sizeOne = list.size();
+                for (int i = 0; i < sizeOne; i++) {
+                    Object obj = list.get(i);
+                    if (obj instanceof Object[]) {
+                        Object[] array = (Object[]) obj;
+                        // 产品id
+                        String id = (String) array[0];
+                        // 募集总金额
+                        BigDecimal total = new BigDecimal(array[2].toString());
+                        double dtotal = total.doubleValue();
+                        // 循环虚拟机投资集合
+                        for (Object vobj : virualList) {
+                            if (vobj instanceof Object[]) {
+                                Object[] varray = (Object[]) vobj;
+                                String productIdV = (String) varray[0];
+                                if (productIdV.equals(id)) {
+                                    double virtualMoney = (Double) varray[1];
+                                    dtotal = dtotal - virtualMoney;
+                                }
+                            }
+                        }
+                        // 循环完成
+                        array[2] = dtotal;
+                        obj = array;
+                        list.set(i, obj);
+                    }
+                }
+            }
+            productId.clear();
+            for (Object obj : list) {
+                if (obj instanceof Object[]) {
+                    Object[] array = (Object[]) obj;
+                    // 产品id
+                    String id = (String) array[0];
+                    // 募集总金额
+                    double dtotal = (Double) array[2];
+                    //实际总投资金额
+                    double inv = (Double) array[3];
+                    if (inv > dtotal * 0.9) {
+                        productId.add(id);
+                    }
+                }
+            }
+            return productId.size();
         }
         return 0;
     }
