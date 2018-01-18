@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1226,21 +1227,25 @@ public class RechargeAction extends BaseAction {
         response.setHeader("Content-disposition", "attachment;filename=" + fileName);
         ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
         LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-        fieldMap.put("序号", "");
-        fieldMap.put("借款公司", "");
-        fieldMap.put("借款额度(元)", "");
-        fieldMap.put("标的类型", "");
-        fieldMap.put("子标数目", "");
-        fieldMap.put("标的编号", "");
-        fieldMap.put("满标时间", "");
-        fieldMap.put("到期时间", "");
-        fieldMap.put("企业到期时间", "");
-        fieldMap.put("企业回款时间", "");
-        fieldMap.put("虚拟投资金额(元)", "");
-        fieldMap.put("实际投资金额(元)", "");
+        fieldMap.put("序号", "no");
+        fieldMap.put("借款公司", "companyName");
+        fieldMap.put("借款额度(元)", "browLimit");
+        fieldMap.put("标的类型", "type");
+        fieldMap.put("子标数目", "childBidNumber");
+        
+        fieldMap.put("标的编号", "realInvest");
+        fieldMap.put("满标时间", "realInvest");
+        fieldMap.put("到期时间", "realInvest");
+        
+        fieldMap.put("企业到期时间", "companyDueTime");
+        fieldMap.put("企业回款时间", "backMoneyTime");
+        fieldMap.put("虚拟投资金额(元)", "realInvest");
+        fieldMap.put("实际投资金额(元)", "realInvest");
         List<FullScaleCompanyMessage> companyList = companyList();
         if (companyList != null) {
-            ExcelUtil.exportExcelNew(outputStream, "满标企业详情表", fieldMap, companyList, null);
+            Map<String,String> dataStyle = new HashMap<String,String>(1);
+            dataStyle.put(ExcelUtil.DATE_STYLE,"yyyy-MM-dd");
+            ExcelUtil.exportExcelNew(outputStream, "满标企业详情表", fieldMap, companyList, dataStyle);
         }
 
     }
