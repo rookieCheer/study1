@@ -49,7 +49,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -238,6 +237,7 @@ public class ExcelUtil<T> {
                 }
                 String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                 try {
+                    @SuppressWarnings("rawtypes")
                     Class tCls = t.getClass();
                     @SuppressWarnings("unchecked")
                     Method getMethod = tCls.getMethod(getMethodName, new Class[] {});
@@ -1151,7 +1151,6 @@ public class ExcelUtil<T> {
         }
 
         // 工作薄
-        @SuppressWarnings("resource")
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         // 表格
@@ -1272,6 +1271,7 @@ public class ExcelUtil<T> {
      * @throws IllegalArgumentException 通过Class构造该类对象时可能抛出非法参数异常
      * @return HSSFWorkbook excel工作表对象 String[] headers, String[] include,
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T> HSSFWorkbook exportExcel(String title, LinkedHashMap<String, String> fieldMap, List<T> dataset, Map<String, String> dataStyle,
                                                Map<String, String> checkParams) throws NullPointerException, NoSuchMethodException, IllegalAccessException,
                                                                                 IllegalArgumentException {
@@ -1403,8 +1403,9 @@ public class ExcelUtil<T> {
                 }
                 String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                 try {
+
                     Class tCls = t.getClass();
-                    @SuppressWarnings("unchecked")
+
                     Method getMethod = tCls.getMethod(getMethodName, new Class[] {});
                     Object value = null;
                     try {
