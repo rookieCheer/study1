@@ -26,6 +26,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.huoq.common.util.DateUtils;
 import com.huoq.orm.FullScaleCompanyMessage;
+import com.huoq.orm.InnerCompanyMessage;
 import com.alibaba.fastjson.JSON;
 
 import java.io.File;
@@ -48,7 +49,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -237,6 +237,7 @@ public class ExcelUtil<T> {
                 }
                 String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                 try {
+                    @SuppressWarnings("rawtypes")
                     Class tCls = t.getClass();
                     @SuppressWarnings("unchecked")
                     Method getMethod = tCls.getMethod(getMethodName, new Class[] {});
@@ -337,7 +338,6 @@ public class ExcelUtil<T> {
                                            Map<String, String> dataStyle) throws NullPointerException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException {
 
         // 工作薄
-        @SuppressWarnings("resource")
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         // 表格
@@ -389,43 +389,89 @@ public class ExcelUtil<T> {
 
         Iterator<FullScaleCompanyMessage> it = data.iterator();
         int index = 0;
+        HSSFCellStyle style1 = workbook.createCellStyle();
+        // 设置这些样式
+
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直
         while (it.hasNext()) {
             index++;
             // 创建一行
             row = sheet.createRow(index);
+
             // 获取单个数据
             FullScaleCompanyMessage message = it.next();
+            int childBidNumber = message.getChildBidNumber();
+            List<InnerCompanyMessage> innerList = message.getInnerMessage();
+            if (innerList != null) {
+                int j = 5;
+                int k = index * childBidNumber - 1;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                for (InnerCompanyMessage innerMessage : innerList) {
+                    HSSFRow innerRow = sheet.createRow(k);
+                    k++;
+                    HSSFCell cell6 = innerRow.createCell(j); //
+
+                    cell6.setCellValue(innerMessage.getNumber());
+                    HSSFCell cell7 = innerRow.createCell(j + 1); //
+
+                    Date fullTagTime = (Date) innerMessage.getFullTagDate();
+                    cell7.setCellValue(sdf.format(fullTagTime));
+
+                    HSSFCell cell8 = innerRow.createCell(j + 2); //
+                    Date expirTime = (Date) innerMessage.getExpiringDate();
+                    cell8.setCellValue(sdf.format(expirTime));
+
+                    HSSFCell cell11 = innerRow.createCell(j + 5); //
+                    Double virtualInvest = (Double) innerMessage.getVirtualInvest().doubleValue();
+                    cell11.setCellValue(virtualInvest);
+
+                }
+            }
+
             HSSFCell cell = row.createCell(0); // 序号
+
             HSSFRichTextString no = new HSSFRichTextString(message.getNo());
             cell.setCellValue(no);
 
+            // 四个参数分别是：起始行，结束行，开始列，结束列
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 0, 0));
+            cell.setCellStyle(style1);
             HSSFCell cell2 = row.createCell(1); // 借款公司名称
+
             HSSFRichTextString name = new HSSFRichTextString(message.getCompanyName());
             cell2.setCellValue(name);
-
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 1, 1));
+            cell2.setCellStyle(style1);
             HSSFCell cell3 = row.createCell(2); // 借款额度
+            cell3.setCellStyle(style1);
             double browLimit = message.getBrowLimit().doubleValue();
             cell3.setCellValue(browLimit);
-
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 2, 2));
             HSSFCell cell4 = row.createCell(3); // 标的类型
+            cell4.setCellStyle(style1);
             HSSFRichTextString type = new HSSFRichTextString(message.getType());
             cell4.setCellValue(type);
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 3, 3));
             HSSFCell cell5 = row.createCell(4); // 创建第5个单元格
-            int childBidNumber = message.getChildBidNumber();
+
             cell5.setCellValue(childBidNumber);
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 4, 4));
 
             //
-            // HSSFCell cell9 = row.createCell(8); // 企业到期时间
-            // // HSSFRichTextString richString4 = new HSSFRichTextString(message.getChildBidNumber());
-            // Date date = (Date) message.getCompanyDueTime();
-            //
-            // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            // cell5.setCellValue(sdf.format(date));
-            // HSSFCell cell10 = row.createCell(9); // 企业回款时间
-            // Date dueTime = (Date) message.getBackMoneyTime();
-            // cell5.setCellValue(sdf.format(dueTime));
-            // HSSFCell cell12 = row.createCell(11); // 实际投资总额
-            // cell3.setCellValue(message.getRealInvest().doubleValue());
+            HSSFCell cell9 = row.createCell(8); // 企业到期时间
+            Date date = (Date) message.getCompanyDueTime();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            cell9.setCellValue(sdf.format(date));
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 8, 8));
+            HSSFCell cell10 = row.createCell(9); // 企业回款时间
+            Date dueTime = (Date) message.getBackMoneyTime();
+            cell10.setCellValue(sdf.format(dueTime));
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 9, 9));
+            HSSFCell cell12 = row.createCell(11); // 实际投资总额
+            cell12.setCellValue(message.getRealInvest().doubleValue());
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 11, 11));
 
         }
 
@@ -1105,7 +1151,6 @@ public class ExcelUtil<T> {
         }
 
         // 工作薄
-        @SuppressWarnings("resource")
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         // 表格
@@ -1226,6 +1271,7 @@ public class ExcelUtil<T> {
      * @throws IllegalArgumentException 通过Class构造该类对象时可能抛出非法参数异常
      * @return HSSFWorkbook excel工作表对象 String[] headers, String[] include,
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T> HSSFWorkbook exportExcel(String title, LinkedHashMap<String, String> fieldMap, List<T> dataset, Map<String, String> dataStyle,
                                                Map<String, String> checkParams) throws NullPointerException, NoSuchMethodException, IllegalAccessException,
                                                                                 IllegalArgumentException {
@@ -1357,8 +1403,9 @@ public class ExcelUtil<T> {
                 }
                 String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                 try {
+
                     Class tCls = t.getClass();
-                    @SuppressWarnings("unchecked")
+
                     Method getMethod = tCls.getMethod(getMethodName, new Class[] {});
                     Object value = null;
                     try {
