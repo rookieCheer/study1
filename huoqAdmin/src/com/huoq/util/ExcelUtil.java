@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.huoq.common.util.DateUtils;
 import com.huoq.orm.FullScaleCompanyMessage;
@@ -392,8 +393,8 @@ public class ExcelUtil<T> {
         HSSFCellStyle style1 = workbook.createCellStyle();
         // 设置这些样式
 
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直
+        style1.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        style1.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直
         while (it.hasNext()) {
             index++;
             // 创建一行
@@ -413,19 +414,20 @@ public class ExcelUtil<T> {
                     HSSFCell cell6 = innerRow.createCell(j); //
 
                     cell6.setCellValue(innerMessage.getNumber());
+                    cell6.setCellStyle(style1);
                     HSSFCell cell7 = innerRow.createCell(j + 1); //
 
                     Date fullTagTime = (Date) innerMessage.getFullTagDate();
                     cell7.setCellValue(sdf.format(fullTagTime));
-
+                    cell7.setCellStyle(style1);
                     HSSFCell cell8 = innerRow.createCell(j + 2); //
                     Date expirTime = (Date) innerMessage.getExpiringDate();
                     cell8.setCellValue(sdf.format(expirTime));
-
+                    cell8.setCellStyle(style1);
                     HSSFCell cell11 = innerRow.createCell(j + 5); //
                     Double virtualInvest = (Double) innerMessage.getVirtualInvest().doubleValue();
                     cell11.setCellValue(virtualInvest);
-
+                    cell11.setCellStyle(style1);
                 }
             }
 
@@ -456,6 +458,7 @@ public class ExcelUtil<T> {
             HSSFCell cell5 = row.createCell(4); // 创建第5个单元格
 
             cell5.setCellValue(childBidNumber);
+            cell5.setCellStyle(style1);
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 4, 4));
 
             //
@@ -464,14 +467,18 @@ public class ExcelUtil<T> {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             cell9.setCellValue(sdf.format(date));
+
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 8, 8));
+            cell9.setCellStyle(style1);
             HSSFCell cell10 = row.createCell(9); // 企业回款时间
             Date dueTime = (Date) message.getBackMoneyTime();
             cell10.setCellValue(sdf.format(dueTime));
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 9, 9));
+            cell10.setCellStyle(style1);
             HSSFCell cell12 = row.createCell(11); // 实际投资总额
             cell12.setCellValue(message.getRealInvest().doubleValue());
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 11, 11));
+            cell12.setCellStyle(style1);
 
         }
 

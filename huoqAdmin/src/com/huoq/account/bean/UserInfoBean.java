@@ -901,7 +901,7 @@ public class UserInfoBean {
             for (int i = 0; i < bankList.size(); i++) {
                 buffer.append("SELECT ");
                 buffer.append("'" + bankList.get(i).getBankName() + "' ,");
-                buffer.append("(SELECT COUNT(*) FROM  account a WHERE a.status=0 AND a.bank_name='"
+                buffer.append("(SELECT COUNT(*) FROM  account a WHERE a.status=1 AND a.bank_name='"
                         + bankList.get(i).getBankName() + "'), ");
                 buffer.append(
                         "(SELECT SUM(money) FROM  cz_record cz LEFT JOIN account a ON cz.account_id=a.id WHERE cz.status=1 AND cz.order_id IS NOT NULL AND a.bank_name='"
