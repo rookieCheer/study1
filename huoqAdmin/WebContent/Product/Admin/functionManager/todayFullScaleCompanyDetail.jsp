@@ -144,11 +144,11 @@ function ireportDo(){
 					  <table style="width:100%;" border="1px;">
 					  <c:forEach items="${list.innerMessage}" var="innerList">
 					       <tr>
-					          <td>${innerList.number}</td>
-                              <td>
+					          <td width="33.3%">${innerList.number}</td>
+                              <td width="33.3%">
                                  <fmt:formatDate value="${innerList.expiringDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
                               </td>
-                               <td>
+                               <td width="33.3%">
                                   <fmt:formatDate value="${innerList.fullTagDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
                                </td>
                            </tr>
