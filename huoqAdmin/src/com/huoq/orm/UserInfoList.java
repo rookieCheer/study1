@@ -22,7 +22,9 @@ public class UserInfoList {
 	private String isBindBank;
 	private String registChannel;
 	private String coinPurseFundsRecordMoney;//零钱罐金额
-
+    private String Title;
+	private Date payTime;// 支付时间
+	private String inMoney1;
 
 	private String category;//持卡人好友
 
@@ -147,5 +149,29 @@ public class UserInfoList {
 	}
 	public void setCoinPurseFundsRecordMoney(String coinPurseFundsRecordMoney) {
 		this.coinPurseFundsRecordMoney = coinPurseFundsRecordMoney;
+	}
+
+	public String getTitle() {
+		return Title;
+	}
+
+	public void setTitle(String title) {
+		Title = title;
+	}
+
+	public Date getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Date payTime) {
+		this.payTime = payTime;
+	}
+
+	public String getInMoney1() {
+		return inMoney1;
+	}
+
+	public void setInMoney1(String inMoney1) {
+		this.inMoney1 = inMoney1;
 	}
 }
