@@ -100,7 +100,25 @@
 
 		
 		<script type="text/javascript">
-	
+	     function exportExcel(){
+	        var form = $("<form>");
+        form.attr('target', 'iframe');
+        form.attr('method', 'post');
+        form.attr('action', 'recharge!exportExcelCompanyList.action');
+        //var input1 = $('<input>');
+        //input1.attr('type', 'hidden');
+        //input1.attr('name', 'path');
+        //input1.attr('value', path);
+        var iframe = $("<iframe>")
+        iframe.attr('id', 'iframe');
+        iframe.attr('name', 'iframe');
+        iframe.attr('src', 'about:blank');
+        iframe.attr('style', 'display:none;');
+        $('body').append(iframe);
+        $('body').append(form);
+        //form.append(input1);
+        form.submit();
+	     }
 	
 </script>
 </body>

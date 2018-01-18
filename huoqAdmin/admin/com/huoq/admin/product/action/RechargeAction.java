@@ -1217,8 +1217,8 @@ public class RechargeAction extends BaseAction {
      * @param response
      * @throws Exception
      */
-    @RequestMapping("/exportExcel")
-    public void exportExcelCompanyList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    //@RequestMapping("/exportExcel")
+    public void exportExcelCompanyList() throws Exception {
         // response.setContentType("text/html; charset=utf-8");
 
         String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
