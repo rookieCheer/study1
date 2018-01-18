@@ -135,6 +135,7 @@
             <input type="submit" value="查询">
         </form>
         <div id="fixtop" class="fixtop"></div>
+        <div style="position: relative;">
         <table id="tHead" class="ct-table" border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
             <thead>
             <tr>
@@ -184,9 +185,10 @@
                         <input type="hidden" id="qdtjTime"  name="qdtjlist[${i.index}].insertTime">
                     </tr>
                 </c:forEach>
-                <input type="submit" value="提交">
+                <input type="submit" value="提交" style="position: absolute;top: -43px;right: 10%;display: inline-block;width: 80px;height: 30px;cursor: pointer;">
             </form>
         </table>
+        </div>
         <c:choose>
             <c:when test="${list ne '[]' &&  list ne '' && list ne null}">
                 <jsp:include page="/Product/page.jsp"/>
@@ -227,15 +229,33 @@
             .css('border', '1px solid #ccc')
     })
     function sub(){
+        var myDate = new Date();
+        var date = formatDate(myDate);
         var insetTime = $("#insertTime").val();
         $("#qdtjTime").val(insetTime);
         if(insetTime == null || insetTime==''){
             alert("请选择时间");
             return false;
         }
-        alert('确定要提交吗');
+        if(date < insetTime){
+            alert("选择的时间不能超过昨天");
+            return false;
+        }
+        if(!confirm('确定要提交吗')){
+            return false;
+        }
         return true;
     }
+    //获取当前日期
+    var formatDate=function (date) {
+        date=new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? '0' + m : m;
+        var d = date.getDate()-1;
+        d = d < 10 ? ('0' + d) : d;
+        return m + '/' + d + '/' + y;
+    };
 </script>
 </body>
 </html>
