@@ -863,16 +863,25 @@ public class UserStatAction extends BaseAction {
 			cell = row.createCell(13);
 			cell.setCellValue("是否绑定银行卡");
 			cell.setCellStyle(style);
-			cell = row.createCell(14);
+            cell = row.createCell(14);
+            cell.setCellValue("首投日期");
+            cell.setCellStyle(style);
+            cell = row.createCell(15);
+            cell.setCellValue("首投产品");
+            cell.setCellStyle(style);
+            cell = row.createCell(16);
+            cell.setCellValue("首投金额");
+            cell.setCellStyle(style);
+            cell = row.createCell(17);
 			cell.setCellValue("投资总额");
 			cell.setCellStyle(style);
-			cell = row.createCell(15);
+			cell = row.createCell(18);
 			cell.setCellValue("零钱罐金额");
 			cell.setCellStyle(style);
-			cell = row.createCell(16);
+			cell = row.createCell(19);
 			cell.setCellValue("VIP等级");
 			cell.setCellStyle(style);
-            cell = row.createCell(17);
+            cell = row.createCell(20);
             cell.setCellValue("渠道号");
             cell.setCellStyle(style);
 			UserInfoList userInfo = null;
@@ -899,10 +908,13 @@ public class UserStatAction extends BaseAction {
 				row.createCell(11).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getAcinsertTime())?QwyUtil.fmyyyyMMddHHmmss.format(userInfo.getAcinsertTime()):"");
 				row.createCell(12).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getRegistPlatform())?userInfo.getRegistPlatform():"");
 				row.createCell(13).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getIsBindBank())?userInfo.getIsBindBank().equals("1") ?"是":"否":"");
-				row.createCell(14).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getInMoney())?userInfo.getInMoney():"");
-				row.createCell(15).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getCoinPurseFundsRecordMoney())?userInfo.getCoinPurseFundsRecordMoney():"");
-                row.createCell(16).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getLevel())?userInfo.getLevel():"");
-                row.createCell(17).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getRegistChannel())?userInfo.getRegistChannel():"");
+                row.createCell(14).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getPayTime())?QwyUtil.fmyyyyMMddHHmmss.format(userInfo.getPayTime()):"");
+                row.createCell(15).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getTitle())?userInfo.getTitle():"");
+                row.createCell(16).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getInMoney1())?userInfo.getInMoney1():"");
+				row.createCell(17).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getInMoney())?userInfo.getInMoney():"");
+				row.createCell(18).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getCoinPurseFundsRecordMoney())?userInfo.getCoinPurseFundsRecordMoney():"");
+                row.createCell(19).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getLevel())?userInfo.getLevel():"");
+                row.createCell(20).setCellValue(!QwyUtil.isNullAndEmpty(userInfo.getRegistChannel())?userInfo.getRegistChannel():"");
 
             }
 			
