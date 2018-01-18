@@ -271,7 +271,7 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateTradingVolume(String insertTime) {
-       /* try {
+        try {
             List<Object> list = new ArrayList<Object>();
             list.add(insertTime);
             list.add(insertTime);
@@ -285,7 +285,7 @@ public class UpdateDailyStatementThreadBean {
             return tradingVolume;
         } catch (Exception e) {
             log.error("操作异常: ", e);
-        }*/
+        }
         return null;
     }
 
@@ -747,6 +747,24 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateMultipleRate(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT FORMAT((a.xzftyh/b.ftrs),2) FROM " +
+                    " (SELECT SUM(q.xzftyh) xzftyh FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a," +
+                    " (SELECT SUM(q.ftrs) ftrs FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )b");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double addReInvestmentMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                addReInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return addReInvestmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
+
         return null;
     }
     /**
@@ -755,6 +773,7 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateOccupationRatio(String insertTime) {
+
         return null;
     }
 
@@ -778,7 +797,9 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("");
+            sql.append("SELECT FORMAT((b.ftje/a.ftrs),2) FROM " +
+                    " (SELECT SUM(q.ftrs) ftrs FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a," +
+                    " ( SELECT SUM(q.ftje) ftje FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )b");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double addReInvestmentMoney = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -788,7 +809,6 @@ public class UpdateDailyStatementThreadBean {
         } catch (Exception e) {
             log.error(e);
         }
-
         return null;
     }
 

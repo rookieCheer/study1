@@ -99,7 +99,7 @@ public class MyServletContextListener implements ServletContextListener {
 
 				//自动保存运营日报表数据
 				UpdateDailyStatementThread updateDailyStatementThread=(UpdateDailyStatementThread) context.getBean("UpdateDailyStatementThread");
-				scheduler.scheduleAtFixedRate(updateDailyStatementThread, getFixedTime("00:16:00"),oneDay,TimeUnit.MILLISECONDS);
+				scheduler.scheduleAtFixedRate(updateDailyStatementThread, getFixedTime("00:21:00"),oneDay,TimeUnit.MILLISECONDS);
 
 				if (resb.getString("SMS.PUSH.SWITCH").equals("ON")){
 					SendNotifySendProfitThread sendNotifySendProfitThread = (SendNotifySendProfitThread) context.getBean("sendNotifySendProfitThread");
