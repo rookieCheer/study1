@@ -50,7 +50,7 @@
 			<c:if test="${not empty companyList}">
 			<c:forEach items="${companyList}" var="list">
 				<tr>
-					<td width="5%" >${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
+					<td width="5%" >${i.count +1+ (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
 					<td width="6%" >
 					${list.companyName}
 					</td>

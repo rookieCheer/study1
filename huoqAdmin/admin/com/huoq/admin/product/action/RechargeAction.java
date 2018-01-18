@@ -3,15 +3,22 @@ package com.huoq.admin.product.action;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.huoq.common.util.DESEncrypt;
 import com.huoq.common.util.DateUtils;
 
@@ -25,6 +32,8 @@ import org.apache.struts2.config.Namespace;
 import org.apache.struts2.config.ParentPackage;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.huoq.account.bean.MyAccountBean;
 import com.huoq.account.bean.UserRechargeBean;
 import com.huoq.admin.product.bean.InvestorsBean;
@@ -51,6 +60,7 @@ import com.huoq.orm.Users;
 import com.huoq.orm.UsersAdmin;
 import com.huoq.orm.WeekLeftMoney;
 import com.huoq.product.bean.ProductBean;
+import com.huoq.util.ExcelUtil;
 
 /**
  * 后台管理--充值
@@ -914,6 +924,120 @@ public class RechargeAction extends BaseAction {
         return null;
     }
 
+    private List<FullScaleCompanyMessage> companyList() {
+        StringBuffer sql = new StringBuffer("");
+        sql.append("SELECT t.id,t.real_name,t.title,t.raiseMoney,t.invMoney,t.virtualMoney,t.insert_time FROM ( ").append(" SELECT pro.id,pro.real_name,pro.title,sum(pro.all_copies) raiseMoney, sum(inv.in_money)/100 invMoney,sum(vir.pay_in_mony)/100 virtualMoney,inv.insert_time ").append(" FROM  product pro ").append(" JOIN investors inv ON inv.product_id = pro.id ").append(" AND inv.investor_status = '1' ").append(" AND inv.insert_time >= ? AND inv.insert_time <= ? ").append(" JOIN virtual_ins_record vir ON vir.product_id = pro.id ").append(" AND vir.insert_time >= ? AND vir.insert_time <= ? ").append(" GROUP BY id,real_name,title,insert_time ORDER BY inv.insert_time DESC ").append(") t WHERE t.invMoney > (t.raiseMoney - t.virtualMoney) * 0.9").append(" ORDER BY t.insert_time DESC");
+        String sql2 = sql.toString();
+        Object[] param = new Object[4];
+        Date begin = new Date(DateUtils.getStartTime());
+        Date end = new Date(DateUtils.getEndTime());
+        param[0] = begin;
+        param[1] = end;
+        param[2] = begin;
+        param[3] = end;
+        List list = investorsService.getInvestorsBySqlSecond(sql2, param);
+
+        if (list != null && list.size() > 0) {
+            int size = list.size();
+
+            // 存储所有公司id
+            Set<String> productIds = new HashSet<String>();
+            for (Object obj : list) {
+                if (obj instanceof Object[]) {
+                    Object[] element = (Object[]) obj;
+                    String productId = (String) element[0];
+                    productIds.add(productId);
+                }
+            }
+            // 将同一个公司的放入一个List
+            List<List<Object>> separteList = new ArrayList<List<Object>>();
+            Iterator<String> itProductIds = productIds.iterator();
+            Iterator<Object> listIt = list.iterator();
+            while (itProductIds.hasNext()) {
+                String id = itProductIds.next();
+                List<Object> innerList = new ArrayList<Object>();
+                while (listIt.hasNext()) {
+                    Object obj = listIt.next();
+                    if (obj instanceof Object[]) {
+                        Object[] element = (Object[]) obj;
+                        String productId = (String) element[0];
+                        if (productId.equals(id)) {
+                            innerList.add(obj);
+                            listIt.remove();
+                        }
+                    }
+                }
+                separteList.add(innerList);
+            }
+            int separteSize = separteList.size();
+            List<FullScaleCompanyMessage> companyList = new ArrayList<FullScaleCompanyMessage>(separteSize);
+
+            for (int i = 0; i < separteSize; i++) {// 每循环一次代表一个FullScaleCompanyMessage
+                List<Object> listOne = separteList.get(i);
+                FullScaleCompanyMessage message = new FullScaleCompanyMessage();
+                /**
+                 * 先取出第一个
+                 */
+                int childSize = listOne.size();
+                message.setChildBidNumber(childSize);// 子标个数
+                Object obj = listOne.get(0);
+                if (obj instanceof Object[]) {
+                    Object[] element = (Object[]) obj;
+                    String productId = (String) element[0];
+                    String name = (String) element[1];
+                    Date insert_time = (Date) element[6];
+                    message.setCompanyName(name);
+                    message.setId(productId);
+                    message.setCompanyDueTime(insert_time);
+                    Date backMoneyTime = DateUtils.getAddDay(insert_time, 1);
+                    message.setBackMoneyTime(backMoneyTime);// insert_time+1天
+                    message.setNo((i + 1) + "");
+                    String title = (String) element[2];
+                    int index = title.indexOf("N");
+                    if (index != -1) {
+                        title = title.substring(0, index);
+                    }
+                    message.setType(title);
+                }
+                List<InnerCompanyMessage> innerMessage = new ArrayList<InnerCompanyMessage>(childSize);
+                Double totalRaiseMoney = 0.0;// 总借款额度（元）
+                Double totalInvMoney = 0.0;// 总实际投资额度(元)
+                for (Object objone : listOne) {
+                    InnerCompanyMessage innermessage = new InnerCompanyMessage();
+                    if (objone instanceof Object[]) {
+                        Object[] innerEle = (Object[]) objone;
+                        String title = (String) innerEle[2];
+                        int index = title.indexOf(".");
+                        if (index != -1) {
+                            title = title.substring(index + 1);
+                        }
+                        innermessage.setNumber(title);
+                        Double virtualInvest = (Double) innerEle[5];
+                        innermessage.setVirtualInvest(new BigDecimal(virtualInvest.toString()));
+                        Double invMoney = (Double) innerEle[4];
+                        totalInvMoney = totalInvMoney + invMoney;
+                        BigDecimal raiseMoneyBig = new BigDecimal(innerEle[3].toString());
+                        Double raiseMoney = raiseMoneyBig.doubleValue();
+                        totalRaiseMoney = totalRaiseMoney + raiseMoney;
+                        Date fullTagDate = (Date) innerEle[6];
+                        innermessage.setFullTagDate(fullTagDate);
+                        Date expirTime = DateUtils.getAddDay(fullTagDate, 1);
+                        innermessage.setExpiringDate(expirTime);
+                    }
+                    innerMessage.add(innermessage);
+                }
+                message.setBrowLimit(new BigDecimal(totalRaiseMoney.toString()));
+                message.setRealInvest(new BigDecimal(totalInvMoney.toString()));
+                message.setInnerMessage(innerMessage);
+                companyList.add(message);
+            }
+            return companyList;
+            // getRequest().setAttribute("companyList", companyList);
+
+        }
+        return null;
+    }
+
     /**
      * 今日满标企业详情
      * 
@@ -939,112 +1063,8 @@ public class RechargeAction extends BaseAction {
                     return "err";
                 }
             }
-            StringBuffer sql = new StringBuffer("");
-            sql.append("SELECT t.id,t.real_name,t.title,t.raiseMoney,t.invMoney,t.virtualMoney,t.insert_time FROM ( ").append(" SELECT pro.id,pro.real_name,pro.title,sum(pro.all_copies) raiseMoney, sum(inv.in_money)/100 invMoney,sum(vir.pay_in_mony)/100 virtualMoney,inv.insert_time ").append(" FROM  product pro ").append(" JOIN investors inv ON inv.product_id = pro.id ").append(" AND inv.investor_status = '1' ").append(" AND inv.insert_time >= ? AND inv.insert_time <= ? ").append(" JOIN virtual_ins_record vir ON vir.product_id = pro.id ").append(" AND vir.insert_time >= ? AND vir.insert_time <= ? ").append(" GROUP BY id,real_name,title,insert_time ORDER BY inv.insert_time DESC ").append(") t WHERE t.invMoney > (t.raiseMoney - t.virtualMoney) * 0.9").append(" ORDER BY t.insert_time DESC");
-            String sql2 = sql.toString();
-            Object[] param = new Object[4];
-            Date begin = new Date(DateUtils.getStartTime());
-            Date end = new Date(DateUtils.getEndTime());
-            param[0] = begin;
-            param[1] = end;
-            param[2] = begin;
-            param[3] = end;
-            List list = investorsService.getInvestorsBySqlSecond(sql2, param);
-
-            if (list != null && list.size() > 0) {
-                int size = list.size();
-
-                // 存储所有公司id
-                Set<String> productIds = new HashSet<String>();
-                for (Object obj : list) {
-                    if (obj instanceof Object[]) {
-                        Object[] element = (Object[]) obj;
-                        String productId = (String) element[0];
-                        productIds.add(productId);
-                    }
-                }
-                // 将同一个公司的放入一个List
-                List<List<Object>> separteList = new ArrayList<List<Object>>();
-                Iterator<String> itProductIds = productIds.iterator();
-                Iterator<Object> listIt = list.iterator();
-                while (itProductIds.hasNext()) {
-                    String id = itProductIds.next();
-                    List<Object> innerList = new ArrayList<Object>();
-                    while (listIt.hasNext()) {
-                        Object obj = listIt.next();
-                        if (obj instanceof Object[]) {
-                            Object[] element = (Object[]) obj;
-                            String productId = (String) element[0];
-                            if (productId.equals(id)) {
-                                innerList.add(obj);
-                                listIt.remove();
-                            }
-                        }
-                    }
-                    separteList.add(innerList);
-                }
-                int separteSize = separteList.size();
-                List<FullScaleCompanyMessage> companyList = new ArrayList<FullScaleCompanyMessage>(separteSize);
-                for (List<Object> listOne : separteList) {// 每循环一次代表一个FullScaleCompanyMessage
-                    FullScaleCompanyMessage message = new FullScaleCompanyMessage();
-                    /**
-                     * 先取出第一个
-                     */
-                    int childSize = listOne.size();
-                    message.setChildBidNumber(childSize);// 子标个数
-                    Object obj = listOne.get(0);
-                    if (obj instanceof Object[]) {
-                        Object[] element = (Object[]) obj;
-                        String productId = (String) element[0];
-                        String name = (String) element[1];
-                        Date insert_time = (Date) element[6];
-                        message.setCompanyName(name);
-                        message.setId(productId);
-                        message.setCompanyDueTime(insert_time);
-                        Date backMoneyTime = DateUtils.getAddDay(insert_time, 1);
-                        message.setBackMoneyTime(backMoneyTime);// insert_time+1天
-                        String title = (String) element[2];
-                        int index = title.indexOf("N");
-                        if (index != -1) {
-                            title = title.substring(0,index);
-                        }
-                        message.setType(title);
-                    }
-                    List<InnerCompanyMessage> innerMessage = new ArrayList<InnerCompanyMessage>(childSize);
-                    Double totalRaiseMoney = 0.0;// 总借款额度（元）
-                    Double totalInvMoney = 0.0;// 总实际投资额度(元)
-                    for (Object objone : listOne) {
-                        InnerCompanyMessage innermessage = new InnerCompanyMessage();
-                        if (objone instanceof Object[]) {
-                            Object[] innerEle = (Object[]) objone;
-                            String title = (String) innerEle[2];
-                            int index = title.indexOf(".");
-                            if (index != -1) {
-                                title = title.substring(index + 1);
-                            }
-                            innermessage.setNumber(title);
-                            Double virtualInvest=(Double)innerEle[5];
-                            innermessage.setVirtualInvest(new BigDecimal(virtualInvest.toString()));
-                            Double invMoney =(Double)innerEle[4];
-                           totalInvMoney = totalInvMoney+invMoney;
-                           BigDecimal raiseMoneyBig = new BigDecimal(innerEle[3].toString());
-                           Double raiseMoney = raiseMoneyBig.doubleValue();
-                           totalRaiseMoney = totalRaiseMoney + raiseMoney;
-                           Date fullTagDate = (Date) innerEle[6];
-                           innermessage.setFullTagDate(fullTagDate);
-                           Date expirTime = DateUtils.getAddDay(fullTagDate, 1);
-                           innermessage.setExpiringDate(expirTime);
-                        }
-                        innerMessage.add(innermessage);
-                    }
-                    message.setBrowLimit(new BigDecimal(totalRaiseMoney.toString()));
-                    message.setRealInvest(new BigDecimal(totalInvMoney.toString()));
-                    message.setInnerMessage(innerMessage);
-                    companyList.add(message);
-                }
-               getRequest().setAttribute("companyList", companyList);
-            }
-
+            List<FullScaleCompanyMessage> companyList = companyList();
+            getRequest().setAttribute("companyList", companyList);
             return "todayFullScaleUserDetail";
         } catch (Exception e) {
             log.error("操作异常: ", e);
@@ -1185,6 +1205,44 @@ public class RechargeAction extends BaseAction {
             log.error("操作异常: ", e);
         }
         return null;
+    }
+
+    /**
+     * 企业详情导出
+     * 
+     * @author：zhuhaojie
+     * @time：2018年1月18日 上午11:54:47
+     * @version
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping("/exportExcel")
+    public void exportExcelCompanyList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // response.setContentType("text/html; charset=utf-8");
+
+        String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+        response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+        ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+        LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+        fieldMap.put("序号", "");
+        fieldMap.put("借款公司", "");
+        fieldMap.put("借款额度(元)", "");
+        fieldMap.put("标的类型", "");
+        fieldMap.put("子标数目", "");
+        fieldMap.put("标的编号", "");
+        fieldMap.put("满标时间", "");
+        fieldMap.put("到期时间", "");
+        fieldMap.put("企业到期时间", "");
+        fieldMap.put("企业回款时间", "");
+        fieldMap.put("虚拟投资金额(元)", "");
+        fieldMap.put("实际投资金额(元)", "");
+        List<FullScaleCompanyMessage> companyList = companyList();
+        if (companyList != null) {
+            ExcelUtil.exportExcelNew(outputStream, "满标企业详情表", fieldMap, companyList, null);
+        }
+
     }
 
     public String getUsername() {

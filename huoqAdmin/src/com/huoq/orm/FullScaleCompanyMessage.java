@@ -30,6 +30,11 @@ public class FullScaleCompanyMessage implements Serializable{
      * 主键
      */
     private String id;
+    
+    /**
+     * 编号 
+     */
+    private String no;
     /**
      * 借款公司名称
      */
@@ -78,6 +83,17 @@ public class FullScaleCompanyMessage implements Serializable{
     private BigDecimal realInvest;
   
     
+    
+    
+    
+    
+    public String getNo() {
+        return no;
+    }
+    
+    public void setNo(String no) {
+        this.no = no;
+    }
     public String getId() {
         return id;
     }
@@ -133,6 +149,7 @@ public class FullScaleCompanyMessage implements Serializable{
     public void setBackMoneyTime(Date backMoneyTime) {
         this.backMoneyTime = backMoneyTime;
     }
+   
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -145,78 +162,59 @@ public class FullScaleCompanyMessage implements Serializable{
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((innerMessage == null) ? 0 : innerMessage.hashCode());
         result = prime * result + ((legalPerson == null) ? 0 : legalPerson.hashCode());
+        result = prime * result + ((no == null) ? 0 : no.hashCode());
         result = prime * result + ((realInvest == null) ? 0 : realInvest.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         FullScaleCompanyMessage other = (FullScaleCompanyMessage) obj;
         if (backMoneyTime == null) {
-            if (other.backMoneyTime != null)
-                return false;
-        } else if (!backMoneyTime.equals(other.backMoneyTime))
-            return false;
+            if (other.backMoneyTime != null) return false;
+        } else if (!backMoneyTime.equals(other.backMoneyTime)) return false;
         if (browLimit == null) {
-            if (other.browLimit != null)
-                return false;
-        } else if (!browLimit.equals(other.browLimit))
-            return false;
+            if (other.browLimit != null) return false;
+        } else if (!browLimit.equals(other.browLimit)) return false;
         if (childBidNumber == null) {
-            if (other.childBidNumber != null)
-                return false;
-        } else if (!childBidNumber.equals(other.childBidNumber))
-            return false;
+            if (other.childBidNumber != null) return false;
+        } else if (!childBidNumber.equals(other.childBidNumber)) return false;
         if (companyDueTime == null) {
-            if (other.companyDueTime != null)
-                return false;
-        } else if (!companyDueTime.equals(other.companyDueTime))
-            return false;
+            if (other.companyDueTime != null) return false;
+        } else if (!companyDueTime.equals(other.companyDueTime)) return false;
         if (companyName == null) {
-            if (other.companyName != null)
-                return false;
-        } else if (!companyName.equals(other.companyName))
-            return false;
+            if (other.companyName != null) return false;
+        } else if (!companyName.equals(other.companyName)) return false;
         if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
         if (innerMessage == null) {
-            if (other.innerMessage != null)
-                return false;
-        } else if (!innerMessage.equals(other.innerMessage))
-            return false;
+            if (other.innerMessage != null) return false;
+        } else if (!innerMessage.equals(other.innerMessage)) return false;
         if (legalPerson == null) {
-            if (other.legalPerson != null)
-                return false;
-        } else if (!legalPerson.equals(other.legalPerson))
-            return false;
+            if (other.legalPerson != null) return false;
+        } else if (!legalPerson.equals(other.legalPerson)) return false;
+        if (no == null) {
+            if (other.no != null) return false;
+        } else if (!no.equals(other.no)) return false;
         if (realInvest == null) {
-            if (other.realInvest != null)
-                return false;
-        } else if (!realInvest.equals(other.realInvest))
-            return false;
+            if (other.realInvest != null) return false;
+        } else if (!realInvest.equals(other.realInvest)) return false;
         if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
-            return false;
+            if (other.type != null) return false;
+        } else if (!type.equals(other.type)) return false;
         return true;
     }
     @Override
     public String toString() {
-        return "FullScaleCompanyMessage [id=" + id + ", companyName=" + companyName + ", legalPerson=" + legalPerson
-                + ", browLimit=" + browLimit + ", type=" + type + ", companyDueTime=" + companyDueTime
-                + ", backMoneyTime=" + backMoneyTime + ", childBidNumber=" + childBidNumber + ", innerMessage="
-                + innerMessage + ", realInvest=" + realInvest + "]";
+        return "FullScaleCompanyMessage [id=" + id + ", no=" + no + ", companyName=" + companyName + ", legalPerson=" + legalPerson + ", browLimit=" + browLimit + ", type=" + type
+               + ", companyDueTime=" + companyDueTime + ", backMoneyTime=" + backMoneyTime + ", childBidNumber=" + childBidNumber + ", innerMessage=" + innerMessage
+               + ", realInvest=" + realInvest + "]";
     }
+    
    
     
     
