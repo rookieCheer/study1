@@ -1648,6 +1648,24 @@ public class ActivityBean {
         //零钱罐金额
         if (QwyUtil.isNullAndEmpty(cr.getLqgje()))
             cr.setLqgje("0");
+        //渠道金额
+        if (QwyUtil.isNullAndEmpty(cr.getChannelCost()))
+            cr.setChannelCost("0");
+        //激活成本
+        if (QwyUtil.isNullAndEmpty(cr.getActivityCost()))
+            cr.setActivityCost("0");
+        //注册成本
+        if (QwyUtil.isNullAndEmpty(cr.getRegisterCost()))
+            cr.setRegisterCost("0");
+        //首投成本
+        if (QwyUtil.isNullAndEmpty(cr.getFristBuyCost()))
+            cr.setFristBuyCost("0");
+        //首投ROI
+        if (QwyUtil.isNullAndEmpty(cr.getFristBuyROI()))
+            cr.setFristBuyROI("0");
+        //购买ROI
+        if (QwyUtil.isNullAndEmpty(cr.getBuyROI()))
+            cr.setBuyROI("0");
         if (!QwyUtil.isNullAndEmpty(qdtjs)) {
             for (Qdtj qdtj : qdtjs) {
                 if (!QwyUtil.isNullAndEmpty(qdtj))
@@ -1684,6 +1702,18 @@ public class ActivityBean {
                 cr.setRjftje(QwyUtil.calcNumber(qdtj.getRjftje(), cr.getRjftje(), "+") + "");
                 //人均投资金额
                 cr.setRjtzje(QwyUtil.calcNumber(qdtj.getRjtzje(), cr.getRjtzje(), "+") + "");
+                //渠道金额
+                cr.setChannelCost(QwyUtil.calcNumber(qdtj.getChannelCost(), cr.getChannelCost(), "+") + "");
+                //激活成本
+                cr.setActivityCost(QwyUtil.calcNumber(qdtj.getActivityCost(), cr.getActivityCost(), "+") + "");
+                //注册成本
+                cr.setRegisterCost(QwyUtil.calcNumber(qdtj.getRegisterCost(), cr.getRegisterCost(), "+") + "");
+                //首投成本
+                cr.setFristBuyCost(QwyUtil.calcNumber(qdtj.getFristBuyCost(), cr.getFristBuyCost(), "+") + "");
+                //首投ROI
+                cr.setFristBuyROI(QwyUtil.calcNumber(qdtj.getFristBuyROI(), cr.getFristBuyROI(), "+") + "");
+                //投资ROI
+                cr.setBuyROI(QwyUtil.calcNumber(qdtj.getBuyROI(), cr.getBuyROI(), "+") + "");
             }
 
             //渠道转化率(%)
@@ -2011,7 +2041,8 @@ public class ActivityBean {
         sb.append("SELECT qd.channel,qd.channelName,qd.channelCode,");
         sb.append("SUM(qd.activityCount), SUM(qd.regCount),SUM(qd.bindCount),SUM(qd.tzrs),SUM(qd.strs),SUM(qd.stje),");
         sb.append("SUM(qd.ftrs), SUM(qd.ftje),SUM(qd.tzje),SUM(qd.czcount),SUM(qd.czje),SUM(qd.xzftyh),SUM(qd.xhftyhtzze), ");
-        sb.append("SUM(qd.rzstzhl),SUM(qd.rjstje),SUM(qd.xzftl),SUM(qd.rjftje),SUM(qd.rjtzje),SUM(qd.zcjhzhl),SUM(qd.lqgje),SUM(qd.lqgrs) ");
+        sb.append("SUM(qd.rzstzhl),SUM(qd.rjstje),SUM(qd.xzftl),SUM(qd.rjftje),SUM(qd.rjtzje),SUM(qd.zcjhzhl),SUM(qd.lqgje),SUM(qd.lqgrs), ");
+        sb.append("SUM(qd.channel_cost),SUM(qd.activity_cost),SUM(qd.register_cost),SUM(qd.frist_buy_cost),SUM(qd.frist_buy_ROI),SUM(qd.buy_ROI) ");
         sb.append(" FROM qdtj qd  WHERE 1 = 1 ");
         //查询时间范围;
         if (!QwyUtil.isNullAndEmpty(sDate)) {
@@ -2091,6 +2122,12 @@ public class ActivityBean {
                     qdtj.setZcjhzhl(QwyUtil.calcNumber(zcrzzhlStrNew, 100, "*").toString());//注册认证转率
                     qdtj.setLqgje(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[22]))) * 0.01));//零钱罐金额
                     qdtj.setLqgrs(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[23])))));//零钱罐人数
+                    qdtj.setChannelCost(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[24])))));//渠道费用
+                    qdtj.setActivityCost(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[25])))));//激活成本
+                    qdtj.setRegisterCost(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[26])))));//注册成本
+                    qdtj.setFristBuyCost(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[27])))));//首投成本
+                    qdtj.setFristBuyROI(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[28])))));//首投ROI
+                    qdtj.setBuyROI(isNullReturnZero(Double.parseDouble(isNullReturnZero((object[29])))));//投资ROI
                     qdtjLists.add(qdtj);
                 } catch (Exception e) {
                     log.error("操作异常: ", e);
@@ -2134,7 +2171,8 @@ public class ActivityBean {
         List<Object> param = new ArrayList<>();
         sql.append(" SELECT a.channel,a.channelName, a.channelCode,a.activityCount , a.regCount ,a.bindCount,a.qdzhl,");
         sql.append(" a.tzrs, a.strs,a.stje,a.ftrs,a.ftje,a.tzje,a.cftzl,a.czcount,a.czje,a.date, ");
-        sql.append(" a.xzftyh,a.xhftyhtzze,a.rzstzhl,a.rjstje,a.xzftl,a.rjftje,a.rjtzje,a.zcjhzhl,a.lqgje,a.lqgrs ");
+        sql.append(" a.xzftyh,a.xhftyhtzze,a.rzstzhl,a.rjstje,a.xzftl,a.rjftje,a.rjtzje,a.zcjhzhl,a.lqgje,a.lqgrs, ");
+        sql.append(" a.channel_cost,a.activity_cost,a.register_cost,a.frist_buy_cost,a.frist_buy_ROI,a.buy_ROI ");
         sql.append(" FROM qdtj a WHERE 1=1 ");
         if (!QwyUtil.isNullAndEmpty(channelCode)) {
             sql.append(" AND a.channelCode = ? ");
@@ -2204,6 +2242,12 @@ public class ActivityBean {
             qdtj.setZcjhzhl(!QwyUtil.isNullAndEmpty(list.get(i)[24]) ? list.get(i)[24].toString() : "");
             qdtj.setLqgje(isNullReturnZero(Double.parseDouble(isNullReturnZero((list.get(i)[25]))) * 0.01));
             qdtj.setLqgrs(!QwyUtil.isNullAndEmpty(list.get(i)[26]) ? list.get(i)[26].toString() : "0");
+            qdtj.setChannelCost(!QwyUtil.isNullAndEmpty(list.get(i)[27]) ? list.get(i)[27].toString() : "0");//渠道费用
+            qdtj.setActivityCost(!QwyUtil.isNullAndEmpty(list.get(i)[28]) ? list.get(i)[28].toString() : "0");//激活成本
+            qdtj.setRegisterCost(!QwyUtil.isNullAndEmpty(list.get(i)[29]) ? list.get(i)[29].toString() : "0");//注册成本
+            qdtj.setFristBuyCost(!QwyUtil.isNullAndEmpty(list.get(i)[30]) ? list.get(i)[30].toString() : "0");//首投成本
+            qdtj.setFristBuyROI(!QwyUtil.isNullAndEmpty(list.get(i)[31]) ? list.get(i)[31].toString() : "0");//首投ROI
+            qdtj.setBuyROI(!QwyUtil.isNullAndEmpty(list.get(i)[32]) ? list.get(i)[32].toString() : "0");//投资ROI
             results.add(qdtj);
         }
         return results;
@@ -2239,7 +2283,7 @@ public class ActivityBean {
             list.add(channelType);
         }
         if (!QwyUtil.isNullAndEmpty(channelName)) {
-            sb.append(" AND qd.channelName = like '%"+channelName+"%' ");
+            sb.append(" AND qd.channelName like '%"+channelName+"%' ");
         }
         sb.append("GROUP BY qd.channelCode ");
         sb.append(" ORDER BY qd.channel+0 ASC ");

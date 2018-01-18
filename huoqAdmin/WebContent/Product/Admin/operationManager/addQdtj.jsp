@@ -99,6 +99,11 @@
         .link {
             color: blue;
         }
+
+        input{
+            border: 1px solid #ccc;
+            padding: 2px 4px;
+        }
     </style>
 
 
@@ -133,24 +138,33 @@
         <table id="tHead" class="ct-table" border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
             <thead>
             <tr>
-                <td>序号</td>
-                <td>渠道名称</td>
-                <td>渠道费用</td>
+                <td style="width: 10%;">序号</td>
+                <td style="width: 20%;">渠道名称</td>
+                <td style="width: 30%;">渠道费用</td>
                 <td>时间</td>
                 <td>操作</td>
             </tr>
             </thead>
             <form id="frm1" action="${pageContext.request.contextPath}/Product/Admin/activity!updateQdtjData.action"
-            onsubmit="submit()">
+            onsubmit="return sub()">
                 <c:forEach items="${list}" var="item" varStatus="i">
                     <tr>
                         <td>${i.index+1}</td>
                         <td>${item[1]}</td>
                             <input type="hidden" name="qdtjlist[${i.index}].channelName" value="${item[1]}" >
-                        <td>
-                            <span class="channelVal"></span>
-                            <input type="text" value="${item[2]}" name="qdtjlist[${i.index}].channelCost" id="ChannelCost">
-                        </td>
+                        <c:choose>
+                            <c:when test="${item[2] == ''|| item[2] == null}">
+                                <td>
+                                    <input type="text" value="${item[2]}" name="qdtjlist[${i.index}].channelCost" id="ChannelCost" style="text-align: center;" class="cost">
+                                </td>
+                            </c:when>
+                            <c:otherwise>
+                                <td>
+                                    <input type="text" value="${item[2]}" name="qdtjlist[${i.index}].channelCost" id="ChannelCost1"
+                                           style="background-color:transparent;border:none; text-align: center;"readonly="true" class="cost">
+                                </td>
+                            </c:otherwise>
+                        </c:choose>
                         <c:choose>
                             <c:when test="${item[3] == '0'}">
                                 <td></td>
@@ -159,12 +173,15 @@
                                 <td><fmt:formatDate value="${item[3]}" pattern="yyyy-MM-dd" /></td>
                             </c:otherwise>
                         </c:choose>
-                        <td>
-                            <a href="javascript:update('${item[4]}');" class="link">修改费用</a>
-                        </td>
-                        <td>
-                            <input type="hidden" id="qdtjTime"  name="qdtjlist[${i.index}].insertTime">
-                        </td>
+                        <c:choose>
+                            <c:when test="${item[3] == '0'}">
+                                <td></td>
+                            </c:when>
+                            <c:otherwise>
+                                <td><a href="javascript:update('${item[4]}');" class="link">修改费用</a></td>
+                            </c:otherwise>
+                        </c:choose>
+                        <input type="hidden" id="qdtjTime"  name="qdtjlist[${i.index}].insertTime">
                     </tr>
                 </c:forEach>
                 <input type="submit" value="提交">
@@ -199,16 +216,24 @@
     //修改费用
     function update(qdtjId) {
         var id = $("#ChannelCost");
-        window.location.href = "${pageContext.request.contextPath}/Product/Admin/activity!updateChannelData.action?qdtjId=" + qdtjId;
+        <%--window.location.href = "${pageContext.request.contextPath}/Product/Admin/activity!updateChannelData.action?qdtjId=" + qdtjId;--%>
     };
 
-    function submit(){
+    $('.link').click(function () {
+        $(this).parents('tr')
+            .find('.cost')
+            .attr('readonly', false)
+            .css('background-color', 'white')
+            .css('border', '1px solid #ccc')
+    })
+    function sub(){
         var insetTime = $("#insertTime").val();
         $("#qdtjTime").val(insetTime);
-        if(insetTime = null || insetTime==''){
+        if(insetTime == null || insetTime==''){
             alert("请选择时间");
             return false;
         }
+        alert('确定要提交吗');
         return true;
     }
 </script>
