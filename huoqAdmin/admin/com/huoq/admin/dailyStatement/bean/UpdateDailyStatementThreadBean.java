@@ -493,7 +493,8 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT SUM(q.activityCount) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            sql.append(" SELECT COUNT(id) FROM activity a WHERE  a.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
+           // sql.append("SELECT SUM(q.activityCount) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Integer activationCount = 0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
