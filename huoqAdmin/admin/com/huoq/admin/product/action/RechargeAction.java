@@ -84,10 +84,8 @@ import com.huoq.util.ExcelUtil;
            // 今日满标企业详情
            @Result(name = "todayFullScaleUserDetail", value = "/Product/Admin/functionManager/todayFullScaleCompanyDetail.jsp"),
            // 未审核提现总额
-           @Result(name = "uncheckedUserDetail", value = "/Product/Admin/functionManager/uncheckedUserDetail.jsp"),
-           // 平台总交易额
-           @Result(name = "platformDealToalUserDetail", value = "/Product/Admin/functionManager/platformDealToalUserDetail.jsp"),
-
+           @Result(name = "uAuditiongOutCashTotalMoneyDetail", value = "/Product/Admin/functionManager/uAuditiongOutCashTotalMoneyDetail.jsp"),
+           
            @Result(name = "weekRemainMoney", value = "/Product/Admin/fundsManager/weekRemainMoney.jsp"),
            @Result(name = "czrecordCompany", value = "/Product/Admin/fundsManager/czRecordCompany.jsp") })
 public class RechargeAction extends BaseAction {
@@ -1074,7 +1072,7 @@ public class RechargeAction extends BaseAction {
         return null;
     }
 
-    // @Result(name = "uncheckedUserDetail", value = "/Product/Admin/functionManager/uncheckedUserDetail.jsp"),
+    
     /**
      * 未提现总额详情
      * 
@@ -1083,9 +1081,9 @@ public class RechargeAction extends BaseAction {
      * @version
      * @return String 详情页面路径
      */
-    public String uncheckedUserDetail() {
+    public String uAuditiongOutCashTotalMoneyDetail() {
 
-        return null;
+        return "uAuditiongOutCashTotalMoneyDetail";
     }
 
     /**

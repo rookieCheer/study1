@@ -289,17 +289,7 @@ public class PlatformBean {
         return null;
     }
 
-    /**
-     * 未审核提现总额列表
-     * 
-     * @author：zhuhaojie
-     * @time：2018年1月19日 上午9:53:16
-     * @version
-     * @return
-     */
-    public List uAuditiongOutCashMoneyDetail() {
-        return null;
-    }
+ 
 
     /**
      * 更新平台今日首投用户数

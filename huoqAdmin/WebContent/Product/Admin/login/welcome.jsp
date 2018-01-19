@@ -111,7 +111,7 @@ $(function(){
                             </li>
 							<li>
 								<p class="data-title">未审核提现总额(元)</p>
-                                <p class="data-value"><a href="${pageContext.request.contextPath}/Product/buyInfo/userBuy!productInfo.action?insertTime=" class="link"> <fmt:formatNumber value="${myPlatform.uncheckedOutCashMoney}" pattern="#,##0" /></a></p>
+                                <p class="data-value"><a href="${pageContext.request.contextPath}/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?insertTime=" class="link"> <fmt:formatNumber value="${myPlatform.uncheckedOutCashMoney}" pattern="#,##0" /></a></p>
 							</li>
 							
 						</ul>
