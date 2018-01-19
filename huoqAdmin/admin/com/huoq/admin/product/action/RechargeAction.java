@@ -54,11 +54,9 @@ import com.huoq.orm.CzRecordCompany;
 import com.huoq.orm.DateMoney;
 import com.huoq.bean.FullScaleCompanyMessage;
 import com.huoq.bean.InnerCompanyMessage;
-import com.huoq.orm.Product;
 import com.huoq.orm.RootTxRecord;
 import com.huoq.orm.TxRecord;
 import com.huoq.orm.UserCzTx;
-import com.huoq.orm.UserInfoList;
 import com.huoq.orm.Users;
 import com.huoq.orm.UsersAdmin;
 import com.huoq.orm.WeekLeftMoney;
@@ -87,7 +85,7 @@ import com.huoq.util.ExcelUtil;
            @Result(name = "todayFullScaleUserDetail", value = "/Product/Admin/functionManager/todayFullScaleCompanyDetail.jsp"),
            // 未审核提现总额详情
            @Result(name = "uAuditiongOutCashTotalMoneyDetail", value = "/Product/Admin/functionManager/uAuditiongOutCashTotalMoneyDetail.jsp"),
-           
+
            @Result(name = "weekRemainMoney", value = "/Product/Admin/fundsManager/weekRemainMoney.jsp"),
            @Result(name = "czrecordCompany", value = "/Product/Admin/fundsManager/czRecordCompany.jsp") })
 public class RechargeAction extends BaseAction {
@@ -105,7 +103,7 @@ public class RechargeAction extends BaseAction {
     @Resource
     YiBaoPayBean                 yiBaoPayBean;
     @Resource
-    private CheckTxsqBean checkTxsqBean;
+    private CheckTxsqBean        checkTxsqBean;
 
     /**
      * 注入产品表service
@@ -1076,7 +1074,6 @@ public class RechargeAction extends BaseAction {
         return null;
     }
 
-    
     /**
      * 未提现总额详情
      * 
@@ -1086,59 +1083,54 @@ public class RechargeAction extends BaseAction {
      * @return String 详情页面路径
      */
     public String uAuditiongOutCashTotalMoneyDetail() {
-         
-       
-            String json="";
-            try {
-                UsersAdmin users = (UsersAdmin)getRequest().getSession().getAttribute("usersAdmin");
-                if(QwyUtil.isNullAndEmpty(users)){
-                    json = QwyUtil.getJSONString("err", "管理员未登录");
-                    QwyUtil.printJSON(getResponse(), json);
-                    //管理员没有登录;
-                    return null;
-                }
-                String superName="0EA5D6BC23E8EEC78F62546B9F68BABFA96976B775889BA625DB6D764FD0DBD42A1C0F45F85B0DE8";
-                if(!superName.equals(users.getUsername())){
-                    if(isExistsQX("提现记录", users.getId())){
-                        getRequest().setAttribute("err", "您没有操作该功能的权限!");
-                        return "err";
-                    }
-                }
-                //待审核状态
-                status ="0";
-                //根据状态来加载提现的记录;
-                PageUtil<TxRecord> pageUtil = new PageUtil<TxRecord>();
-                pageUtil.setCurrentPage(currentPage);
-                pageUtil.setPageSize(pageSize);
-                StringBuffer url = new StringBuffer();
-                url.append(getRequest().getServletContext().getContextPath());
-                url.append("/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?status="+status);
 
-                if (!QwyUtil.isNullAndEmpty(name)) {
-                    url.append("&name=");
-                    url.append(name);
-                }
-                if (!QwyUtil.isNullAndEmpty(insertTime)) {
-                    url.append("&insertTime=");
-                    url.append(insertTime);
-                }
-                pageUtil.setPageUrl(url.toString());
-                pageUtil = checkTxsqBean.loadTxRecord(pageUtil, status,  name,insertTime);
-                if (!QwyUtil.isNullAndEmpty(pageUtil)) {
-                    getRequest().setAttribute("pageUtil", pageUtil);
-                    getRequest().setAttribute("name", name);
-                    getRequest().setAttribute("insertTime", insertTime);
-                    getRequest().setAttribute("txRecordList", pageUtil.getList());
-                }
-            } catch (Exception e) {
-                log.error("操作异常: ",e);
-                log.error("操作异常: ",e);
+        String json = "";
+        try {
+            UsersAdmin users = (UsersAdmin) getRequest().getSession().getAttribute("usersAdmin");
+            if (QwyUtil.isNullAndEmpty(users)) {
+                json = QwyUtil.getJSONString("err", "管理员未登录");
+                QwyUtil.printJSON(getResponse(), json);
+                // 管理员没有登录;
+                return null;
             }
-           
-        
-        
-        
-        
+            String superName = "0EA5D6BC23E8EEC78F62546B9F68BABFA96976B775889BA625DB6D764FD0DBD42A1C0F45F85B0DE8";
+            if (!superName.equals(users.getUsername())) {
+                if (isExistsQX("提现记录", users.getId())) {
+                    getRequest().setAttribute("err", "您没有操作该功能的权限!");
+                    return "err";
+                }
+            }
+            // 待审核状态
+            status = "0";
+            // 根据状态来加载提现的记录;
+            PageUtil<TxRecord> pageUtil = new PageUtil<TxRecord>();
+            pageUtil.setCurrentPage(currentPage);
+            pageUtil.setPageSize(pageSize);
+            StringBuffer url = new StringBuffer();
+            url.append(getRequest().getServletContext().getContextPath());
+            url.append("/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?status=" + status);
+
+            if (!QwyUtil.isNullAndEmpty(name)) {
+                url.append("&name=");
+                url.append(name);
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) {
+                url.append("&insertTime=");
+                url.append(insertTime);
+            }
+            pageUtil.setPageUrl(url.toString());
+            pageUtil = checkTxsqBean.loadTxRecord(pageUtil, status, name, insertTime);
+            if (!QwyUtil.isNullAndEmpty(pageUtil)) {
+                getRequest().setAttribute("pageUtil", pageUtil);
+                getRequest().setAttribute("name", name);
+                getRequest().setAttribute("insertTime", insertTime);
+                getRequest().setAttribute("txRecordList", pageUtil.getList());
+            }
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+            log.error("操作异常: ", e);
+        }
+
         return "uAuditiongOutCashTotalMoneyDetail";
     }
 
@@ -1272,7 +1264,7 @@ public class RechargeAction extends BaseAction {
      * @param response
      * @throws Exception
      */
-    //@RequestMapping("/exportExcel")
+    // @RequestMapping("/exportExcel")
     public void exportExcelCompanyList() throws Exception {
         // response.setContentType("text/html; charset=utf-8");
 
@@ -1295,15 +1287,58 @@ public class RechargeAction extends BaseAction {
         fieldMap.put("实际投资金额(元)", "realInvest");
         List<FullScaleCompanyMessage> companyList = companyList();
         if (companyList != null) {
-            Map<String,String> dataStyle = new HashMap<String,String>(1);
-            dataStyle.put("companyDueTime","yyyy-MM-dd");
-            dataStyle.put("backMoneyTime","yyyy-MM-dd");
-            dataStyle.put("innerMessage.fullTagDate","yyyy-MM-dd HH:mm:ss");
-            dataStyle.put("innerMessage.expiringDate","yyyy-MM-dd HH:mm:ss");
+            Map<String, String> dataStyle = new HashMap<String, String>(1);
+            dataStyle.put("companyDueTime", "yyyy-MM-dd");
+            dataStyle.put("backMoneyTime", "yyyy-MM-dd");
+            dataStyle.put("innerMessage.fullTagDate", "yyyy-MM-dd HH:mm:ss");
+            dataStyle.put("innerMessage.expiringDate", "yyyy-MM-dd HH:mm:ss");
             ExcelUtil.exportExcelSecond(outputStream, "满标企业详情表", fieldMap, companyList, dataStyle);
         }
 
     }
+    
+    /**
+     * 导出未审核提现总额详情列表
+    * @author：zhuhaojie  
+    * @time：2018年1月19日 下午4:33:19   
+    * @version    
+    * @throws Exception
+     */
+    public void exportExcelRecordList() throws Exception {
+        // response.setContentType("text/html; charset=utf-8");
+
+        String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+        response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+        ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+        LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+        fieldMap.put("序号", "no");
+        fieldMap.put("借款公司", "companyName");
+        fieldMap.put("借款额度(元)", "browLimit");
+        fieldMap.put("标的类型", "type");
+        fieldMap.put("子标数目", "childBidNumber");
+        fieldMap.put("标的编号", "innerMessage.number");
+        fieldMap.put("满标时间", "innerMessage.fullTagDate");
+        fieldMap.put("到期时间", "innerMessage.expiringDate");
+        fieldMap.put("企业到期时间", "companyDueTime");
+        fieldMap.put("企业回款时间", "backMoneyTime");
+        fieldMap.put("虚拟投资金额(元)", "innerMessage.virtualInvest");
+        fieldMap.put("实际投资金额(元)", "realInvest");
+        List<FullScaleCompanyMessage> companyList = companyList();
+        if (companyList != null) {
+            Map<String, String> dataStyle = new HashMap<String, String>(1);
+            dataStyle.put("companyDueTime", "yyyy-MM-dd");
+            dataStyle.put("backMoneyTime", "yyyy-MM-dd");
+            dataStyle.put("innerMessage.fullTagDate", "yyyy-MM-dd HH:mm:ss");
+            dataStyle.put("innerMessage.expiringDate", "yyyy-MM-dd HH:mm:ss");
+            ExcelUtil.exportExcelSecond(outputStream, "满标企业详情表", fieldMap, companyList, dataStyle);
+        }
+
+    }
+    
+    
+    
+    
 
     public String getUsername() {
         return username;
