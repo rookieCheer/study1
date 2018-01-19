@@ -46,9 +46,24 @@ public class TxRecord implements java.io.Serializable {
 	private String province; //省份
 	private String city; //城市
 	private String category;//持卡人好友
+    /**
+     * 编号
+     */
+	private String no;
+	
+	
 
+	
+    public String getNo() {
+        return no;
+    }
 
-	public String getProvince() {
+    
+    public void setNo(String no) {
+        this.no = no;
+    }
+
+    public String getProvince() {
 		return province;
 	}
 
