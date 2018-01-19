@@ -83,7 +83,7 @@ import com.huoq.util.ExcelUtil;
 
            // 今日满标企业详情
            @Result(name = "todayFullScaleUserDetail", value = "/Product/Admin/functionManager/todayFullScaleCompanyDetail.jsp"),
-           // 未审核提现总额
+           // 未审核提现总额详情
            @Result(name = "uAuditiongOutCashTotalMoneyDetail", value = "/Product/Admin/functionManager/uAuditiongOutCashTotalMoneyDetail.jsp"),
            
            @Result(name = "weekRemainMoney", value = "/Product/Admin/fundsManager/weekRemainMoney.jsp"),

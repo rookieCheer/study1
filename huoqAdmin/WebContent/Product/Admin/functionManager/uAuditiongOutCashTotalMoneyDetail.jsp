@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.css" type="text/css">
 <script type="text/javascript" src="${pageContext.request.contextPath}/Product/js/alert.js"></script>
 <script src="${pageContext.request.contextPath}/js/artDialog4.1.7/jquery.artDialog.js?skin=blue"></script>
-<title>充值记录</title>
+<title>未审核提现总额详情</title>
 <script type="text/javascript">
 	function queryCz(requestId,type,insertTime){
 		var url="";
@@ -91,7 +91,7 @@ function ireportDo(){
 <div class="center">			
 	<jsp:include page="/Product/Admin/common/head.jsp"/>
 	<div class="main" align="center">
-		<h1 style="text-align: center;">充值记录</h1>
+		<h1 style="text-align: center;">未审核提现总额记录</h1>
 		<div id="div_condition">
 		<label>用户名:<input type="text" name="name" id="name" value="${name}" maxlength="11">
 		<span>充值时间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
