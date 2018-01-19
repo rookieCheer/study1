@@ -49,6 +49,8 @@
 		<td>序号</td>
 		<td>用户名</td>
 		<td>姓名</td>
+		<td>渠道</td>
+		<td>是否首投</td>
 		<td>产品名称</td>
 		<td>投资<br>天数</td>
 		<td>理财<br>期限</td>
@@ -58,21 +60,24 @@
 		<td>投入本金</td>
 		<td>本金<br>收益</td>
 		<td>投资券</td>
+		<td>投资券来源</td>
 		<td>投资券<br>收益</td>
 		<td>红包<br>金额</td>
+		<td>红包<br>来源</td>
 		<td>最终年<br>化收益</td>
 		<td>到期总<br>收益</td>
 		<td>投资时间</td>
 		<td>起息时间</td>
 		<td>结算时间</td>
 		<td>项目到期时间</td>
-		<td>api版本号</td>
 		</tr>
 		<c:forEach items="${pageUtil.list}" var="item" varStatus="i">
 		<tr>
 		<td>${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
 		<td><a class="a" href="${pageContext.request.contextPath}/Product/Admin/userStat!loadUserInfo.action?username=${myel:jieMiUsername(item.users.username)}">${myel:jieMiUsername(item.users.username)}</a></td>
 		<td>${item.users.usersInfo.realName}</td> 
+		<td>${item.users.registChannel}</td>
+		<td></td>
 		<td>${item.product.title}</td>
 		<td>${item.tzts}</td>
 		<td>${item.product.lcqx}</td>
@@ -87,10 +92,16 @@
 			<fmt:formatNumber value="${item.coupon * 0.01}" pattern="#,##0.##"/>
 		</td>
 		<td>
+
+		</td>
+		<td>
 			<fmt:formatNumber value="${item.couponShouyi * 0.01}" pattern="#,##0.##"/>
 		</td>
 		<td>
 			<fmt:formatNumber value="${item.hongbao * 0.01}" pattern="#,##0.##"/>
+		</td>
+		<td>
+
 		</td>
 		<td>${item.annualEarnings}</td>
 		<td><fmt:formatNumber value="${item.expectEarnings * 0.01+item.couponShouyi*0.01}" pattern="#,##0.##"/></td>
@@ -98,7 +109,6 @@
 		<td>${item.startTime}</td>
 		<td>${item.clearTime}</td>
 		<td>${item.finishTime}</td>
-		<td>${item.apiVersion}</td>
 		</tr>
 		</c:forEach>
 		</table>

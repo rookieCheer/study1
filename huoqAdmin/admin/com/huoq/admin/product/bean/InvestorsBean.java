@@ -1,7 +1,9 @@
 package com.huoq.admin.product.bean;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -291,18 +293,38 @@ public class InvestorsBean {
         return pageUtil;
     }
 
-    private List<PlatInvestors> toMoney(List<Object[]> list) {
+    private List<PlatInvestors> toMoney(List<Object[]> list) throws ParseException {
         List<PlatInvestors> platInverstors = new ArrayList<PlatInvestors>();
         if (!QwyUtil.isNullAndEmpty(list)) {
             for (Object[] object : list) {
                 PlatInvestors plat = new PlatInvestors();
-                plat.setUsername(object[0] == null ? "" : object[0] + "");
-
-                plat.setCopies(!QwyUtil.isNullAndEmpty(object[1]) ? object[1] + "" : "0");
-                plat.setInsMoney(!QwyUtil.isNullAndEmpty(object[2]) ? object[2] + "" : "0");
-                plat.setCoupon(!QwyUtil.isNullAndEmpty(object[3]) ? object[3] + "" : "0");
-                plat.setDate(object[4] + "");
-                plat.setReal_name(!QwyUtil.isNullAndEmpty(object[5]) ? object[5] + "" : "");
+                plat.setId(object[0] == null ? null : Long.valueOf(object[0] + "")) ;//id
+                plat.setUsername(object[1] == null ? "" : object[1] + "");//用户名
+                plat.setReal_name(!QwyUtil.isNullAndEmpty(object[2]) ? object[2] + "" : "");//用户真实姓名
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+                Date insertTime = null;
+                Date bandCardTime = null;
+                Date fristBuyTime = null;
+                if(!QwyUtil.isNullAndEmpty(object[3])){
+                    insertTime = sd.parse(object[3] + "");
+                }
+                if(!QwyUtil.isNullAndEmpty(object[4])){
+                    bandCardTime = sd.parse(object[3] + "");
+                }
+                if(!QwyUtil.isNullAndEmpty(object[5])){
+                    fristBuyTime = sd.parse(object[5] + "");
+                }
+                plat.setInsertTime(!QwyUtil.isNullAndEmpty(insertTime) ? insertTime : null);//注册时间
+                plat.setBandCardTime(!QwyUtil.isNullAndEmpty(bandCardTime) ? bandCardTime : null);//绑卡时间
+                plat.setFristBuyTime(!QwyUtil.isNullAndEmpty(fristBuyTime) ? fristBuyTime : null);//首投时间
+                plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? object[6] + "" : "0");//投资总额
+                plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ? object[7] + "" : "0");//现存资金
+                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? object[8] + "" : "0");//在贷金额
+                plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? object[9] + "" : "0");//零钱罐金额
+                plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? object[10] + "" : "0");//账户余额
+                plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");//投资券金额
+                plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : "0");//邀请好友人数
+                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? object[13] + "" : "0");//邀请好友人数
                 platInverstors.add(plat);
             }
         }
@@ -314,19 +336,23 @@ public class InvestorsBean {
         try {
             ArrayList<Object> ob = new ArrayList<Object>();
             StringBuffer buff = new StringBuffer();
-
-            buff.append(
-                    "SELECT	u.username  as username ,	SUM(ins.copies)  as copies ,	SUM(ins.in_money)  as in_money ,");
-            buff.append(
-                    " SUM(ins.coupon)  as coupon ,ins.pay_time as pay_time , i.real_name AS real_name FROM	investors ins LEFT JOIN users u on ins.users_id = u.id ");
-            buff.append("  LEFT JOIN users_info i ON i.users_id = u.id ");
-
-            buff.append(" WHERE	investor_status IN ('1', '2', '3')");
-
+            buff.append("SELECT u.id,u.username  AS username, i.real_name AS real_name,IFNULL(u.insert_time,null) ,IFNULL(ac.insert_time,null),IFNULL(zc.insert_time,null),SUM(ins.copies)  AS copies ,");
+            buff.append("i.total_money,c.all_money,lqg.in_money,i.left_money,SUM(ins.coupon)  AS coupon ,inv.num,inv.money ");
+            buff.append("FROM investors ins ");
+            buff.append("LEFT JOIN users u ON ins.users_id = u.id  ");
+            buff.append("LEFT JOIN users_info i ON i.users_id = u.id  ");
+            buff.append("LEFT JOIN account ac ON ac.users_id = u.id ");
+            buff.append("LEFT JOIN (SELECT MIN(i.insert_time) insert_time,i.users_id ");
+            buff.append("FROM investors i  GROUP BY i.`users_id` )zc ON zc.users_id = u.id ");
+            buff.append("LEFT JOIN (SELECT i.users_id,SUM(i.in_money)/100 all_money ");
+            buff.append("FROM investors i WHERE investor_status IN('1','2')  GROUP BY i.`users_id` )c ON c.users_id = u.id ");
+            buff.append("LEFT JOIN (SELECT in_money,users_id FROM coin_purse cp )lqg ON lqg.users_id = u.id ");
+            buff.append("LEFT JOIN (SELECT COUNT(be_invited_id) num,invite_id,SUM(ui.total_money)/100 money FROM invite inv ");
+            buff.append("LEFT JOIN users_info ui ON ui.`users_id` = inv.be_invited_id ");
+            buff.append("GROUP BY invite_id)inv ON inv.invite_id = u.id ");
+            buff.append("WHERE investor_status IN ('1', '2', '3') ");
             if (!QwyUtil.isNullAndEmpty(name)) {
                 buff.append("AND u.username = ? ");
-                // hql.append(" AND ins.product.title like '%"+productTitle+"%'
-                // ");
                 ob.add(DESEncrypt.jiaMiUsername(name));
             }
             if (!QwyUtil.isNullAndEmpty(realname)) {
@@ -348,17 +374,14 @@ public class InvestorsBean {
                 }
 
             }
-            buff.append(" GROUP BY	ins.users_id");
-            buff.append(" ORDER BY in_money DESC ");
-
+            buff.append(" GROUP BY ins.users_id ");
+            buff.append(" ORDER BY in_money DESC");
             StringBuffer bufferCount = new StringBuffer();
             bufferCount.append(" SELECT COUNT(t.username)  ");
             bufferCount.append(" FROM (");
             bufferCount.append(buff);
             bufferCount.append(") t");
-            // buff.append("ORDER BY fr.insert_time DESC ");
             pageUtil = dao.getBySqlAndSqlCount(pageUtil, buff.toString(), bufferCount.toString(), ob.toArray());
-
             List<PlatInvestors> platUsers = toMoney(pageUtil.getList());
             pageUtil.setList(platUsers);
             return pageUtil;
@@ -565,9 +588,6 @@ public class InvestorsBean {
 
     /**
      * 平台渠道统计查询
-     * 
-     * @param channel
-     *            渠道号
      * @param st
      *            开始时间;
      * @param et

@@ -37,25 +37,40 @@
 		</div>
 		
 		<table style="margin-top: 20px;width: 80%;" >
-		<tr>
-		<td>序号</td>
-		<td>用户名</td>
-		<td>真实姓名</td>
-		<td>投资总额(元)</td>
-		<td>投资本金(元)</td>
-		<td>投资券金额(元)</td>
-	
+		<tr align="center">
+			<td>序号</td>
+			<td>用户id</td>
+			<td>用户名</td>
+			<td>真实姓名</td>
+			<td>注册日期</td>
+			<td>绑卡日期</td>
+			<td>首投日期</td>
+			<td>投资总额(元)</td>
+			<td>现存资金(元)</td>
+			<td>在贷金额(不含零钱罐)</td>
+			<td>零钱罐金额</td>
+			<td>账户余额</td>
+			<td>投资券金额(元)</td>
+			<td>邀请好友人数</td>
+			<td>好友总资金</td>
 		</tr>
 		<c:forEach items="${pageUtil.list}" var="item" varStatus="i">
-		<tr>
-		<td>${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
-		<td><a class="a"  target="_blank" href="${pageContext.request.contextPath}/Product/Admin/userStat!loadUserInfo.action?username=${myel:jieMiUsername(item.username)}">${myel:jieMiUsername(item.username)}</a></td> 
-		<td>${item.real_name}</td> 
-		
-	  
-	    <td>${item.copies}</td>
-	     <td><fmt:formatNumber value="${item.insMoney * 0.01}" pattern="#,##0.##"/></td>
-		<td><fmt:formatNumber value="${item.coupon * 0.01}" pattern="#,##0.##"/></td>
+		<tr align="center">
+			<td>${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
+			<td>${item.id}</td>
+			<td><a class="a"  target="_blank" href="${pageContext.request.contextPath}/Product/Admin/userStat!loadUserInfo.action?username=${myel:jieMiUsername(item.username)}">${myel:jieMiUsername(item.username)}</a></td>
+			<td>${item.real_name}</td>
+			<td><fmt:formatDate value="${item.insertTime}" pattern="yyyy-MM-dd"/></td>
+			<td><fmt:formatDate value="${item.bandCardTime}" pattern="yyyy-MM-dd"/></td>
+			<td><fmt:formatDate value="${item.fristBuyTime}" pattern="yyyy-MM-dd"/></td>
+			<td>${item.copies}</td>
+			<td><fmt:formatNumber value="${item.allMoney}" pattern="#,##0.##"/></td>
+			<td><fmt:formatNumber value="${item.buyInMoney}" pattern="#,##0.##"/></td>
+			<td><fmt:formatNumber value="${item.coinPurseMoney}" pattern="#,##0.##"/></td>
+			<td><fmt:formatNumber value="${item.leftMoney}" pattern="#,##0.##"/></td>
+			<td><fmt:formatNumber value="${item.coupon * 0.01}" pattern="#,##0.##"/></td>
+			<td>${item.friendMoney}</td>
+			<td>${item.insMoney}</td>
 		</tr>
 		</c:forEach>
 		</table>

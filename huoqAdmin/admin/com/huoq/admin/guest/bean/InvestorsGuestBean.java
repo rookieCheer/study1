@@ -30,8 +30,6 @@ public class InvestorsGuestBean {
 	 * 
 	 * @param pageUtil
 	 *            分页工具类
-	 * @param userame
-	 *            用户名
 	 * @param investorStatus
 	 *            投资状态
 	 * @param name

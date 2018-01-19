@@ -201,7 +201,7 @@
             <thead>
             <tr>
                 <td width="30px;">序号</td>
-                <td width="auto;">渠道编号</td>
+                <td width="30px;">渠道编号</td>
                 <td width="auto;">渠道名称</td>
                 <td width="auto;">点击量</td>
                 <td width="auto;">下载量</td>
@@ -210,24 +210,24 @@
                 <td width="auto;">激活成本</td>
                 <td width="65px;">激活注册转化率(%)</td>
                 <td width="45px;">总注册人数</td>
-                <td width="auto;">注册成本</td>
-                <td width="auto;">认证人数</td>
+                <td width="30px;">注册成本</td>
+                <td width="30px;">认证人数</td>
                 <td width="65px;">注册认证转化率(%)</td>
                 <td width="65px;">认证首投转化率(%)</td>
-                <td width="auto;">首投人数</td>
+                <td width="30px;">首投人数</td>
                 <td width="65px;">首投成本(元)</td>
                 <td width="65px;">首投总金额(元)</td>
                 <td width="65px;">人均首投总金额（元）</td>
                 <td width="auto;">首投ROI</td>
-                <td width="auto;">复投人数</td>
-                <td width="auto;">复投成本</td>
+                <td width="30px;">复投人数</td>
+                <td width="30px;">复投成本</td>
                 <td width="auto;">复投金额(元)</td>
                 <td width="auto;">人均复投金额(元)</td>
                 <td width="auto;">复投ROI</td>
-                <td width="auto;">新增复投用户数</td>
+                <td width="45px;">新增复投用户数</td>
                 <td width="auto;">新增复投用户投资总额(元)</td>
                 <td width="auto;">新增复投率</td>
-                <td width="auto;">投资人数</td>
+                <td width="30px;">投资人数</td>
                 <td width="auto;">投资金额(元)</td>
                 <td width="auto;">零钱罐金额(元)</td>
                 <td width="auto;">人均投资金额(元)</td>

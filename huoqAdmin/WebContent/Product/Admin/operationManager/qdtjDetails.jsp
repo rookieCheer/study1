@@ -209,7 +209,7 @@
                 <td width="50px;">激活成本（元）</td>
                 <td width="60px;">激活注册转化率(%)</td>
                 <td width="auto;">当日注册人数</td>
-                <td width="auto;">注册成本</td>
+                <td width="30px;">注册成本</td>
                 <td width="auto;">认证人数</td>
                 <td width="60px;">注册认证转化率(%)</td>
                 <td width="60px;">认证首投转化率(%)</td>
@@ -218,7 +218,7 @@
                 <td width="auto;">首投总金额(元)</td>
                 <td width="60px;">人均首投总金额(元)</td>
                 <td width="auto;">首投ROI</td>
-                <td width="auto;">复投人数</td>
+                <td width="30px;">复投人数</td>
                 <td width="auto;">复投成本(元)</td>
                 <td width="auto;">复投金额</td>
                 <td width="auto;">人均复投金额</td>
