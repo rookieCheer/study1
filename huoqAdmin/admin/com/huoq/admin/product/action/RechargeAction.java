@@ -1306,6 +1306,42 @@ public class RechargeAction extends BaseAction {
      */
     public void exportExcelRecordList() throws Exception {
         // response.setContentType("text/html; charset=utf-8");
+        
+        
+        
+        // 待审核状态
+        status = "0";
+        // 根据状态来加载提现的记录;
+        PageUtil<TxRecord> pageUtil = new PageUtil<TxRecord>();
+        pageUtil.setCurrentPage(currentPage);
+        pageUtil.setPageSize(1000000);
+        StringBuffer url = new StringBuffer();
+        url.append(getRequest().getServletContext().getContextPath());
+        url.append("/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?status=" + status);
+
+        if (!QwyUtil.isNullAndEmpty(name)) {
+            url.append("&name=");
+            url.append(name);
+        }
+        if (!QwyUtil.isNullAndEmpty(insertTime)) {
+            url.append("&insertTime=");
+            url.append(insertTime);
+        }
+        pageUtil.setPageUrl(url.toString());
+        pageUtil = checkTxsqBean.loadTxRecord(pageUtil, status, name, insertTime);
+        if(pageUtil!=null){
+            List<TxRecord>  list =pageUtil.getList();
+            if(list!=null){
+                int size = list.size();
+                deal(list);
+            }
+        }
+        
+        
+        
+        
+        
+        
 
         String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
         response.setContentType(ExcelUtil.EXCEL_STYLE2007);
@@ -1339,6 +1375,11 @@ public class RechargeAction extends BaseAction {
     
     
     
+
+    private void deal(List<TxRecord> list) {
+        // TODO Auto-generated method stub
+        
+    }
 
     public String getUsername() {
         return username;
