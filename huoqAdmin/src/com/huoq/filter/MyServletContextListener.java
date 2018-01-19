@@ -1,5 +1,6 @@
 package com.huoq.filter;
 
+import com.huoq.admin.dailyStatement.bean.UpdateDailyStatementThreadBean;
 import com.huoq.common.bean.BaoFuBean;
 import com.huoq.common.util.PropertiesUtil;
 import com.huoq.common.util.QwyUtil;
@@ -98,7 +99,7 @@ public class MyServletContextListener implements ServletContextListener {
 				scheduler.scheduleAtFixedRate(updateDataOverviewThread, getFixedTime("00:01:00"),oneDay,TimeUnit.MILLISECONDS);
 
 				//自动保存运营日报表数据
-				UpdateDailyStatementThread updateDailyStatementThread=(UpdateDailyStatementThread) context.getBean("UpdateDailyStatementThread");
+				UpdateDailyStatementThread updateDailyStatementThread=(UpdateDailyStatementThread) context.getBean("updateDailyStatementThread");
 				scheduler.scheduleAtFixedRate(updateDailyStatementThread, getFixedTime("00:21:00"),oneDay,TimeUnit.MILLISECONDS);
 
 				if (resb.getString("SMS.PUSH.SWITCH").equals("ON")){
