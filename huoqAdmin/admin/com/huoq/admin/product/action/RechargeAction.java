@@ -1296,19 +1296,18 @@ public class RechargeAction extends BaseAction {
         }
 
     }
-    
+
     /**
      * 导出未审核提现总额详情列表
-    * @author：zhuhaojie  
-    * @time：2018年1月19日 下午4:33:19   
-    * @version    
-    * @throws Exception
+     * 
+     * @author：zhuhaojie
+     * @time：2018年1月19日 下午4:33:19
+     * @version
+     * @throws Exception
      */
     public void exportExcelRecordList() throws Exception {
         // response.setContentType("text/html; charset=utf-8");
-        
-        
-        
+
         // 待审核状态
         status = "0";
         // 根据状态来加载提现的记录;
@@ -1329,83 +1328,71 @@ public class RechargeAction extends BaseAction {
         }
         pageUtil.setPageUrl(url.toString());
         pageUtil = checkTxsqBean.loadTxRecord(pageUtil, status, name, insertTime);
-        if(pageUtil!=null){
-            List<TxRecord>  list =pageUtil.getList();
-            if(list!=null){
-                int size = list.size();
+        if (pageUtil != null) {
+            List<TxRecord> list = pageUtil.getList();
+            if (list != null && list.size() > 0) {
                 deal(list);
+                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+                response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+                response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+                ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+                LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+                fieldMap.put("序号", "no");
+                fieldMap.put("用户名", "userName");
+                fieldMap.put("提现金额(元)", "money");
+                fieldMap.put("姓名", "realName");
+                fieldMap.put("所属省份", "province");
+                fieldMap.put("所属城市", "city");
+                fieldMap.put("持卡人好友", "category");
+                fieldMap.put("提现状态", "txzt");
+                fieldMap.put("备注", "note");
+                fieldMap.put("流水号", "recordNumber");
+                fieldMap.put("申请提现时间", "insertTime");
+                fieldMap.put("审核提现时间", "checkTime");
+                fieldMap.put("提现类型", "drawType");
+                fieldMap.put("平台订单号", "requestId");
+                fieldMap.put("交易流水号", "ybOrderId");
+                fieldMap.put("提现方式", "type");
+                Map<String, String> dataStyle = new HashMap<String, String>(2);
+                dataStyle.put("insertTime", "yyyy-MM-dd HH:mm:ss");
+                dataStyle.put("checkTime", "yyyy-MM-dd HH:mm:ss");
+                ExcelUtil.exportExcelNew(outputStream, "未审核提现记录详情表", fieldMap, list, dataStyle);
+
             }
         }
-        
-        
-        
-        
-        
-        
-
-        String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
-        response.setContentType(ExcelUtil.EXCEL_STYLE2007);
-        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-        ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
-        LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-        fieldMap.put("序号", "no");
-        fieldMap.put("借款公司", "companyName");
-        fieldMap.put("借款额度(元)", "browLimit");
-        fieldMap.put("标的类型", "type");
-        fieldMap.put("子标数目", "childBidNumber");
-        fieldMap.put("标的编号", "innerMessage.number");
-        fieldMap.put("满标时间", "innerMessage.fullTagDate");
-        fieldMap.put("到期时间", "innerMessage.expiringDate");
-        fieldMap.put("企业到期时间", "companyDueTime");
-        fieldMap.put("企业回款时间", "backMoneyTime");
-        fieldMap.put("虚拟投资金额(元)", "innerMessage.virtualInvest");
-        fieldMap.put("实际投资金额(元)", "realInvest");
-        List<FullScaleCompanyMessage> companyList = companyList();
-        if (companyList != null) {
-            Map<String, String> dataStyle = new HashMap<String, String>(1);
-            dataStyle.put("companyDueTime", "yyyy-MM-dd");
-            dataStyle.put("backMoneyTime", "yyyy-MM-dd");
-            dataStyle.put("innerMessage.fullTagDate", "yyyy-MM-dd HH:mm:ss");
-            dataStyle.put("innerMessage.expiringDate", "yyyy-MM-dd HH:mm:ss");
-            ExcelUtil.exportExcelSecond(outputStream, "满标企业详情表", fieldMap, companyList, dataStyle);
-        }
-
     }
-    
-    
-    
-    
 
     private void deal(List<TxRecord> list) {
-       if(list!=null && list.size()>0){
-           int size = list.size();
-           for(int i=0;i<size;i++){
-               TxRecord record = list.get(i);
-               Double money =record.getMoney();
-               if(money!=null){
-                   money = money.doubleValue()*0.01;
-                   record.setMoney(money);
-               }
-               String drawType=record.getDrawType();
-               if("0".equals(drawType)){
-                   drawType="T+0";
-               }else{
-                   drawType="T+1";
-               }
-               record.setDrawType(drawType);
-               String type=record.getType();
-               if("0".equals(type)){
-                   type="易宝提现";
-               }else if("1".equals(type)){
-                   type="支付宝提现";
-               }else{
-                   type="连连提现";
-               }
-               record.setType(type);
-               list.set(i, record);
-           }
-       }
-        
+        if (list != null && list.size() > 0) {
+            int size = list.size();
+            for (int i = 0; i < size; i++) {
+                TxRecord record = list.get(i);
+                record.setNo(i + "");
+                Double money = record.getMoney();
+                if (money != null) {
+                    money = money.doubleValue() * 0.01;
+                    record.setMoney(money);
+                }
+                String drawType = record.getDrawType();
+                if ("0".equals(drawType)) {
+                    drawType = "T+0";
+                } else {
+                    drawType = "T+1";
+                }
+                record.setDrawType(drawType);
+                String type = record.getType();
+                if ("0".equals(type)) {
+                    type = "易宝提现";
+                } else if ("1".equals(type)) {
+                    type = "支付宝提现";
+                } else {
+                    type = "连连提现";
+                }
+                record.setType(type);
+                list.set(i, record);
+            }
+        }
+
     }
 
     public String getUsername() {
