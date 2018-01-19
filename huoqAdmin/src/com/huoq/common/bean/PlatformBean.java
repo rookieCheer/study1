@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import com.huoq.admin.product.bean.VirtualInsRecordBean;
 import javax.annotation.Resource;
-
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -262,7 +261,16 @@ public class PlatformBean {
 
     /**
      * 未审核提现总额
-     * 
+     * 提现记录表中
+     * 操作状态为:未操作
+     * 且
+     * 提现状态为:
+     *  待审核,提现失败,正在审核
+     *  且
+     *  审核状态为:
+     *  未审核的
+     *  所有记录的money字段的和
+     *  转换成元的值
      * @author：zhuhaojie
      * @time：2018年1月16日 下午2:52:12
      * @version
@@ -543,7 +551,12 @@ public class PlatformBean {
     }
 
     /**
-     * 总购买金额
+     * 平台总交易额
+     * 
+     * 投资表中,已付款，结算中,已结算 的所有数据求和，转换成元 
+     * 和
+     * 零钱包中是转入状态的所有记录的和，转换成元
+     * 两者相加
      */
     public Double updateAllBuyMoney() {
         try {
