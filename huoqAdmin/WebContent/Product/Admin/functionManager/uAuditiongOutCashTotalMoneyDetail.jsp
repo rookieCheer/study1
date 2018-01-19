@@ -16,7 +16,7 @@
 <script
 	src="${pageContext.request.contextPath}/Product/Admin/js/jquery-1.9.1.min.js"></script>
 	
-	
+	<script src="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.standalone.js"></script>
 
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.css"
@@ -142,12 +142,9 @@
 			<h1 style="text-align: center;">未审核提现总额记录详情</h1>
 			<div id="div_condition" style="text-align: center;">
 				<label>用户名:<input type="text" name="name" id="name"
-					value="${name}" maxlength="11"> <span>提现时间:</span> <!--input
-					id="insertTime" name="insertTime" type="text" value="${insertTime}"-->
-					<input id="createST" name="createST" type="text"
-					class="form-control" placeholder="开始时间"> <label class="">--</label>
-					<input class="form-control inp-user" id="createET" name="createET"
-					placeholder="结束时间"> <input type="button" value="search"
+					value="${name}" maxlength="11"> <span>提现时间:</span> <input
+					id="insertTime" name="insertTime" type="text" value="${insertTime}">
+					 <input type="button" value="search"
 					id="frm" onclick="search()"></label>&nbsp;&nbsp; <input
 					type="button" value="导出报表" onclick="exportExcel()">
 				<c:if test="${usersAdmin.id!=11020}">
@@ -243,7 +240,9 @@
 	<script type="text/javascript">
 	
 		function search() {
-			//window.location.href="${pageContext.request.contextPath}/Product/Admin/checkTxsq!loadIndexTxsq.action?name="+$("#name").val()+"&status="+$('input[name="status"]:checked').val()+"&insertTime="+$('#insertTime').val();
+			window.location.href="${pageContext.request.contextPath}/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?name="+$("#name").val()+"&insertTime="+$('#insertTime').val();
+			
+			/**
 			var begin=$('#createST').val();
 			var end=$('#createET').val();
 			if(begin!="" && end==""){
@@ -253,21 +252,21 @@
 			 alert("请选择开始时间");
                return false;
 			}else if(begin!="" && end!=''){
-			  insertTime=begin+","+end;
+			  insertTime=begin+"-"+end;
 			}else{
 			  insertTime="";
 			}
 			debugger;
-			
+			*/
 			
 			 
-			window.location.href = "${pageContext.request.contextPath}/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?name=" + $("#name").val() + "&status=" + $('input[name="status"]:checked').val() + "&insertTime=" +insertTime ;
+			//window.location.href = "${pageContext.request.contextPath}/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?name=" + $("#name").val() + "&status=" + $('input[name="status"]:checked').val() + "&insertTime=" +insertTime ;
 		}
 	</script>
 	<script type="text/javascript">
-		var start = {
+		/*var start = {
             elem : '#createST',
-            format : 'DD/MM/YYY',
+            format : 'DD/MM/YYYY',
             istime : true,
             istoday : false,
             choose : function(datas) {
@@ -277,7 +276,7 @@
         };
         var end = {
             elem : '#createET',
-            format : 'DD/MM/YYY',
+            format : 'DD/MM/YYYY',
             istime : true,
             istoday : false,
             choose : function(datas) {
@@ -286,8 +285,19 @@
         };
         laydate(start);
         laydate(end);
-	
-	
+	*/
+	   var k4 = new Kalendae.Input("insertTime", {
+        attachTo:document.body,
+        months:2,//多少个月显示出来,即看到多少个日历
+        mode:'range'
+        /* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
+    });
+    //回车绑定
+    $("#name,#insertTime").keydown(function(event){
+        if(event.keyCode==13){
+            search();
+        }
+    });
 		//人工审核提现记录
 		function shenhe(txRecordId, status, txStatus, isCheck) {
 			if ("1" != isCheck) {
