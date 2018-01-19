@@ -134,7 +134,7 @@ $(function(){
 						     <li>
                                 <p class="data-title">平台总交易额(元)</p>
                                 <!--p class="data-value"><fmt:formatNumber value="${myPlatform.allCapitalStock}" pattern="#,##0" /></p-->
-                                <p class="data-value"><a href="${pageContext.request.contextPath}/Product/buyInfo/userBuy!productInfo.action?insertTime=" class="link"> <fmt:formatNumber value="${myPlatform.allBuyMoney}" pattern="#,##0" /></a></p>
+                                <p class="data-value"><fmt:formatNumber value="${myPlatform.allBuyMoney}" pattern="#,##0" /></p>
                                 
                                 <!--p class="data-value">0</p-->
                             </li>
