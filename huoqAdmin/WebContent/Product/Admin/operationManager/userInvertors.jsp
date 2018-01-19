@@ -30,7 +30,7 @@
 		<div id="div_condition" style="text-align: center;" >
 		<label>用户名:<input type="text" name="name" id="name" value="${name}" maxlength="11"  onkeypress="if(event.keyCode==13) {frm.click();}">
 		真实姓名:<input type="text" name="realname" id="realname" value="${realname}" maxlength="6"  onkeypress="if(event.keyCode==13) {frm.click();}">
-		<span>时间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}"  onkeypress="if(event.keyCode==13) {frm.click();}">
+		<span>注册时间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}"  onkeypress="if(event.keyCode==13) {frm.click();}">
 		<input type="button" value="search" id="frm" onclick="Byname()"></label>&nbsp;&nbsp;
 		<input type="button" value="导出报表" onclick="ireportDo()">
 		</div>

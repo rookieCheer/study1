@@ -361,14 +361,14 @@ public class InvestorsBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    buff.append(" AND ins.insert_time >= ? ");
+                    buff.append(" AND u.insert_time >= ? ");
                     ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buff.append(" AND ins.insert_time <= ? ");
+                    buff.append(" AND u.insert_time <= ? ");
                     ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
-                    buff.append(" AND ins.insert_time >= ? ");
+                    buff.append(" AND u.insert_time >= ? ");
                     ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buff.append(" AND ins.insert_time <= ? ");
+                    buff.append(" AND u.insert_time <= ? ");
                     ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
 

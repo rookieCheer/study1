@@ -152,7 +152,6 @@ public class UsersInvInfoBean {
 	 * 活跃度低用户
 	 * @param pageUtil
 	 * @param insertTime
-	 * @param usersname
 	 * @return
 	 */
 	public PageUtil<Object[]> getVitalityUsers(PageUtil<Object[]> pageUtil,String insertTime,String username){
