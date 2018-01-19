@@ -1377,7 +1377,34 @@ public class RechargeAction extends BaseAction {
     
 
     private void deal(List<TxRecord> list) {
-        // TODO Auto-generated method stub
+       if(list!=null && list.size()>0){
+           int size = list.size();
+           for(int i=0;i<size;i++){
+               TxRecord record = list.get(i);
+               Double money =record.getMoney();
+               if(money!=null){
+                   money = money.doubleValue()*0.01;
+                   record.setMoney(money);
+               }
+               String drawType=record.getDrawType();
+               if("0".equals(drawType)){
+                   drawType="T+0";
+               }else{
+                   drawType="T+1";
+               }
+               record.setDrawType(drawType);
+               String type=record.getType();
+               if("0".equals(type)){
+                   type="易宝提现";
+               }else if("1".equals(type)){
+                   type="支付宝提现";
+               }else{
+                   type="连连提现";
+               }
+               record.setType(type);
+               list.set(i, record);
+           }
+       }
         
     }
 
