@@ -1,4 +1,4 @@
-package com.huoq.orm;
+package com.huoq.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

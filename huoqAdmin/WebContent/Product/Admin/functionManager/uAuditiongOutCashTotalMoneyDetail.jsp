@@ -121,7 +121,7 @@
         <div id="div_condition" style="text-align: center;" >
             <label>用户名:<input type="text" name="name" id="name" value="${name}" maxlength="11">
                 <span>提现时间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
-                <input type="button" value="search" id="frm" onclick="Byname()"></label>&nbsp;&nbsp;
+                <input type="button" value="search" id="frm" onclick="search()"></label>&nbsp;&nbsp;
                  <input type="button" value="导出报表" onclick="ireportDo()">
             <c:if test="${usersAdmin.id!=11020}">
                 <label><input type="button" value="启动【提现查询接口】线程" onclick="txThread()" id="startTxQueryThread"> </label>
@@ -214,17 +214,10 @@
     </div>
 </div>
 <script type="text/javascript">
-    $("#div_condition input[name='status']").click(function(){
-        window.location.href="${pageContext.request.contextPath}/Product/Admin/checkTxsq!loadTxsq.action?name="+$("#name").val()+"&status="+$('input[name="status"]:checked').val()+"&insertTime="+$('#insertTime').val();
-    });
-
-    $("#div_condition input[name='status']").each(function(){
-        if($(this).attr("value")=="${status}" || "${status}"==""){
-            $(this).attr("checked",true);
-        }
-    });
-    function Byname(){
-        window.location.href="${pageContext.request.contextPath}/Product/Admin/checkTxsq!loadIndexTxsq.action?name="+$("#name").val()+"&status="+$('input[name="status"]:checked').val()+"&insertTime="+$('#insertTime').val();
+   
+    function search(){
+        //window.location.href="${pageContext.request.contextPath}/Product/Admin/checkTxsq!loadIndexTxsq.action?name="+$("#name").val()+"&status="+$('input[name="status"]:checked').val()+"&insertTime="+$('#insertTime').val();
+        window.location.href="${pageContext.request.contextPath}/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?name="+$("#name").val()+"&status="+$('input[name="status"]:checked').val()+"&insertTime="+$('#insertTime').val();
     }
 </script>
 <script type="text/javascript">

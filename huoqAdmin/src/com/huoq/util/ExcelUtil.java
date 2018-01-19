@@ -23,11 +23,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.huoq.common.util.DateUtils;
-import com.huoq.orm.FullScaleCompanyMessage;
-import com.huoq.orm.InnerCompanyMessage;
+import com.huoq.bean.FullScaleCompanyMessage;
+import com.huoq.bean.InnerCompanyMessage;
 import com.alibaba.fastjson.JSON;
 
 import java.io.File;

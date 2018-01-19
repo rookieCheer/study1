@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import com.huoq.common.util.ArrayUtils;
 import com.huoq.common.util.PageUtil;
-import com.huoq.orm.FullScaleCompanyMessage;
+import com.huoq.bean.FullScaleCompanyMessage;
 import com.huoq.orm.Product;
 import com.huoq.product.dao.ProductCategoryDAO;
 import com.huoq.util.MyLogger;
