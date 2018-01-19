@@ -1367,7 +1367,7 @@ public class RechargeAction extends BaseAction {
             int size = list.size();
             for (int i = 0; i < size; i++) {
                 TxRecord record = list.get(i);
-                record.setNo(i + "");
+                record.setNo((i+1) + "");
                 Double money = record.getMoney();
                 if (money != null) {
                     money = money.doubleValue() * 0.01;
