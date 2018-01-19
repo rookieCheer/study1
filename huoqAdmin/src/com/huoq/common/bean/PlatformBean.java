@@ -276,11 +276,8 @@ public class PlatformBean {
         try {
             Platform plat = (Platform) dao.findById(new Platform(), 1L);
             List<Object> list = new ArrayList<Object>();
-
             StringBuffer sql = new StringBuffer();
-            sql.append(" SELECT SUM(tx.money)/100 FROM `tx_record` tx WHERE ");
-            sql.append("  tx.is_check = 0 ");
-            sql.append(" AND status IN (0,2,3) AND tx_status = 0 ");
+            sql.append(" SELECT SUM(tx.money)/100 FROM `tx_record` tx WHERE  tx.status='0'");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double todayUAuditingOutCashMoney = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {

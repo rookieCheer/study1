@@ -122,10 +122,11 @@
             <label>用户名:<input type="text" name="name" id="name" value="${name}" maxlength="11">
                 <span>提现时间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
                 <input type="button" value="search" id="frm" onclick="search()"></label>&nbsp;&nbsp;
-                 <input type="button" value="导出报表" onclick="ireportDo()">
+                 <input type="button" value="导出报表" onclick="exportExcel()">
             <c:if test="${usersAdmin.id!=11020}">
                 <label><input type="button" value="启动【提现查询接口】线程" onclick="txThread()" id="startTxQueryThread"> </label>
             </c:if>
+           
         </div>
 
         <table  style="width:100%;margin-top: 20px;text-align: center;" border="1">
