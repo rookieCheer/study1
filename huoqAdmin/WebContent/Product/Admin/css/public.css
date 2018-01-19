@@ -23,6 +23,9 @@
 .link{
 	color:blue;
 }
+.linkNew{
+    color:blue;
+}
 	/* 头部样式 */
 	.logo img{vertical-align:bottom;width:170px;height:70px;border:1px solid #ddd;margin:15px 0 0 20px}
 	.logo img + span{font-size:20px;display:inline-block;vertical-align:bottom;padding-left:5px}
