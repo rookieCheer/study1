@@ -2052,10 +2052,6 @@ public class ActivityBean {
             sb.append(eDate);
             sb.append("'");
         }
-        if (QwyUtil.isNullAndEmpty(channelType)) {
-            sb.append(" AND qd.channel_type = ? ");
-            list.add("1");
-        }
         if (!QwyUtil.isNullAndEmpty(channelType)) {
             sb.append(" AND qd.channel_type = ? ");
             list.add(channelType);
@@ -2064,7 +2060,6 @@ public class ActivityBean {
         sb.append(" ORDER BY qd.channel+0 ASC ");
         Log.info(sb.toString());
         List<Object[]> listObject = dao.LoadAllSql(sb.toString(), list.toArray());
-        //  List<Object[]> listObject = (List<Object[]>) dao.LoadAll(sb.toString(), null);
         return (List<Qdtj>) parseToQdtj(listObject);
     }
 

@@ -40,8 +40,7 @@ public class Users implements java.io.Serializable {
 	private String cardType;//号码类型
 	private String usernameJM;//用户名解密
 	private String keyWord;//url中包含的关键字 //2016-10-21 add by yks
-	private String channelType;//渠道状态 1.市场渠道 2.广告渠道
-
+	private String channelType;//渠道状态 1.市场渠道 2.广告渠道 3.其他渠道
 	private String inviteName;//邀请人姓名
 
 	public String getChannelType() {

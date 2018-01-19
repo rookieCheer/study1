@@ -98,8 +98,6 @@ public class ActivityAction extends BaseAction {
                 }
             }
             getRequest().setAttribute("insertTime", insertTime);
-            //List<Qdtj> list=bean.getQdtj(insertTime,channelCode);
-            //List<Qdtj> list=bean.getQdtj1(insertTime);
             String sDate = "";
             String eDate = "";
             String[] time = QwyUtil.splitTime(insertTime);

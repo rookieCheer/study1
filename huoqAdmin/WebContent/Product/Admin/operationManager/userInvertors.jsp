@@ -28,7 +28,6 @@
 	<div class="main" align="center">
 		<h3 style="text-align: center;">用户投资统计(根据投资本金从高到低显示)</h3><br/>
 		<div id="div_condition" style="text-align: center;" >
-		
 		<label>用户名:<input type="text" name="name" id="name" value="${name}" maxlength="11"  onkeypress="if(event.keyCode==13) {frm.click();}">
 		真实姓名:<input type="text" name="realname" id="realname" value="${realname}" maxlength="6"  onkeypress="if(event.keyCode==13) {frm.click();}">
 		<span>时间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}"  onkeypress="if(event.keyCode==13) {frm.click();}">
@@ -69,8 +68,8 @@
 			<td><fmt:formatNumber value="${item.coinPurseMoney}" pattern="#,##0.##"/></td>
 			<td><fmt:formatNumber value="${item.leftMoney}" pattern="#,##0.##"/></td>
 			<td><fmt:formatNumber value="${item.coupon * 0.01}" pattern="#,##0.##"/></td>
+			<td>${item.friendNumber}</td>
 			<td>${item.friendMoney}</td>
-			<td>${item.insMoney}</td>
 		</tr>
 		</c:forEach>
 		</table>
@@ -127,19 +126,15 @@ function ireportDo(){
 	   		    height: 60,
 	   		    lock: true,
 	   		    ok:function(){
-	   		    	//mysss.close();
 	   		    }
 	   		});  
 		}
 	});
 
 }
-
 	function Byname(){
 	var realname = $('#realname').val();
-	//var  realnames = encodeURI(encodeURI(realname,"utf-8"),"utf-8");
 		var url="${pageContext.request.contextPath}/Product/Admin/investors!userInvertors.action?name="+$("#name").val()+"&insertTime="+$('#insertTime').val()+"&realname="+realname;
-
 		window.location.href=url;
 	}
 </script>

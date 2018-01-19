@@ -179,14 +179,22 @@
 	            <c:when test="${channelType == 1}">
 	            	<option value ="1" selected="selected">平台渠道</option>
 	            	<option value ="2" >广告渠道</option>
+                    <option value ="3" >其他</option>
 	            </c:when>
 	            <c:when test="${channelType == 2}">
 	            	<option value ="1" >平台渠道</option>
 	            	<option value ="2" selected="selected">广告渠道</option>
+                    <option value ="3" >其他</option>
+	            </c:when>
+	            <c:when test="${channelType == 3}">
+	            	<option value ="1" >平台渠道</option>
+	            	<option value ="2" >广告渠道</option>
+	            	<option value ="3" selected="selected">其他</option>
 	            </c:when>
 	            <c:otherwise>
 	                <option value ="1" >平台渠道</option>
 	                <option value ="2" >广告渠道</option>
+                    <option value ="3" >其他</option>
 	            </c:otherwise>
             </c:choose>
             </select>
