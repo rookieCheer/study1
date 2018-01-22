@@ -43,36 +43,37 @@ import com.huoq.orm.InvestChannelExcelData;
 @SuppressWarnings("serial")
 @ParentPackage("struts-default")
 @Namespace("/Product/Admin")
-@Results({@Result(name = "invertorsRecord", value = "/Product/Admin/productManager/inverstorRecord.jsp"),
-        @Result(name = "platInverstorsMoney", value = "/Product/Admin/productManager/platInverstorsMoney.jsp"),
-        @Result(name = "platResUserInverstors", value = "/Product/Admin/operationManager/platUsersIns.jsp"), @Result(name = "err", value = "/Product/Admin/err.jsp"),
-        @Result(name = "investChannelCount", value = "/Product/Admin/operationManager/investChannelCount.jsp"),
-        @Result(name = "userInvertors", value = "/Product/Admin/operationManager/userInvertors.jsp")
-        , @Result(name = "registPlatformList", value = "/Product/Admin/operationManager/registPlatformList.jsp")})
+@Results({ @Result(name = "invertorsRecord", value = "/Product/Admin/productManager/inverstorRecord.jsp"),
+           @Result(name = "platInverstorsMoney", value = "/Product/Admin/productManager/platInverstorsMoney.jsp"),
+           @Result(name = "platResUserInverstors", value = "/Product/Admin/operationManager/platUsersIns.jsp"), @Result(name = "err", value = "/Product/Admin/err.jsp"),
+           @Result(name = "investChannelCount", value = "/Product/Admin/operationManager/investChannelCount.jsp"),
+           @Result(name = "userInvertors", value = "/Product/Admin/operationManager/userInvertors.jsp"),
+           @Result(name = "registPlatformList", value = "/Product/Admin/operationManager/registPlatformList.jsp") })
 public class InvestorsAction extends BaseAction {
 
     @Resource
-    private InvestorsBean investorsBean;
+    private InvestorsBean   investorsBean;
 
-    private Investors investors;
-    private Integer currentPage = 1;
-    private Integer pageSize = 20;
-    private String status = "all";
-    private String name = "";
-    private String insertTime;
-    private String type;
-    private String productId;// 产品ID
-    private String productStatus;
-    private String targetDate;
-    private String statisticsJsonData;
-    private String productTitle;
-    private String realname;
+    private Investors       investors;
+    private Integer         currentPage = 1;
+    private Integer         pageSize    = 20;
+    private String          status      = "all";
+    private String          name        = "";
+    private String          insertTime;
+    private String          type;
+    private String          productId;                                       // 产品ID
+    private String          productStatus;
+    private String          targetDate;
+    private String          statisticsJsonData;
+    private String          productTitle;
+    private String          realname;
 
-    private String registChannel;//注册渠道
-    private String registPlatform;//'0:web端注册; 1:Android移动端; 2:IOS移动端; 3:微信注册;
-    private String firstInvest;
+    private String          registChannel;                                   // 注册渠道
+    private String          registPlatform;                                  // '0:web端注册; 1:Android移动端; 2:IOS移动端;
+                                                                             // 3:微信注册;
+    private String          firstInvest;
 
-    protected static Logger log = Logger.getLogger(BaseAction.class);
+    protected static Logger log         = Logger.getLogger(BaseAction.class);
 
     public String userInvertors() {
         String json = "";
@@ -131,7 +132,7 @@ public class InvestorsAction extends BaseAction {
      */
     public String exoprtUserInvertors() {
         try {
-            //判断时间是否为一个月
+            // 判断时间是否为一个月
             if (QwyUtil.isNullAndEmpty(insertTime)) {
                 String json = QwyUtil.getJSONString("err", "导出日期为空");
                 QwyUtil.printJSON(response, json);
@@ -172,7 +173,6 @@ public class InvestorsAction extends BaseAction {
 
             pageUtil.setPageUrl(url.toString());
 
-
             HSSFWorkbook wb = new HSSFWorkbook();
             HSSFSheet sheet = wb.createSheet("用户投资统计(根据投资本金从高到低显示)");
             HSSFRow row = sheet.createRow((int) 1);
@@ -208,17 +208,17 @@ public class InvestorsAction extends BaseAction {
                 String insertTime = null;
                 String bandCardTime = null;
                 String fristBuyTime = null;
-                if(!QwyUtil.isNullAndEmpty(pla.getInsertTime())){
+                if (!QwyUtil.isNullAndEmpty(pla.getInsertTime())) {
                     insertTime = sd.format(pla.getInsertTime());
                 }
-                if(!QwyUtil.isNullAndEmpty(pla.getBandCardTime())){
+                if (!QwyUtil.isNullAndEmpty(pla.getBandCardTime())) {
                     bandCardTime = sd.format(pla.getBandCardTime());
                 }
-                if(!QwyUtil.isNullAndEmpty(pla.getFristBuyTime())){
+                if (!QwyUtil.isNullAndEmpty(pla.getFristBuyTime())) {
                     fristBuyTime = sd.format(pla.getFristBuyTime());
                 }
-                row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(insertTime ) ? insertTime  : "");
-                row.createCell(5).setCellValue(!QwyUtil.isNullAndEmpty(bandCardTime ) ? bandCardTime : "");
+                row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(insertTime) ? insertTime : "");
+                row.createCell(5).setCellValue(!QwyUtil.isNullAndEmpty(bandCardTime) ? bandCardTime : "");
                 row.createCell(6).setCellValue(!QwyUtil.isNullAndEmpty(fristBuyTime) ? fristBuyTime : "");
                 row.createCell(7).setCellValue(pla.getCopies());
                 row.createCell(8).setCellValue(pla.getAllMoney());
@@ -234,7 +234,7 @@ public class InvestorsAction extends BaseAction {
             FileOutputStream fout = new FileOutputStream(realPath);
             wb.write(fout);
             fout.close();
-            //response.getWriter().write("/report/userInvertors.xls");
+            // response.getWriter().write("/report/userInvertors.xls");
             String json = QwyUtil.getJSONString("ok", "/report/userInvertors.xls");
             QwyUtil.printJSON(response, json);
         } catch (Exception e) {
@@ -242,7 +242,6 @@ public class InvestorsAction extends BaseAction {
         }
         return null;
     }
-
 
     /**
      * 投资记录
@@ -627,8 +626,8 @@ public class InvestorsAction extends BaseAction {
             }
             List<Object[]> list = null;
             if (!QwyUtil.isNullAndEmpty(firstInvest) && firstInvest.equals("1")) {
-                //筛选首投
-                int excel = 2;//1.导出表格2.查询展示
+                // 筛选首投
+                int excel = 2;// 1.导出表格2.查询展示
                 list = investorsBean.investChannelScreen(channel, st, et, QwyUtil.isNullAndEmpty(currentPage) ? 1 : currentPage, 100, null, registPlatform, firstInvest, excel);
             } else {
                 list = investorsBean.investChannel(channel, st, et, QwyUtil.isNullAndEmpty(currentPage) ? 1 : currentPage, 100, null, registPlatform);
@@ -642,7 +641,7 @@ public class InvestorsAction extends BaseAction {
             if (!QwyUtil.isNullAndEmpty(myOrder)) {
                 Collections.sort(list, new sortChannel());
             }
-            //注册平台查询
+            // 注册平台查询
             List<Object[]> registPlatformlist = investorsBean.selectRegistPlatform();
             request.setAttribute("registPlatformlist", registPlatformlist);
             request.setAttribute("investChannelList", list);
@@ -675,13 +674,13 @@ public class InvestorsAction extends BaseAction {
                     et = QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
             }
-            //平台渠道统计查询
+            // 平台渠道统计查询
             List list = investorsBean.registPlatform(registPlatform, registChannel, st, et, QwyUtil.isNullAndEmpty(currentPage) ? 1 : currentPage, 100, 1);
 
             for (int i = 0; i < list.size(); i++) {
                 HashMap<String, Object> users = (HashMap<String, Object>) list.get(i);
                 String registPlatform2 = users.get("regist_platform").toString();
-                //'0:web端注册; 1:Android移动端; 2:IOS移动端; 3:微信注册;'
+                // '0:web端注册; 1:Android移动端; 2:IOS移动端; 3:微信注册;'
                 if (registPlatform2.equals("0")) {
                     users.put("regist_platform", "web端注册");
                 } else if (registPlatform2.equals("1")) {
@@ -696,7 +695,7 @@ public class InvestorsAction extends BaseAction {
 
             }
 
-            //"registPlatform"
+            // "registPlatform"
             if (!QwyUtil.isNullAndEmpty(myOrder)) {
                 Collections.sort(list, new sortChannel());
             }
@@ -709,7 +708,6 @@ public class InvestorsAction extends BaseAction {
         }
         return "registPlatformList";
     }
-
 
     /**
      * 渠道投资统计excel报表导出
@@ -777,8 +775,8 @@ public class InvestorsAction extends BaseAction {
             }
             List<Object[]> data = null;
             if (!QwyUtil.isNullAndEmpty(firstInvest) && firstInvest.equals("1")) {
-                //筛选首投
-                int excel = 1;//1.导出表格2.查询展示
+                // 筛选首投
+                int excel = 1;// 1.导出表格2.查询展示
                 data = investorsBean.investChannelScreen(channel, st, et, QwyUtil.isNullAndEmpty(currentPage) ? 1 : currentPage, 100, null, registPlatform, firstInvest, excel);
             } else {
                 data = investorsBean.findInvestChannel(channel, st, et, QwyUtil.isNullAndEmpty(currentPage) ? 1 : currentPage, 100, null, registPlatform);
@@ -924,7 +922,6 @@ public class InvestorsAction extends BaseAction {
         this.realname = realname;
     }
 
-
     public String getRegistChannel() {
         return registChannel;
     }
@@ -941,7 +938,6 @@ public class InvestorsAction extends BaseAction {
         this.registPlatform = registPlatform;
     }
 
-
     public String getFirstInvest() {
         return firstInvest;
     }
@@ -949,7 +945,6 @@ public class InvestorsAction extends BaseAction {
     public void setFirstInvest(String firstInvest) {
         this.firstInvest = firstInvest;
     }
-
 
     class sortChannel implements Comparator<Object> {
 
@@ -967,58 +962,40 @@ public class InvestorsAction extends BaseAction {
                 double coupon2 = Double.parseDouble(map2.get("coupon").toString());
 
                 if (myOrder.contains("1")) {
-                    //升序
+                    // 升序
                     if (myOrder.contains("title")) {
                         return map1.get("title").toString().compareTo(map2.get("title").toString());
                     } else if (myOrder.contains("copies")) {
-                        if (copies1 > copies2)
-                            return 1;
-                        else if (copies1 == copies2)
-                            return 0;
-                        else
-                            return -1;
+                        if (copies1 > copies2) return 1;
+                        else if (copies1 == copies2) return 0;
+                        else return -1;
                     } else if (myOrder.contains("in_money")) {
-                        if (in_money1 > in_money2)
-                            return 1;
-                        else if (in_money1 == in_money2)
-                            return 0;
-                        else
-                            return -1;
+                        if (in_money1 > in_money2) return 1;
+                        else if (in_money1 == in_money2) return 0;
+                        else return -1;
                     } else if (myOrder.contains("coupon")) {
-                        if (coupon1 > coupon2)
-                            return 1;
-                        else if (coupon1 == coupon2)
-                            return 0;
-                        else
-                            return -1;
+                        if (coupon1 > coupon2) return 1;
+                        else if (coupon1 == coupon2) return 0;
+                        else return -1;
                     } else if (myOrder.contains("province")) {
                         return map1.get("province").toString().compareTo(map2.get("province").toString());
                     }
                 } else {
-                    //降序
+                    // 降序
                     if (myOrder.contains("title")) {
                         return map2.get("title").toString().compareTo(map1.get("title").toString());
                     } else if (myOrder.contains("copies")) {
-                        if (copies1 > copies2)
-                            return -1;
-                        else if (copies1 == copies2)
-                            return 0;
-                        else
-                            return 1;
+                        if (copies1 > copies2) return -1;
+                        else if (copies1 == copies2) return 0;
+                        else return 1;
                     } else if (myOrder.contains("in_money")) {
-                        if (in_money1 > in_money2)
-                            return -1;
-                        else if (in_money1 == in_money2)
-                            return 0;
-                        else
-                            return 1;
+                        if (in_money1 > in_money2) return -1;
+                        else if (in_money1 == in_money2) return 0;
+                        else return 1;
                     } else if (myOrder.contains("coupon")) {
-                        if (coupon1 > coupon2)
-                            return -1;
-                        else if (coupon1 == coupon2)
-                            return 0;
-                        else
-                            return 1;
+                        if (coupon1 > coupon2) return -1;
+                        else if (coupon1 == coupon2) return 0;
+                        else return 1;
                     } else if (myOrder.contains("province")) {
                         return map2.get("province").toString().compareTo(map1.get("province").toString());
                     }
@@ -1026,7 +1003,6 @@ public class InvestorsAction extends BaseAction {
             }
             return 0;
         }
-
 
     }
 

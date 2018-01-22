@@ -122,12 +122,12 @@
 								pattern="#,##0.##" /></td>
 						<td><fmt:formatNumber value="${item.coupon * 0.01}"
 								pattern="#,##0.##" /></td>
-						<td>投资来源</td>
+						<td>${item.investSource}</td>
 						<td><fmt:formatNumber value="${item.couponShouyi * 0.01}"
 								pattern="#,##0.##" /></td>
 						<td><fmt:formatNumber value="${item.hongbao * 0.01}"
 								pattern="#,##0.##" /></td>
-						<td>红包来源</td>
+						<td>${item.redPackageSource}</td>
 						<td>${item.annualEarnings}</td>
 						<td><fmt:formatNumber
 								value="${item.expectEarnings * 0.01+item.couponShouyi*0.01}"

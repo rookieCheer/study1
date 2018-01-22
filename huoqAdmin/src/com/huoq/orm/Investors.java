@@ -68,6 +68,14 @@ public class Investors implements java.io.Serializable {
 	private Double tzdiff;//投资偏差
 	private String counpId;//理财券id
 	/**
+	 * 红包来源
+	 */
+	private String redPackageSource;
+	/**
+	 * 投资券来源
+	 */
+	private String investSource;
+	/**
 	 * 是否首投
 	 * 
 	 */
@@ -77,6 +85,30 @@ public class Investors implements java.io.Serializable {
 	
 	
 	
+    
+    public String getRedPackageSource() {
+        return redPackageSource;
+    }
+
+
+    
+    public void setRedPackageSource(String redPackageSource) {
+        this.redPackageSource = redPackageSource;
+    }
+
+
+    
+    public String getInvestSource() {
+        return investSource;
+    }
+
+
+    
+    public void setInvestSource(String investSource) {
+        this.investSource = investSource;
+    }
+
+
     public boolean getIsFirstInvt() {
         return isFirstInvt;
     }

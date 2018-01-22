@@ -115,6 +115,9 @@ public class InvestorsBean {
                 sql.append("   ins.users_id in(:userIds) and ins.users_id is not null group by ins.users_id");
                 StringBuffer sqlChannel = new StringBuffer();
                 sqlChannel.append("SELECT id,regist_channel channel from users where id in(:userIds) and id is not null group by id");
+
+                StringBuffer source = new StringBuffer("");
+                source.append("select users_id,type,note from coupon where users_id is not null and users_id in(:userIds) group by users_id,type");
                 Set<Long> userIds = new HashSet<Long>();
                 for (Investors inv : listInv) {
                     userIds.add(inv.getUsersId());
@@ -125,7 +128,8 @@ public class InvestorsBean {
                     List<Object> result = dao.LoadAllSql(sql2, null, userIdsList, "userIds");
                     String sqlChannel2 = sqlChannel.toString();
                     List<Object> resultChannel = dao.LoadAllSql(sqlChannel2, null, userIdsList, "userIds");
-
+                    String sqlSource = source.toString();
+                    List<Object> sourceResult = dao.LoadAllSql(sqlSource, null, userIdsList, "userIds");
                     int listInvSize = listInv.size();
                     for (int i = 0; i < listInvSize; i++) {
                         Investors investors = listInv.get(i);
@@ -158,6 +162,27 @@ public class InvestorsBean {
                                         if (userIdsInv.longValue() == id.longValue()) {
                                             String channel = (String) resultChannelObj[1];
                                             investors.getUsers().setRegistChannel(channel);
+                                            listInv.set(i, investors);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (sourceResult != null) {
+                            int sourceSize = sourceResult.size();
+                            if (sourceSize > 0) {
+                                for (Object obj : sourceResult) {
+                                    if (obj instanceof Object[]) {
+                                        Object[] sourceResultObj = (Object[]) obj;
+                                        BigInteger id = (BigInteger) sourceResultObj[0];
+                                        if (userIdsInv.longValue() == id.longValue()) {
+                                            String type1 = (String) sourceResultObj[1];
+                                            String note = (String) sourceResultObj[2];
+                                            if ("1".equals(type1) || "0".equals(type1)) {
+                                                investors.setInvestSource(note);
+                                            } else if ("3".equals(type1)) {
+                                                investors.setRedPackageSource(note);
+                                            }
                                             listInv.set(i, investors);
                                         }
                                     }
