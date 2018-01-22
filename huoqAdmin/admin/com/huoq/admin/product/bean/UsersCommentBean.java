@@ -31,7 +31,7 @@ public class UsersCommentBean {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public PageUtil<Comments> loadComments(PageUtil<Comments> pageUtil, String username) throws Exception {
+	public PageUtil<Comments> loadComments(PageUtil<Comments> pageUtil, String username,String insertTime) throws Exception {
 		try {
 			ArrayList<Object> ob = new ArrayList<Object>();
 			// List<Object> arrayList = new ArrayList<Object>();
@@ -40,6 +40,20 @@ public class UsersCommentBean {
 			if (!QwyUtil.isNullAndEmpty(username)) {
 				hql.append(" AND c.users.username = ? ");
 				ob.add(DESEncrypt.jiaMiUsername(username));
+			}
+			if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+				String[] time = QwyUtil.splitTime(insertTime);
+				if (time.length > 1) {
+					hql.append(" AND c.insertTime >= ? ");
+					ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+					hql.append(" AND c.insertTime <= ? ");
+					ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+				} else {
+					hql.append(" AND c.insertTime >= ? ");
+					ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+					hql.append(" AND c.insertTime <= ? ");
+					ob.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+				}
 			}
 
 			hql.append(" ORDER BY  c.insertTime DESC ");

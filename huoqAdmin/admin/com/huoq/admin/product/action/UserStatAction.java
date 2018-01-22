@@ -2,6 +2,7 @@ package com.huoq.admin.product.action;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -340,30 +341,38 @@ public class UserStatAction extends BaseAction {
                     return "err";
                 }
             }
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
             PageUtil<Region> pageUtil = new PageUtil<Region>();
-
-            pageUtil.setCurrentPage(currentPage);
-
+            if (!QwyUtil.isNullAndEmpty(currentPage)) {
+                pageUtil.setCurrentPage(currentPage);
+            } else {
+                pageUtil.setCurrentPage(1);
+            }
             pageUtil.setPageSize(pageSize);
 
             StringBuffer url = new StringBuffer();
-
             url.append(getRequest().getServletContext().getContextPath());
-
             url.append("/Product/Admin/userStat!loadProvince.action?");
-
+            if (!QwyUtil.isNullAndEmpty(insertTime)) {
+                url.append("&insertTime=");
+                url.append(insertTime);
+            }
+            //设置分页地址
             pageUtil.setPageUrl(url.toString());
-
-            pageUtil = bean.loadProvince(pageUtil);
-
-            getRequest().setAttribute("totalCount", bean.getOthsers(null, null));
-            getRequest().setAttribute("list", pageUtil.getList());
-            getRequest().setAttribute("pageUtil", pageUtil);
+            //分页查询
+            pageUtil = bean.loadProvince(pageUtil,insertTime);
+            if (!QwyUtil.isNullAndEmpty(pageUtil)) {
+                getRequest().setAttribute("pageUtil", pageUtil);
+                getRequest().setAttribute("totalCount", bean.getOthsers(null, null));
+                getRequest().setAttribute("list", pageUtil.getList());
+                return "loadProvince";
+            }
+            return "loadProvince";
 
         } catch (Exception e) {
             log.error("操作异常: ",e);
         }
-        return "loadProvince";
+        return null;
     }
 
     /**
@@ -477,7 +486,15 @@ public class UserStatAction extends BaseAction {
                     return "err";
                 }
             }
-            List<Age> ageList = bean.loadAge(registPlatform);
+            StringBuffer url = new StringBuffer();
+            url.append(getRequest().getServletContext().getContextPath());
+            url.append("/Product/Admin/userStat!loadAge.action?");
+            if (!QwyUtil.isNullAndEmpty(insertTime)) {
+                url.append("&insertTime=");
+                url.append(insertTime);
+            }
+
+            List<Age> ageList = bean.loadAge(registPlatform,insertTime);
             request.setAttribute("list", ageList);
             request.setAttribute("registPlatform", registPlatform);
 

@@ -1,5 +1,7 @@
 package com.huoq.orm;
 
+import java.util.Date;
+
 /**
  * 地区表
  * 无映射实体类
@@ -13,6 +15,8 @@ public class Region {
 	private String city;//城市
 	
 	private String usersCount;//人数统计
+
+	private Date insertTime;//评论时间
 
 	public String getProvince() {
 		return province;
@@ -37,7 +41,8 @@ public class Region {
 	public void setUsersCount(String usersCount) {
 		this.usersCount = usersCount;
 	}
-	
-	
 
+	public Date getInsertTime() { return insertTime; }
+
+	public void setInsertTime(Date insertTime) { this.insertTime = insertTime; }
 }

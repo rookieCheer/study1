@@ -43,6 +43,7 @@ public class UsersCommentAction extends BaseAction {
 	private Integer currentPage = 1;//当前页
 	private Integer pageCount;//总页数
 	private Integer pageSize = 50;
+	private String insertTime;
 	
 	/**显示用户评论;
 	 * @return
@@ -63,7 +64,14 @@ public class UsersCommentAction extends BaseAction {
 			}
 			}
 			PageUtil<Comments> pageUtil = new PageUtil<Comments>(pageSize,currentPage);
-			bean.loadComments(pageUtil,null);
+			StringBuffer url = new StringBuffer();
+			url.append(getRequest().getServletContext().getContextPath());
+			url.append("/Product/Admin/usersComment!showUsersComment?");
+			if (!QwyUtil.isNullAndEmpty(insertTime)) {
+				url.append("&insertTime=");
+				url.append(insertTime);
+			}
+			bean.loadComments(pageUtil,null,insertTime);
 			request.setAttribute("pageUtil", pageUtil);
 			if (!QwyUtil.isNullAndEmpty(pageUtil)) {
 			request.setAttribute("list", pageUtil.getList());
@@ -99,6 +107,12 @@ public class UsersCommentAction extends BaseAction {
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
-	
 
+	public String getInsertTime() {
+		return insertTime;
+	}
+
+	public void setInsertTime(String insertTime) {
+		this.insertTime = insertTime;
+	}
 }
