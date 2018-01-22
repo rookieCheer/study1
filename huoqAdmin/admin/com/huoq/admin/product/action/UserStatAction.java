@@ -546,7 +546,7 @@ public class UserStatAction extends BaseAction {
      *
      * @return
      */
-    @SuppressWarnings("null")
+   
     public String loadbankStatistics() {
         String json = "";
         try {
@@ -563,7 +563,8 @@ public class UserStatAction extends BaseAction {
                     return "err";
                 }
             }
-            List<Age> bankList = bean.loadbank();
+           String time = getRequest().getParameter("time");
+            List<Age> bankList = bean.loadbank(time);
             request.setAttribute("list", bankList);
 
 

@@ -7,7 +7,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Spliterator;
 
 import javax.annotation.Resource;
 
@@ -935,50 +939,106 @@ public class UserInfoBean {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<Age> loadbank() {
+    public List<Age> loadbank(String time) {
 
         StringBuffer buffer = new StringBuffer();
-
-        List<Bank> bankList = findBankList();
-
-        if (bankList.size() > 0) {
-            for (int i = 0; i < bankList.size(); i++) {
-                buffer.append("SELECT ");
-                buffer.append("'" + bankList.get(i).getBankName() + "' ,");
-                buffer.append("(SELECT COUNT(*) FROM  account a WHERE a.status=1 AND a.bank_name='"
-                        + bankList.get(i).getBankName() + "'), ");
-                buffer.append(
-                        "(SELECT SUM(money) FROM  cz_record cz LEFT JOIN account a ON cz.account_id=a.id WHERE cz.status=1 AND cz.order_id IS NOT NULL AND a.bank_name='"
-                                + bankList.get(i).getBankName() + "'),  ");
-                buffer.append(
-                        "(SELECT COUNT(*) FROM  cz_record cz LEFT JOIN account a ON cz.account_id=a.id WHERE cz.status=1 AND cz.order_id IS NOT NULL AND a.bank_name='"
-                                + bankList.get(i).getBankName() + "'), ");
-                buffer.append(
-                        "(SELECT COUNT(*) FROM  cz_record cz LEFT JOIN account a ON cz.account_id=a.id WHERE cz.status=2 AND a.bank_name='"
-                                + bankList.get(i).getBankName() + "')");
-                if (i < bankList.size() - 1) {
-                    buffer.append(" UNION ALL  ");
-                }
-
+        Object[] params =null;
+       
+        buffer.append("select acc.bank_name name,sum(inv.in_money)/100 total,inv.investor_status  status from investors inv ");
+        buffer.append(" join account acc on inv.users_id = acc.users_id ");
+        buffer.append(" where  acc.users_id is not null ");
+        buffer.append(" and acc.status=1 and acc.bank_name is not null and acc.bank_name!='' ");
+        if(time!=null){
+            time = time.trim();
+            if(!"".equals(time)){
+                buffer.append(" and inv.insert_time>=? and inv.insert_time<=? ");
+                params = new Object[2];
             }
         }
-
-        List<Object[]> list = dao.LoadAllSql(buffer.toString(), null);
-        List<Age> ageList = new ArrayList<Age>();
-        if (list.size() > 0) {
-            for (int i = 0; i < list.size(); i++) {
-                Object[] objects = list.get(i);
+        buffer.append(" group by acc.bank_name,inv.investor_status ");
+        String sql = buffer.toString();
+        List list = dao.LoadAllSql(sql,params);
+        if(list!=null && list.size()>0){
+           // List<Age> ageList = new ArrayList<Age>();
+            int size = list.size();
+            //存储所有name
+            Set<String> nameSet = new HashSet<String>();
+            for(int i=0;i<size;i++){
+                Object[] obj = (Object[]) list.get(i);
+                String name =(String)obj[0];
+                nameSet.add(name);
+            }
+            //将name相同的记录放入List
+            List<List<Object[]>> separtList = new ArrayList<List<Object[]>>();
+            //原始集合转换成迭代器
+            Iterator<Object[]> sepObj = list.iterator();
+            //名称转换成迭代器
+            Iterator<String> nameIt = nameSet.iterator();
+            while(nameIt.hasNext()){
+                String name = nameIt.next();
+                List<Object[]> element = new ArrayList<Object[]>();
+                while(sepObj.hasNext()){
+                   Object[] one = sepObj.next();
+                   String nameOne = (String)one[0];
+                   if(nameOne!=null){
+                       if(nameOne.equals(name)){
+                           element.add(one);
+                           sepObj.remove();
+                       }
+                   }
+                }
+                separtList.add(element);
+                sepObj = list.iterator();
+            }
+            List<Age> ageList = new ArrayList<Age>();
+            for(List<Object[]> listOne:separtList){
                 Age age = new Age();
-                age.setBankName(objects[0] + "");
-                age.setRsCount(objects[1] + "");
-                age.setJeCount(objects[2] + "");
-                age.setCgCount(objects[3] + "");
-                age.setSbCount(objects[4] + "");
+                Double sum =0.0; //投资
+                int suessNum =0;
+                int failNum=0;
+                String bankName =null;
+                int bangDingNumber = listOne.size();
+                for(Object[] obj:listOne){
+                    Double total =(Double)obj[1];
+                    if(total!=null){
+                       sum = sum+total.doubleValue(); 
+                    }
+                    String status =(String)obj[2];
+                    if("1".equals(status)||"2".equals(status)||"3".equals(status)){
+                       suessNum = suessNum+1; 
+                    }
+                    if("0".equals(status)||"4".equals(status)){
+                        failNum = failNum+1;   
+                    }
+                   bankName =(String) obj[0];
+                }
+                age.setBankName(bankName);
+                age.setRsCount(bangDingNumber+"");
+                age.setJeCount(sum+"");
+                age.setSbCount(failNum+"");
+                age.setCgCount(suessNum+"");
                 ageList.add(age);
             }
-
+            return ageList;
         }
-        return ageList;
+        
+//        String sql = buffer.toString();
+//        List<Object[]> list = dao.LoadAllSql(buffer.toString(), null);
+//        List<Age> ageList = new ArrayList<Age>();
+//        if (list!=null && list.size() > 0) {
+//            for (int i = 0; i < list.size(); i++) {
+//                Object[] objects = list.get(i);
+//                Age age = new Age();
+//                age.setBankName(objects[0] + "");
+//                age.setRsCount(objects[1] + "");
+//                age.setJeCount(objects[2] + "");
+//                age.setCgCount(objects[3] + "");
+//                age.setSbCount(objects[4] + "");
+//                ageList.add(age);
+//            }
+//
+//        }
+        return null;
 
     }
 

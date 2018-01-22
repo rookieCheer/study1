@@ -47,7 +47,7 @@
 		    <td width="200px;">序号</td>
 			<td width="200px;">银行</td>
 			<td width="200px;">绑定人数</td>
-			<td width="200px;">投资总额</td>
+			<td width="200px;">投资总额(元)</td>
 			<td width="200px;">投资成功次数</td>
 			<td width="200px;">投资失败次数</td>
 		</tr>
@@ -56,7 +56,7 @@
 		     <td>${i.index+1}</td>
 		     <td>${item.bankName}</td>
 		     <td>${item.rsCount}</td>
-		     <td><fmt:formatNumber value="${item.jeCount*0.01}" pattern="#.##" /></td>
+		     <td><fmt:formatNumber value="${item.jeCount}" pattern="###.##" /></td>
 		     <td>${item.cgCount}</td>
 		     <td>${item.sbCount}</td>
 		</tr>

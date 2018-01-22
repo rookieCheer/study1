@@ -64,7 +64,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         <!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass -->
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url">
-            <value>jdbc:mysql://${jdbc.ipPort}/${jdbc.database}?user=${jdbc.username}&amp;password=${jdbc.password}&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull</value>
+            <value>jdbc:mysql://${jdbc.ipPort}/${jdbc.database}?user=${jdbc.username}&amp;password=${jdbc.password}&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;useOldAliasMetadataBehavior=true</value>
         </property>
         <property name="username">
             <value>${jdbc.username}</value>
