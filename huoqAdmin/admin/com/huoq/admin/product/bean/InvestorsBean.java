@@ -28,32 +28,28 @@ import com.huoq.orm.InvestChannelExcelData;
 
 @Service
 public class InvestorsBean {
+
     @Resource
-    InvestorsDAO dao;
+    InvestorsDAO          dao;
     private static Logger log = Logger.getLogger(InvestorsBean.class);
 
     /**
      * 分页获取结算记录
      * 
-     * @param pageUtil
-     *            分页工具类
-     * @param investorStatus
-     *            投资状态
-     * @param name
-     *            用户名
-     * @param insertTime
-     *            投资时间
+     * @param pageUtil 分页工具类
+     * @param investorStatus 投资状态
+     * @param name 用户名
+     * @param insertTime 投资时间
      * @param type
-     * @param productId
-     *            产品ID
+     * @param productId 产品ID
      * @return
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public PageUtil<Investors> findInvertorses(PageUtil<Investors> pageUtil, String productTitle, String investorStatus,
-            String name, String insertTime, String type, String productId) throws Exception {
+    public PageUtil<Investors> findInvertorses(PageUtil<Investors> pageUtil, String productTitle, String investorStatus, String name, String insertTime, String type,
+                                               String productId) throws Exception {
         List<Object> list = new ArrayList<Object>();
-       
+
         StringBuffer hql = new StringBuffer();
         hql.append(" FROM Investors ins WHERE 1 = 1 ");
         // hql.append(" AND in.users.usersInfo.realName = ?");
@@ -63,11 +59,11 @@ public class InvestorsBean {
             list.add(investorStatus);
         } else {
             hql.append(" AND ins.investorStatus != 5 ");
-           
+
         }
         if (!QwyUtil.isNullAndEmpty(name)) {
             hql.append(" AND ins.users.username = ? ");
-            
+
             list.add(DESEncrypt.jiaMiUsername(name));
         }
         // 充值时间
@@ -75,83 +71,102 @@ public class InvestorsBean {
             String[] time = QwyUtil.splitTime(insertTime);
             if (time.length > 1) {
                 hql.append(" AND ins.payTime >= ? ");
-               
+
                 list.add(QwyUtil.fmMMddyyyy.parse(time[0] + " 00:00:00"));
                 hql.append(" AND ins.payTime <= ? ");
-               
+
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
             } else {
                 hql.append(" AND ins.payTime >= ? ");
-                
+
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                 hql.append(" AND ins.payTime <= ? ");
-               
+
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
             }
         }
         if (!QwyUtil.isNullAndEmpty(type) && type.equals("1")) {
             String[] time = QwyUtil.splitTime(insertTime);
             hql.append(" AND ins.users.insertTime >= ? ");
-            
+
             list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
             hql.append(" AND ins.users.insertTime <= ? ");
-            
+
             list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
         }
 
         if (!QwyUtil.isNullAndEmpty(productId)) {
             hql.append(" AND ins.productId = ? ");
-            
+
             list.add(productId);
         }
         if (!QwyUtil.isNullAndEmpty(productTitle)) {
             hql.append(" AND ins.product.title like '%" + productTitle + "%' ");
-           
+
         }
         hql.append(" ORDER BY ins.payTime DESC ");
-       
-        PageUtil<Investors> page =  dao.getByHqlAndHqlCount(pageUtil, hql.toString(), hql.toString(), list.toArray());
-        if(page!=null){
+
+        PageUtil<Investors> page = dao.getByHqlAndHqlCount(pageUtil, hql.toString(), hql.toString(), list.toArray());
+        if (page != null) {
             List<Investors> listInv = page.getList();
-            if(listInv!=null && listInv.size()>0){
+            if (listInv != null && listInv.size() > 0) {
                 StringBuffer sql = new StringBuffer();
                 sql.append("SELECT ins.users_id,count(ins.users_id) num FROM investors ins  WHERE  ");
                 sql.append("   ins.users_id in(:userIds) and ins.users_id is not null group by ins.users_id");
+                StringBuffer sqlChannel = new StringBuffer();
+                sqlChannel.append("SELECT id,regist_channel channel from users where id in(:userIds) and id is not null group by id");
                 Set<Long> userIds = new HashSet<Long>();
-                for(Investors inv:listInv){
+                for (Investors inv : listInv) {
                     userIds.add(inv.getUsersId());
                 }
-              List<Long> userIdsList = ArrayUtils.converArrayToList(userIds.toArray(new Long[userIds.size()]));
-              if(userIdsList!=null && userIdsList.size()>0){
-                 Object[] params = list.toArray(new Object[list.size()]);
-                 String sql2=sql.toString();
-                  List<Object> result = dao.LoadAllSql(sql2, params, userIdsList, "userIds");
-                  if(result!=null){
-                      int resultSize = result.size();
-                      if(resultSize>0){
-                         for(Object obj:result){
-                             if(obj instanceof Object[]){
-                                Object[] resultSecond =(Object[])obj;
-                                BigInteger userIdsR = (BigInteger)resultSecond[0];
-                                BigInteger num =(BigInteger)resultSecond[1];
-                                int listInvSize = listInv.size();
-                                for(int i=0;i<listInvSize;i++){
-                                    Investors investors = listInv.get(i);
-                                    Long userIdsInv = investors.getUsersId();
-                                    if(userIdsInv.longValue()==userIdsR.longValue()){
-                                      if(num.intValue() == 1){
-                                          investors.setIsFirstInvt(true);
-                                          listInv.set(i, investors);
-                                      }  
+                List<Long> userIdsList = ArrayUtils.converArrayToList(userIds.toArray(new Long[userIds.size()]));
+                if (userIdsList != null && userIdsList.size() > 0) {
+                    String sql2 = sql.toString();
+                    List<Object> result = dao.LoadAllSql(sql2, null, userIdsList, "userIds");
+                    String sqlChannel2 = sqlChannel.toString();
+                    List<Object> resultChannel = dao.LoadAllSql(sqlChannel2, null, userIdsList, "userIds");
+
+                    int listInvSize = listInv.size();
+                    for (int i = 0; i < listInvSize; i++) {
+                        Investors investors = listInv.get(i);
+                        Long userIdsInv = investors.getUsersId();
+                        if (result != null) {
+                            int resultSize = result.size();
+                            if (resultSize > 0) {
+                                for (Object obj : result) {
+                                    if (obj instanceof Object[]) {
+                                        Object[] resultSecond = (Object[]) obj;
+                                        BigInteger userIdsR = (BigInteger) resultSecond[0];
+                                        BigInteger num = (BigInteger) resultSecond[1];
+                                        if (userIdsInv.longValue() == userIdsR.longValue()) {
+                                            if (num.intValue() == 1) {
+                                                investors.setIsFirstInvt(true);
+                                                listInv.set(i, investors);
+                                            }
+                                        }
                                     }
-                                  }
-                             }
-                         }
-                         page.setList(listInv); 
-                      }
-                  }
-              }
-           }
+                                }
+                            }
+                        }
+                        if (resultChannel != null) {
+                            int channelSize = resultChannel.size();
+                            if (channelSize > 0) {
+                                for (Object obj : resultChannel) {
+                                    if (obj instanceof Object[]) {
+                                        Object[] resultChannelObj = (Object[]) obj;
+                                        BigInteger id = (BigInteger) resultChannelObj[0];
+                                        if (userIdsInv.longValue() == id.longValue()) {
+                                            String channel = (String) resultChannelObj[1];
+                                            investors.getUsers().setRegistChannel(channel);
+                                            listInv.set(i, investors);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         return page;
     }
@@ -159,16 +174,13 @@ public class InvestorsBean {
     /**
      * 以日期分组查询充值记录
      * 
-     * @param pageUtil
-     *            分页
-     * @param insertTime
-     *            时间段
+     * @param pageUtil 分页
+     * @param insertTime 时间段
      * @return
      * @throws ParseException
      * @throws Exception
      */
-    public PageUtil<BackStatsOperateDay> findInverstorsRecordGroupByDate(PageUtil pageUtil, String insertTime)
-            throws ParseException {
+    public PageUtil<BackStatsOperateDay> findInverstorsRecordGroupByDate(PageUtil pageUtil, String insertTime) throws ParseException {
 
         List<Object> list = new ArrayList<Object>();
         StringBuffer buffer = new StringBuffer();
@@ -208,10 +220,8 @@ public class InvestorsBean {
     /**
      * 每日投资统计
      * 
-     * @param pageUtil
-     *            分页
-     * @param insertTime
-     *            时间段
+     * @param pageUtil 分页
+     * @param insertTime 时间段
      * @return
      * @throws ParseException
      * @throws Exception
@@ -296,8 +306,7 @@ public class InvestorsBean {
     /**
      * 根据日期统计用户注册并且投资人数及投资金额
      * 
-     * @param insertTime
-     *            注册时间
+     * @param insertTime 注册时间
      * @return
      */
     public PageUtil<PlatUser> findUsersCountByDate(PageUtil pageUtil, String insertTime) throws Exception {
@@ -357,33 +366,33 @@ public class InvestorsBean {
         if (!QwyUtil.isNullAndEmpty(list)) {
             for (Object[] object : list) {
                 PlatInvestors plat = new PlatInvestors();
-                plat.setId(object[0] == null ? null : Long.valueOf(object[0] + "")) ;//id
-                plat.setUsername(object[1] == null ? "" : object[1] + "");//用户名
-                plat.setReal_name(!QwyUtil.isNullAndEmpty(object[2]) ? object[2] + "" : "");//用户真实姓名
+                plat.setId(object[0] == null ? null : Long.valueOf(object[0] + ""));// id
+                plat.setUsername(object[1] == null ? "" : object[1] + "");// 用户名
+                plat.setReal_name(!QwyUtil.isNullAndEmpty(object[2]) ? object[2] + "" : "");// 用户真实姓名
                 SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
                 Date insertTime = null;
                 Date bandCardTime = null;
                 Date fristBuyTime = null;
-                if(!QwyUtil.isNullAndEmpty(object[3])){
+                if (!QwyUtil.isNullAndEmpty(object[3])) {
                     insertTime = sd.parse(object[3] + "");
                 }
-                if(!QwyUtil.isNullAndEmpty(object[4])){
+                if (!QwyUtil.isNullAndEmpty(object[4])) {
                     bandCardTime = sd.parse(object[3] + "");
                 }
-                if(!QwyUtil.isNullAndEmpty(object[5])){
+                if (!QwyUtil.isNullAndEmpty(object[5])) {
                     fristBuyTime = sd.parse(object[5] + "");
                 }
-                plat.setInsertTime(!QwyUtil.isNullAndEmpty(insertTime) ? insertTime : null);//注册时间
-                plat.setBandCardTime(!QwyUtil.isNullAndEmpty(bandCardTime) ? bandCardTime : null);//绑卡时间
-                plat.setFristBuyTime(!QwyUtil.isNullAndEmpty(fristBuyTime) ? fristBuyTime : null);//首投时间
-                plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? object[6] + "" : "0");//投资总额
-                plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ? object[7] + "" : "0");//现存资金
-                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? object[8] + "" : "0");//在贷金额
-                plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? object[9] + "" : "0");//零钱罐金额
-                plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? object[10] + "" : "0");//账户余额
-                plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");//投资券金额
-                plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : "0");//邀请好友人数
-                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? object[13] + "" : "0");//邀请好友人数
+                plat.setInsertTime(!QwyUtil.isNullAndEmpty(insertTime) ? insertTime : null);// 注册时间
+                plat.setBandCardTime(!QwyUtil.isNullAndEmpty(bandCardTime) ? bandCardTime : null);// 绑卡时间
+                plat.setFristBuyTime(!QwyUtil.isNullAndEmpty(fristBuyTime) ? fristBuyTime : null);// 首投时间
+                plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? object[6] + "" : "0");// 投资总额
+                plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ? object[7] + "" : "0");// 现存资金
+                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? object[8] + "" : "0");// 在贷金额
+                plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? object[9] + "" : "0");// 零钱罐金额
+                plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? object[10] + "" : "0");// 账户余额
+                plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");// 投资券金额
+                plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : "0");// 邀请好友人数
+                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? object[13] + "" : "0");// 邀请好友人数
                 platInverstors.add(plat);
             }
         }
@@ -480,46 +489,39 @@ public class InvestorsBean {
         // 人数统计
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT COUNT(1) FROM (SELECT users_id FROM investors WHERE DATE_FORMAT('" + targetDate
-                + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H') GROUP BY users_id) tab1 ");
+                   + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H') GROUP BY users_id) tab1 ");
         for (int i = 1; i < 24; i++) {
-            sql.append(" UNION ALL SELECT COUNT(1) FROM (SELECT users_id FROM investors WHERE DATE_FORMAT('"
-                    + targetDate + " " + i
-                    + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H') GROUP BY users_id) tab" + i);
+            sql.append(" UNION ALL SELECT COUNT(1) FROM (SELECT users_id FROM investors WHERE DATE_FORMAT('" + targetDate + " " + i
+                       + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H') GROUP BY users_id) tab" + i);
         }
         jsonData.append("{");
         jsonData.append("\"personCount\":" + ListToStringArray(dao.LoadAllSql(sql.toString(), null)));
 
         // 人次统计
         sql.setLength(0);
-        sql.append("SELECT COUNT(1) FROM investors WHERE DATE_FORMAT('" + targetDate
-                + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
+        sql.append("SELECT COUNT(1) FROM investors WHERE DATE_FORMAT('" + targetDate + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
         for (int i = 1; i < 24; i++) {
-            sql.append(" UNION ALL SELECT COUNT(1) FROM investors WHERE DATE_FORMAT('" + targetDate + " " + i
-                    + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
+            sql.append(" UNION ALL SELECT COUNT(1) FROM investors WHERE DATE_FORMAT('" + targetDate + " " + i + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
         }
         jsonData.append(",\"personTime\":" + ListToStringArray(dao.LoadAllSql(sql.toString(), null)));
 
         // 自己投入的金额统计
         sql.setLength(0);
-        sql.append(
-                "SELECT CASE WHEN SUM(in_money*0.01) IS NULL THEN 0 ELSE SUM(in_money*0.01) END AS sum_ FROM investors WHERE investor_status in ('1','2','3') and DATE_FORMAT('"
-                        + targetDate + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
+        sql.append("SELECT CASE WHEN SUM(in_money*0.01) IS NULL THEN 0 ELSE SUM(in_money*0.01) END AS sum_ FROM investors WHERE investor_status in ('1','2','3') and DATE_FORMAT('"
+                   + targetDate + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
         for (int i = 1; i < 24; i++) {
-            sql.append(
-                    " UNION ALL SELECT CASE WHEN SUM(in_money*0.01) IS NULL THEN 0 ELSE SUM(in_money*0.01) END AS sum_ FROM investors WHERE DATE_FORMAT('"
-                            + targetDate + " " + i + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
+            sql.append(" UNION ALL SELECT CASE WHEN SUM(in_money*0.01) IS NULL THEN 0 ELSE SUM(in_money*0.01) END AS sum_ FROM investors WHERE DATE_FORMAT('" + targetDate + " " + i
+                       + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
         }
         jsonData.append(",\"inMoney\":" + ListToStringArray(dao.LoadAllSql(sql.toString(), null)));
 
         // 优惠券金额统计
         sql.setLength(0);
-        sql.append(
-                "SELECT CASE WHEN SUM(coupon*0.01) IS NULL THEN 0 ELSE SUM(coupon*0.01) END AS sum_ FROM investors WHERE investor_status in ('1','2','3') and DATE_FORMAT('"
-                        + targetDate + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
+        sql.append("SELECT CASE WHEN SUM(coupon*0.01) IS NULL THEN 0 ELSE SUM(coupon*0.01) END AS sum_ FROM investors WHERE investor_status in ('1','2','3') and DATE_FORMAT('"
+                   + targetDate + " 0','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
         for (int i = 1; i < 24; i++) {
-            sql.append(
-                    " UNION ALL SELECT CASE WHEN SUM(coupon*0.01) IS NULL THEN 0 ELSE SUM(coupon*0.01) END AS sum_ FROM investors WHERE DATE_FORMAT('"
-                            + targetDate + " " + i + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
+            sql.append(" UNION ALL SELECT CASE WHEN SUM(coupon*0.01) IS NULL THEN 0 ELSE SUM(coupon*0.01) END AS sum_ FROM investors WHERE DATE_FORMAT('" + targetDate + " " + i
+                       + "','%Y-%m-%d %H') = DATE_FORMAT(pay_time,'%Y-%m-%d %H')");
         }
         jsonData.append(",\"coupon\":" + ListToStringArray(dao.LoadAllSql(sql.toString(), null)));
         jsonData.append("}");
@@ -550,27 +552,20 @@ public class InvestorsBean {
     /**
      * 渠道投资统计-筛选首投用户 investChannelScreen
      */
-    public List<Object[]> investChannelScreen(String channel, String st, String et, int currentPage, int pageSize,
-            String order, String registPlatform, String firstInvest, int excel) {
+    public List<Object[]> investChannelScreen(String channel, String st, String et, int currentPage, int pageSize, String order, String registPlatform, String firstInvest,
+                                              int excel) {
         StringBuffer sb = new StringBuffer();
-        sb.append(
-                " SELECT * FROM( SELECT * FROM ( SELECT (us.`username`), (SELECT CONCAT(usi.`real_name`,'_',usi.`invest_count`) FROM `users_info` usi WHERE usi.`users_id` = us.`id` )'username,investCount',");
-        sb.append(
-                "(SELECT pro.`title` FROM `product` pro WHERE pro.`id` IN (iv.`product_id`))'title',(iv.pay_time) 'pay_time',");
-        sb.append(
-                "iv.copies 'copies', iv.`in_money`*0.01 'in_money',iv.`coupon`*0.01 'coupon',us.province 'province',us.regist_channel 'regist_channel',us.regist_platform,(us.insert_time) 'insert_time', us.id 'id' ");
-        sb.append(
-                "FROM `users` us LEFT JOIN `investors` iv ON us.`id` =iv.`users_id`  WHERE   iv.`investor_status` IN ('1','2','3')");
-        if (!QwyUtil.isNullAndEmpty(channel))
-            sb.append("AND us.`regist_channel` ='" + channel + "' ");
-        if (!QwyUtil.isNullAndEmpty(registPlatform))
-            sb.append("AND us.`regist_platform` ='" + registPlatform + "' ");
+        sb.append(" SELECT * FROM( SELECT * FROM ( SELECT (us.`username`), (SELECT CONCAT(usi.`real_name`,'_',usi.`invest_count`) FROM `users_info` usi WHERE usi.`users_id` = us.`id` )'username,investCount',");
+        sb.append("(SELECT pro.`title` FROM `product` pro WHERE pro.`id` IN (iv.`product_id`))'title',(iv.pay_time) 'pay_time',");
+        sb.append("iv.copies 'copies', iv.`in_money`*0.01 'in_money',iv.`coupon`*0.01 'coupon',us.province 'province',us.regist_channel 'regist_channel',us.regist_platform,(us.insert_time) 'insert_time', us.id 'id' ");
+        sb.append("FROM `users` us LEFT JOIN `investors` iv ON us.`id` =iv.`users_id`  WHERE   iv.`investor_status` IN ('1','2','3')");
+        if (!QwyUtil.isNullAndEmpty(channel)) sb.append("AND us.`regist_channel` ='" + channel + "' ");
+        if (!QwyUtil.isNullAndEmpty(registPlatform)) sb.append("AND us.`regist_platform` ='" + registPlatform + "' ");
         if (!QwyUtil.isNullAndEmpty(order)) {
             sb.append("ORDER BY ");
             sb.append(order);
             sb.append(", (us.regist_channel+0) DESC, us.username DESC");
-        } else
-            sb.append(" ORDER BY  (us.regist_channel+0) DESC, us.username DESC,iv.pay_time )a ");
+        } else sb.append(" ORDER BY  (us.regist_channel+0) DESC, us.username DESC,iv.pay_time )a ");
 
         sb.append(" GROUP BY a.id ORDER BY   (a.regist_channel+0)  DESC, a.username DESC,a.pay_time DESC )b ");
         if (!QwyUtil.isNullAndEmpty(st)) {
@@ -591,37 +586,26 @@ public class InvestorsBean {
             ;// dao.LoadAllSql(sb.toString(), null);
         }
         // dao.findAdvListMapSql(sb.toString(), null,1, 11);
-        if (QwyUtil.isNullAndEmpty(list))
-            return null;
+        if (QwyUtil.isNullAndEmpty(list)) return null;
         return list;
     }
 
     /**
      * 查询对应渠道号的投资情况;
      * 
-     * @param channel
-     *            渠道号
-     * @param st
-     *            开始时间;
-     * @param et
-     *            结束时间;
+     * @param channel 渠道号
+     * @param st 开始时间;
+     * @param et 结束时间;
      * @return
      */
-    public List<Object[]> investChannel(String channel, String st, String et, int currentPage, int pageSize,
-            String order, String registPlatform) {
+    public List<Object[]> investChannel(String channel, String st, String et, int currentPage, int pageSize, String order, String registPlatform) {
         StringBuffer sb = new StringBuffer();
-        sb.append(
-                "SELECT (us.`username`), (SELECT CONCAT(usi.`real_name`,'_',usi.`invest_count`) FROM `users_info` usi WHERE usi.`users_id` = us.`id` )'username,investCount',");
-        sb.append(
-                "(SELECT pro.`title` FROM `product` pro WHERE pro.`id` IN (iv.`product_id`))'title',(us.insert_time) 'insert_time',(iv.pay_time) 'pay_time',");
-        sb.append(
-                "iv.copies 'copies', iv.`in_money`*0.01 'in_money',iv.`coupon`*0.01 'coupon',us.province,us.regist_channel ");
-        sb.append(
-                "FROM `users` us LEFT JOIN `investors` iv ON us.`id` =iv.`users_id`  WHERE   iv.`investor_status` IN ('1','2','3')");
-        if (!QwyUtil.isNullAndEmpty(channel))
-            sb.append("AND us.`regist_channel` ='" + channel + "' ");
-        if (!QwyUtil.isNullAndEmpty(registPlatform))
-            sb.append("AND us.`regist_platform` ='" + registPlatform + "' ");
+        sb.append("SELECT (us.`username`), (SELECT CONCAT(usi.`real_name`,'_',usi.`invest_count`) FROM `users_info` usi WHERE usi.`users_id` = us.`id` )'username,investCount',");
+        sb.append("(SELECT pro.`title` FROM `product` pro WHERE pro.`id` IN (iv.`product_id`))'title',(us.insert_time) 'insert_time',(iv.pay_time) 'pay_time',");
+        sb.append("iv.copies 'copies', iv.`in_money`*0.01 'in_money',iv.`coupon`*0.01 'coupon',us.province,us.regist_channel ");
+        sb.append("FROM `users` us LEFT JOIN `investors` iv ON us.`id` =iv.`users_id`  WHERE   iv.`investor_status` IN ('1','2','3')");
+        if (!QwyUtil.isNullAndEmpty(channel)) sb.append("AND us.`regist_channel` ='" + channel + "' ");
+        if (!QwyUtil.isNullAndEmpty(registPlatform)) sb.append("AND us.`regist_platform` ='" + registPlatform + "' ");
 
         if (!QwyUtil.isNullAndEmpty(st)) {
             sb.append(" AND iv.pay_time BETWEEN '");
@@ -633,30 +617,25 @@ public class InvestorsBean {
             sb.append("ORDER BY ");
             sb.append(order);
             sb.append(", (us.regist_channel+0) DESC, us.username DESC");
-        } else
-            sb.append("ORDER BY  (us.regist_channel+0) DESC, us.username DESC, iv.pay_time DESC ");
+        } else sb.append("ORDER BY  (us.regist_channel+0) DESC, us.username DESC, iv.pay_time DESC ");
         List<Object[]> list = (List<Object[]>) dao.findAdvListMapSql(sb.toString(), null, currentPage, pageSize);
         ;// dao.LoadAllSql(sb.toString(), null);
-        // dao.findAdvListMapSql(sb.toString(), null,1, 11);
-        if (QwyUtil.isNullAndEmpty(list))
-            return null;
+         // dao.findAdvListMapSql(sb.toString(), null,1, 11);
+        if (QwyUtil.isNullAndEmpty(list)) return null;
         return list;
 
     }
 
     /**
      * 平台渠道统计查询
-     * @param st
-     *            开始时间;
-     * @param et
-     *            结束时间;
+     * 
+     * @param st 开始时间;
+     * @param et 结束时间;
      * @return
      */
-    public List registPlatform(String registPlatform, String registChannel, String st, String et, int currentPage,
-            int pageSize, int investorStatus) {
+    public List registPlatform(String registPlatform, String registChannel, String st, String et, int currentPage, int pageSize, int investorStatus) {
         StringBuffer sb = new StringBuffer();
-        sb.append(
-                " SELECT i.pay_time, SUM(i.copies) as copies, SUM(i.in_money) as in_money, SUM(i.coupon ) as coupon ,u.regist_platform , u.regist_channel FROM investors i ");
+        sb.append(" SELECT i.pay_time, SUM(i.copies) as copies, SUM(i.in_money) as in_money, SUM(i.coupon ) as coupon ,u.regist_platform , u.regist_channel FROM investors i ");
         sb.append(" LEFT JOIN users u ON u.id = i.users_id where 1=1 ");
         sb.append("AND i.investor_status IN ('1', '2', '3') ");
         if (!QwyUtil.isNullAndEmpty(registPlatform)) {
@@ -679,43 +658,31 @@ public class InvestorsBean {
 
     /**
      * 注册平台查询
-     * 
      */
     public List<Object[]> selectRegistPlatform() {
         StringBuffer sb = new StringBuffer();
         sb.append("SELECT regist_platform FROM `users` GROUP BY regist_platform ORDER BY regist_platform+0 ASC ");
         List<Object[]> list = (List<Object[]>) dao.LoadAllSql(sb.toString(), null);
-        if (QwyUtil.isNullAndEmpty(list))
-            return null;
+        if (QwyUtil.isNullAndEmpty(list)) return null;
         return list;
     }
 
     /**
      * 查询对应渠道号的投资情况;
      * 
-     * @param channel
-     *            渠道号
-     * @param st
-     *            开始时间;
-     * @param et
-     *            结束时间;
+     * @param channel 渠道号
+     * @param st 开始时间;
+     * @param et 结束时间;
      * @return
      */
-    public List<Object[]> findInvestChannel(String channel, String st, String et, int currentPage, int pageSize,
-            String order, String registPlatform) {
+    public List<Object[]> findInvestChannel(String channel, String st, String et, int currentPage, int pageSize, String order, String registPlatform) {
         StringBuffer sb = new StringBuffer();
-        sb.append(
-                "SELECT (us.`username`), (SELECT CONCAT(usi.`real_name`,'_',usi.`invest_count`) FROM `users_info` usi WHERE usi.`users_id` = us.`id` )'username,investCount',");
-        sb.append(
-                "(SELECT pro.`title` FROM `product` pro WHERE pro.`id` IN (iv.`product_id`))'title',(iv.pay_time) 'pay_time',");
-        sb.append(
-                "iv.copies 'copies', iv.`in_money`*0.01 'in_money',iv.`coupon`*0.01 'coupon',us.province,us.regist_channel, us.regist_platform,(us.insert_time) 'insert_time' ");
-        sb.append(
-                "FROM `users` us LEFT JOIN `investors` iv ON us.`id` =iv.`users_id`  WHERE   iv.`investor_status` IN ('1','2','3')");
-        if (!QwyUtil.isNullAndEmpty(channel))
-            sb.append("AND us.`regist_channel` ='" + channel + "' ");
-        if (!QwyUtil.isNullAndEmpty(registPlatform))
-            sb.append("AND us.`regist_platform` ='" + registPlatform + "' ");
+        sb.append("SELECT (us.`username`), (SELECT CONCAT(usi.`real_name`,'_',usi.`invest_count`) FROM `users_info` usi WHERE usi.`users_id` = us.`id` )'username,investCount',");
+        sb.append("(SELECT pro.`title` FROM `product` pro WHERE pro.`id` IN (iv.`product_id`))'title',(iv.pay_time) 'pay_time',");
+        sb.append("iv.copies 'copies', iv.`in_money`*0.01 'in_money',iv.`coupon`*0.01 'coupon',us.province,us.regist_channel, us.regist_platform,(us.insert_time) 'insert_time' ");
+        sb.append("FROM `users` us LEFT JOIN `investors` iv ON us.`id` =iv.`users_id`  WHERE   iv.`investor_status` IN ('1','2','3')");
+        if (!QwyUtil.isNullAndEmpty(channel)) sb.append("AND us.`regist_channel` ='" + channel + "' ");
+        if (!QwyUtil.isNullAndEmpty(registPlatform)) sb.append("AND us.`regist_platform` ='" + registPlatform + "' ");
 
         if (!QwyUtil.isNullAndEmpty(st)) {
             sb.append(" AND iv.pay_time BETWEEN '");
@@ -727,13 +694,11 @@ public class InvestorsBean {
             sb.append("ORDER BY ");
             sb.append(order);
             sb.append(", (us.regist_channel+0) DESC, us.username DESC");
-        } else
-            sb.append("ORDER BY  (us.regist_channel+0) DESC, us.username DESC, iv.pay_time DESC ");
+        } else sb.append("ORDER BY  (us.regist_channel+0) DESC, us.username DESC, iv.pay_time DESC ");
         // List<Object[]> list =
         // (List<Object[]>)dao.findAdvListSql(sb.toString(),null,currentPage,pageSize);
         List<Object[]> list = dao.LoadAllSql(sb.toString(), null);
-        if (QwyUtil.isNullAndEmpty(list))
-            return null;
+        if (QwyUtil.isNullAndEmpty(list)) return null;
         return list;
 
     }
@@ -750,20 +715,17 @@ public class InvestorsBean {
         for (int i = 0; i < list.size(); i++) {
             InvestChannelExcelData iced = new InvestChannelExcelData();
             iced.setIndex((i + 1) + "");
-            iced.setUsername(
-                    !QwyUtil.isNullAndEmpty(list.get(i)[0]) ? DESEncrypt.jieMiUsername(list.get(i)[0].toString()) : "");
+            iced.setUsername(!QwyUtil.isNullAndEmpty(list.get(i)[0]) ? DESEncrypt.jieMiUsername(list.get(i)[0].toString()) : "");
             iced.setNameInvestCount(!QwyUtil.isNullAndEmpty(list.get(i)[1]) ? list.get(i)[1].toString() : "");
             iced.setProduct(!QwyUtil.isNullAndEmpty(list.get(i)[2]) ? list.get(i)[2].toString() : "");
-            iced.setPayTime(
-                    !QwyUtil.isNullAndEmpty(list.get(i)[3]) ? QwyUtil.fmMMddyyyyHHmmss.format(list.get(i)[3]) : "");
+            iced.setPayTime(!QwyUtil.isNullAndEmpty(list.get(i)[3]) ? QwyUtil.fmMMddyyyyHHmmss.format(list.get(i)[3]) : "");
             iced.setTotalInvestment(!QwyUtil.isNullAndEmpty(list.get(i)[4]) ? list.get(i)[4].toString() : "0");
             iced.setCapital(!QwyUtil.isNullAndEmpty(list.get(i)[5]) ? list.get(i)[5].toString() : "0");
             iced.setCouponMoney(!QwyUtil.isNullAndEmpty(list.get(i)[6]) ? list.get(i)[6].toString() : "0");
             iced.setProvince(!QwyUtil.isNullAndEmpty(list.get(i)[7]) ? list.get(i)[7].toString() : "");
             iced.setChannelNo(!QwyUtil.isNullAndEmpty(list.get(i)[8]) ? list.get(i)[8].toString() : "");
             iced.setRegistPlatform(!QwyUtil.isNullAndEmpty(list.get(i)[9]) ? list.get(i)[9].toString() : "");
-            iced.setInsertTime(
-                    !QwyUtil.isNullAndEmpty(list.get(i)[10]) ? QwyUtil.fmMMddyyyyHHmmss.format(list.get(i)[10]) : "");
+            iced.setInsertTime(!QwyUtil.isNullAndEmpty(list.get(i)[10]) ? QwyUtil.fmMMddyyyyHHmmss.format(list.get(i)[10]) : "");
             results.add(iced);
         }
         return results;
@@ -787,6 +749,7 @@ public class InvestorsBean {
         return result;
 
     }
+
     public List getInvestorsBySqlSecond(String sql, Object[] params) {
         @SuppressWarnings("unchecked")
         List result = dao.LoadAllSql(sql, params);
