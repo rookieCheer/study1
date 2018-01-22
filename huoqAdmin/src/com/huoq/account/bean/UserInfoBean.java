@@ -743,6 +743,7 @@ public class UserInfoBean {
      */
     @SuppressWarnings("unchecked")
     public List<Age> loadAge(String registPlatform,String insertTime) throws Exception {
+        List<Object> ageList1 = new ArrayList<Object>();
         try {
             StringBuffer buffer = new StringBuffer();
             buffer.append("select ");
@@ -752,6 +753,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // 投资总额
             buffer.append(
@@ -760,12 +775,40 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // 投资总数
             buffer.append("(SELECT COUNT(*) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>0 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
             }
             buffer.append(")");
             buffer.append(" UNION ALL ");
@@ -776,6 +819,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [1,20)，投资总额
             buffer.append(
@@ -784,12 +841,40 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "' ");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [1,20)，投资总数
             buffer.append("(SELECT COUNT(*) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>0 AND age<20 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
             }
             buffer.append(")");
             buffer.append(" UNION ALL ");
@@ -800,6 +885,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [20,30)，投资总额
             buffer.append(
@@ -808,12 +907,40 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "' ");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [20,30)，投资总数
             buffer.append("(SELECT COUNT(*) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>19 AND age<30 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
             }
             buffer.append(")");
             buffer.append(" UNION ALL ");
@@ -824,6 +951,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [30,40)，投资总额
             buffer.append(
@@ -832,12 +973,40 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "' ");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [30,40)，投资总数
             buffer.append("(SELECT COUNT(*) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>29 AND age<40 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
             }
             buffer.append(")");
             buffer.append(" UNION ALL ");
@@ -848,6 +1017,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [40,50)，投资总额
             buffer.append(
@@ -856,12 +1039,40 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [40,50)，投资总数
             buffer.append("(SELECT COUNT(*) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>39 AND age<50 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
             }
             buffer.append(")");
             buffer.append(" UNION ALL ");
@@ -872,6 +1083,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [50,60)，投资总额
             buffer.append(
@@ -880,12 +1105,40 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // [50,60)，投资总数
             buffer.append("(SELECT COUNT(*) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>49 AND age<60 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
             }
             buffer.append(")");
             buffer.append(" UNION ALL ");
@@ -896,6 +1149,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // 大于60岁，投资总额
             buffer.append(
@@ -904,6 +1171,20 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append("),");
             // 大于60岁，投资总数
             buffer.append("(SELECT COUNT(*) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
@@ -911,8 +1192,22 @@ public class UserInfoBean {
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
             }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    ageList1.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
             buffer.append(")");
-            List<Object[]> list = dao.LoadAllSql(buffer.toString(), null);
+            List<Object[]> list = dao.LoadAllSql(buffer.toString(), ageList1.toArray());
             List<Age> ageList = new ArrayList<Age>();
             Object[] objects = null;
             if (list.size() > 0) {
