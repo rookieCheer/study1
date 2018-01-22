@@ -32,7 +32,9 @@ public class RankingAction extends BaseAction{
 	
 	private Integer currentPage = 1;
 	private Integer pageSize = 50;
-	private String status=""; 
+	private String status="";
+	private String insertTime;
+
 	@Resource
 	private RankingBean bean;
 	/*
@@ -61,14 +63,20 @@ public class RankingAction extends BaseAction{
 			StringBuffer url = new StringBuffer();
 			url.append(getRequest().getServletContext().getContextPath());
 			url.append("/Product/Admin/ranking!showInvestorsRank.action?");
+			if (!QwyUtil.isNullAndEmpty(insertTime)) {
+				url.append("&insertTime=");
+				url.append(insertTime);
+			}
+			//设置分页地址
 			pageUtil.setPageUrl(url.toString());
-			pageUtil = bean.loadInvestorRank(pageUtil);
-
+			//分页查询
+			pageUtil = bean.loadInvestorRank(pageUtil,insertTime);
 			if(!QwyUtil.isNullAndEmpty(pageUtil)){
 				getRequest().setAttribute("pageUtil", pageUtil);
 				getRequest().setAttribute("list", pageUtil.getList());
 				return "rankInvetors";
 			}
+			return "rankInvetors";
 		} catch (Exception e) {
 			log.error("操作异常: ",e);
 			json = QwyUtil.getJSONString("err", "查询记录异常");
@@ -126,7 +134,12 @@ public class RankingAction extends BaseAction{
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
-     
+
+	public String getInsertTime() {
+		return insertTime;
+	}
+
+	public void setInsertTime(String insertTime) {
+		this.insertTime = insertTime;
+	}
 }

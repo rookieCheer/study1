@@ -32,13 +32,13 @@
 		text-decoration: underline ;
 	}
 </style>
-<!-- <script type="text/javascript">
-function queryProduct(){
-	var insertTime=$("#insertTime").val();
-	var url = "${pageContext.request.contextPath}/Product/Admin/userStat!loadUsersStat.action?insertTime="+insertTime;
-	window.location.href=url;
-}
-</script> -->
+	<script type="text/javascript">
+        function queryProduct() {
+            var insertTime = $("#insertTime").val();
+            var url = "${pageContext.request.contextPath}/Product/Admin/ranking!showInvestorsRank.action?insertTime=" + insertTime;
+            window.location.href = url;
+        }
+	</script>
 </head>
 <body>
 <div class="center">		
@@ -47,6 +47,9 @@ function queryProduct(){
 	<h3>投资总金额排行</h3>
 	<!--<a class="sereach" href="${pageContext.request.contextPath}/Product/Admin/ranking!showInvestorsRank.action?">投资总金额排行</a>  -->
 	<a class="sereach" href="${pageContext.request.contextPath}/Product/Admin/ranking!showCZRecordRank.action?">充值总金额排行</a>
+		<span>查询期间:</span>
+		<input id="insertTime" name="insertTime" type="text" value="${insertTime}">
+		<a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
 	<table border="0.5" cellspacing="0" cellpadding="0">
 		<tbody>
 				<tr>
@@ -79,5 +82,16 @@ function queryProduct(){
 		</c:choose>
 </div>
 </div>
+<script type="text/javascript">
+    var k4 = new Kalendae.Input("insertTime", {
+        attachTo: document.body,
+        months: 2,//多少个月显示出来,即看到多少个日历
+        mode: 'range'
+        /* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
+    });
+    $(function () {
+        $("#isbindbank option[value='${isbindbank}']").attr("selected", true);
+    });
+</script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.huoq.orm;
 
+import java.util.Date;
+
 /**
  * 金额排行表
  * 无映射实体类 
@@ -58,7 +60,6 @@ public class Rank {
 	public void setMoney(String money) {
 		this.money = money;
 	}
-	
-	
+
 
 }
