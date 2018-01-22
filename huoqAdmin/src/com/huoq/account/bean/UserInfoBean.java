@@ -625,29 +625,76 @@ public class UserInfoBean {
 
     }
 
-    public List<Age> loadSex() throws Exception {
+    public List<Age> loadSex(String insertTime) throws Exception {
+        List<Object> sexList = new ArrayList<Object>();
         try {
             StringBuffer buffer = new StringBuffer();
             buffer.append("SELECT ");
-            buffer.append("(SELECT COUNT(*) FROM users_info WHERE sex IN('男','女')), ");
+            buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex IN('男','女')  ");
+           /* if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }*/
+            buffer.append(" ),");
             buffer.append(
                     "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex IN('男','女') AND i.investor_status BETWEEN 1 AND 3),  ");
             buffer.append(
                     "(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex IN('男','女') AND i.investor_status BETWEEN 1 AND 3) ");
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
-            buffer.append("(SELECT COUNT(*) FROM users_info WHERE sex='男'), ");
+            buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='男'  ");
+            /*if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }*/
+            buffer.append(" ),");
             buffer.append(
                     "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男' AND i.investor_status BETWEEN 1 AND 3),  ");
             buffer.append(
                     "(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男'AND i.investor_status BETWEEN 1 AND 3) ");
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
-            buffer.append("(SELECT COUNT(*) FROM users_info WHERE sex='女'),");
+            buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='女'  ");
+            /*if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    buffer.append(" AND u.insert_time >= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    buffer.append(" AND u.insert_time <= ? ");
+                    sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }*/
+            buffer.append(" ),");
             buffer.append(
                     "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3), ");
             buffer.append(
                     "(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3)  ");
+
 
             List<Object[]> list = dao.LoadAllSql(buffer.toString(), null);
             List<Age> ageList = new ArrayList<Age>();

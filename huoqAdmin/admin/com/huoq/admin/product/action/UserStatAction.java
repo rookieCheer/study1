@@ -456,7 +456,14 @@ public class UserStatAction extends BaseAction {
                     return "err";
                 }
             }
-            List<Age> list = bean.loadSex();
+            StringBuffer url = new StringBuffer();
+            url.append(getRequest().getServletContext().getContextPath());
+            url.append("/Product/Admin/userStat!loadSex.action?");
+            if (!QwyUtil.isNullAndEmpty(insertTime)) {
+                url.append("&insertTime=");
+                url.append(insertTime);
+            }
+            List<Age> list = bean.loadSex(insertTime);
 
             request.setAttribute("list", list);
         } catch (Exception e) {

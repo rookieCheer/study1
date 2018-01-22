@@ -37,8 +37,7 @@
 <script type="text/javascript">
 function queryProduct(){
 	var insertTime=$("#insertTime").val();
-	var registPlatform=$("#registPlatform option:selected").val();
-	var url = "${pageContext.request.contextPath}/Product/Admin/activity!loadQdtj.action?insertTime="+insertTime;
+	var url = "${pageContext.request.contextPath}/Product/Admin/userStat!loadSex.action?insertTime="+insertTime;
 	window.location.href=url;
 }
 </script>
@@ -53,6 +52,9 @@ $(function(){
 	<jsp:include page="/Product/Admin/common/head.jsp"/>	
 	<div class="main" align="center">
 	<h3>性别统计</h3>
+		<span>查询期间:</span>
+		<input id="insertTime" name="insertTime" type="text" value="${insertTime}">
+		<a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
 	<form id="frm" action="">
 	</form>
 	<table border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
