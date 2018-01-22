@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
 import com.huoq.admin.product.dao.InvestorsDAO;
 import com.huoq.common.util.ArrayUtils;
 import com.huoq.common.util.DESEncrypt;
+import com.huoq.common.util.ListUtils;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.BackStatsOperateDay;
 import com.huoq.orm.Investors;
 import com.huoq.orm.PlatInvestors;
 import com.huoq.orm.PlatUser;
-import com.huoq.orm.Product;
 import com.huoq.orm.InvestChannelExcelData;
 
 @Service
@@ -31,6 +31,7 @@ public class InvestorsBean {
 
     @Resource
     InvestorsDAO          dao;
+    
     private static Logger log = Logger.getLogger(InvestorsBean.class);
 
     /**
@@ -117,19 +118,23 @@ public class InvestorsBean {
                 sqlChannel.append("SELECT id,regist_channel channel from users where id in(:userIds) and id is not null group by id");
 
                 StringBuffer source = new StringBuffer("");
-                source.append("select users_id,type,note from coupon where users_id is not null and users_id in(:userIds) group by users_id,type");
+                source.append("select select cou.id,cou.type,cou.note from investors inv join coupon cou on cou.id=inv.counpId where inv.counpId is not null ");
+                source.append(" and cou.id in(:counpIds) group by cou.id,cou.type");
                 Set<Long> userIds = new HashSet<Long>();
+                Set<String> ids = new HashSet<String>();
                 for (Investors inv : listInv) {
                     userIds.add(inv.getUsersId());
+                    ids.add(inv.getCounpId());
                 }
+                
                 List<Long> userIdsList = ArrayUtils.converArrayToList(userIds.toArray(new Long[userIds.size()]));
+                userIdsList =  (List<Long>) ListUtils.removeNullValue(userIdsList);
                 if (userIdsList != null && userIdsList.size() > 0) {
                     String sql2 = sql.toString();
                     List<Object> result = dao.LoadAllSql(sql2, null, userIdsList, "userIds");
                     String sqlChannel2 = sqlChannel.toString();
                     List<Object> resultChannel = dao.LoadAllSql(sqlChannel2, null, userIdsList, "userIds");
-                    String sqlSource = source.toString();
-                    List<Object> sourceResult = dao.LoadAllSql(sqlSource, null, userIdsList, "userIds");
+
                     int listInvSize = listInv.size();
                     for (int i = 0; i < listInvSize; i++) {
                         Investors investors = listInv.get(i);
@@ -168,22 +173,40 @@ public class InvestorsBean {
                                 }
                             }
                         }
+
+                    }
+                }
+                
+                List<String> idsList = ArrayUtils.converArrayToList(ids.toArray(new String[ids.size()]));
+                idsList =  ListUtils.removeNullAndEmpty(idsList);
+                if (idsList != null) {
+                    int size = idsList.size();
+                    if (size > 0) {
+                        String sqlSource = source.toString();
+                        List<Object> sourceResult = dao.LoadAllSql(sqlSource, null, idsList, "counpIds");
+                        int listInvSize = listInv.size();
                         if (sourceResult != null) {
                             int sourceSize = sourceResult.size();
                             if (sourceSize > 0) {
                                 for (Object obj : sourceResult) {
                                     if (obj instanceof Object[]) {
                                         Object[] sourceResultObj = (Object[]) obj;
-                                        BigInteger id = (BigInteger) sourceResultObj[0];
-                                        if (userIdsInv.longValue() == id.longValue()) {
-                                            String type1 = (String) sourceResultObj[1];
-                                            String note = (String) sourceResultObj[2];
-                                            if ("1".equals(type1) || "0".equals(type1)) {
-                                                investors.setInvestSource(note);
-                                            } else if ("3".equals(type1)) {
-                                                investors.setRedPackageSource(note);
+                                        String id = (String) sourceResultObj[0];
+                                        for (int i = 0; i < listInvSize; i++) {
+                                            Investors investors = listInv.get(i);
+                                            String counpId = investors.getCounpId();
+                                            if (counpId != null) {
+                                                if (counpId.equals(id)) {
+                                                    String type1 = (String) sourceResultObj[1];
+                                                    String note = (String) sourceResultObj[2];
+                                                    if ("1".equals(type1) || "0".equals(type1)) {
+                                                        investors.setInvestSource(note);
+                                                    } else if ("3".equals(type1)) {
+                                                        investors.setRedPackageSource(note);
+                                                    }
+                                                    listInv.set(i, investors);
+                                                }
                                             }
-                                            listInv.set(i, investors);
                                         }
                                     }
                                 }
@@ -191,6 +214,7 @@ public class InvestorsBean {
                         }
                     }
                 }
+
             }
         }
         return page;
