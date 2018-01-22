@@ -156,7 +156,7 @@ public class UpdateDailyStatementThreadBean {
         try {
             long a1 = System.currentTimeMillis();
             //查询昨日
-            String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -2).getTime());
+            String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -1).getTime());
             if (!QwyUtil.isNullAndEmpty(yestady)) {
                 time.add(yestady);
             }
@@ -277,7 +277,8 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("");
+            sql.append("SELECT SUM(i.in_money)/100 money FROM investors i WHERE 1=1 ");
+            sql.append(" AND i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND i.investor_status IN('1','2','3') ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double tradingVolume = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -297,6 +298,22 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateLoanAmountAll(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT FORMAT(SUM(money)/100,2) FROM (SELECT i.in_money money FROM investors i WHERE 1=1 ");
+            sql.append(" AND i.investor_status IN('1','2','3') ");
+            sql.append(" UNION ALL ");
+            sql.append(" SELECT in_money money FROM coin_purse cp WHERE in_money > 0)t ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), null);
+            Double tradingVolume = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                tradingVolume = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return tradingVolume;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
         return null;
     }
 
@@ -307,6 +324,20 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateLoanAmount(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(i.in_money)/100 money FROM investors i WHERE 1=1 ");
+            sql.append(" AND i.investor_status IN('1','2','3') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), null);
+            Double tradingVolume = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                tradingVolume = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return tradingVolume;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
         return null;
     }
 
@@ -318,6 +349,22 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateReimbursementAmount(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            StringBuffer sql = new StringBuffer();
+            list.add(insertTime);
+            list.add(insertTime);
+            sql.append("SELECT FORMAT(SUM(already_pay+pay_interest_cent_coupon+pay_hongbao)/100,2) FROM interest_details WHERE 1=1  ");
+            sql.append(" AND update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double tradingVolume = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                tradingVolume = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return tradingVolume;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
         return null;
     }
 
@@ -328,6 +375,28 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateReimbursementAmountAll(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            StringBuffer sql = new StringBuffer();
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            sql.append("SELECT FORMAT(SUM(money)/100,2) FROM (SELECT FORMAT(SUM(already_pay+pay_interest_cent_coupon+pay_hongbao)/100,2) money FROM interest_details ");
+            sql.append(" WHERE update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append(" UNION ALL ");
+            sql.append(" SELECT in_money money FROM coin_purse cp WHERE in_money > 0 AND update_time < DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append(" UNION ALL ");
+            sql.append(" SELECT total_money FROM users_info WHERE update_time < DATE_FORMAT(?,'%Y-%m-%d 23:59:59')t ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double tradingVolume = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                tradingVolume = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return tradingVolume;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
         return null;
     }
 

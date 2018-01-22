@@ -73,7 +73,6 @@ public class PlatformBean {
         // 总购买金额(平台交易总额)
         Double updateAllBuyMoney = updateAllBuyMoney();
         plat.setAllBuyMoney(updateAllBuyMoney);
-
         // 累计充值金额
         Double rechargeMoney = updateRechargeMoney(null);
         plat.setRechargeMoney(rechargeMoney);
@@ -98,7 +97,6 @@ public class PlatformBean {
         // 获取未审核提现金额
         Double updateUncheckedOutCashMoney = updateUAuditingOutCashMoney();
         plat.setUncheckedOutCashMoney(updateUncheckedOutCashMoney);
-
         // 今日满标企业(家)
         Integer todayFullScaleCompanyNumber = updateTodayFullScaleCompanyNumber();
         plat.setTodayFullScaleCompanyNumber(todayFullScaleCompanyNumber);

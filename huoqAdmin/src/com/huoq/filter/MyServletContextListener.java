@@ -1,6 +1,5 @@
 package com.huoq.filter;
 
-import com.huoq.admin.dailyStatement.bean.UpdateDailyStatementThreadBean;
 import com.huoq.common.bean.BaoFuBean;
 import com.huoq.common.util.PropertiesUtil;
 import com.huoq.common.util.QwyUtil;
