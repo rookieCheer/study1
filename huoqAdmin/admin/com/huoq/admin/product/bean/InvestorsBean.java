@@ -1,10 +1,13 @@
 package com.huoq.admin.product.bean;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -12,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.huoq.admin.product.dao.InvestorsDAO;
+import com.huoq.common.util.ArrayUtils;
 import com.huoq.common.util.DESEncrypt;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
@@ -49,6 +53,7 @@ public class InvestorsBean {
     public PageUtil<Investors> findInvertorses(PageUtil<Investors> pageUtil, String productTitle, String investorStatus,
             String name, String insertTime, String type, String productId) throws Exception {
         List<Object> list = new ArrayList<Object>();
+       
         StringBuffer hql = new StringBuffer();
         hql.append(" FROM Investors ins WHERE 1 = 1 ");
         // hql.append(" AND in.users.usersInfo.realName = ?");
@@ -58,9 +63,11 @@ public class InvestorsBean {
             list.add(investorStatus);
         } else {
             hql.append(" AND ins.investorStatus != 5 ");
+           
         }
         if (!QwyUtil.isNullAndEmpty(name)) {
             hql.append(" AND ins.users.username = ? ");
+            
             list.add(DESEncrypt.jiaMiUsername(name));
         }
         // 充值时间
@@ -68,33 +75,85 @@ public class InvestorsBean {
             String[] time = QwyUtil.splitTime(insertTime);
             if (time.length > 1) {
                 hql.append(" AND ins.payTime >= ? ");
+               
                 list.add(QwyUtil.fmMMddyyyy.parse(time[0] + " 00:00:00"));
                 hql.append(" AND ins.payTime <= ? ");
+               
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
             } else {
                 hql.append(" AND ins.payTime >= ? ");
+                
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                 hql.append(" AND ins.payTime <= ? ");
+               
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
             }
         }
         if (!QwyUtil.isNullAndEmpty(type) && type.equals("1")) {
             String[] time = QwyUtil.splitTime(insertTime);
             hql.append(" AND ins.users.insertTime >= ? ");
+            
             list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
             hql.append(" AND ins.users.insertTime <= ? ");
+            
             list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
         }
 
         if (!QwyUtil.isNullAndEmpty(productId)) {
             hql.append(" AND ins.productId = ? ");
+            
             list.add(productId);
         }
         if (!QwyUtil.isNullAndEmpty(productTitle)) {
             hql.append(" AND ins.product.title like '%" + productTitle + "%' ");
+           
         }
         hql.append(" ORDER BY ins.payTime DESC ");
-        return dao.getByHqlAndHqlCount(pageUtil, hql.toString(), hql.toString(), list.toArray());
+       
+        PageUtil<Investors> page =  dao.getByHqlAndHqlCount(pageUtil, hql.toString(), hql.toString(), list.toArray());
+        if(page!=null){
+            List<Investors> listInv = page.getList();
+            if(listInv!=null && listInv.size()>0){
+                StringBuffer sql = new StringBuffer();
+                sql.append("SELECT ins.users_id,count(ins.users_id) num FROM investors ins  WHERE  ");
+                sql.append("   ins.users_id in(:userIds) and ins.users_id is not null group by ins.users_id");
+                Set<Long> userIds = new HashSet<Long>();
+                for(Investors inv:listInv){
+                    userIds.add(inv.getUsersId());
+                }
+              List<Long> userIdsList = ArrayUtils.converArrayToList(userIds.toArray(new Long[userIds.size()]));
+              if(userIdsList!=null && userIdsList.size()>0){
+                 Object[] params = list.toArray(new Object[list.size()]);
+                 String sql2=sql.toString();
+                  List<Object> result = dao.LoadAllSql(sql2, params, userIdsList, "userIds");
+                  if(result!=null){
+                      int resultSize = result.size();
+                      if(resultSize>0){
+                         for(Object obj:result){
+                             if(obj instanceof Object[]){
+                                Object[] resultSecond =(Object[])obj;
+                                BigInteger userIdsR = (BigInteger)resultSecond[0];
+                                BigInteger num =(BigInteger)resultSecond[1];
+                                int listInvSize = listInv.size();
+                                for(int i=0;i<listInvSize;i++){
+                                    Investors investors = listInv.get(i);
+                                    Long userIdsInv = investors.getUsersId();
+                                    if(userIdsInv.longValue()==userIdsR.longValue()){
+                                      if(num.intValue() == 1){
+                                          investors.setIsFirstInvt(true);
+                                          listInv.set(i, investors);
+                                      }  
+                                    }
+                                  }
+                             }
+                         }
+                         page.setList(listInv); 
+                      }
+                  }
+              }
+           }
+        }
+        return page;
     }
 
     /**

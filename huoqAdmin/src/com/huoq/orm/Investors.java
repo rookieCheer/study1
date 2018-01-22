@@ -67,8 +67,26 @@ public class Investors implements java.io.Serializable {
 	private Date sysj;// 收益时间;
 	private Double tzdiff;//投资偏差
 	private String counpId;//理财券id
+	/**
+	 * 是否首投
+	 * 
+	 */
+	private boolean isFirstInvt;
 
-	public Date getSysj() {
+	
+	
+	
+	
+    public boolean getIsFirstInvt() {
+        return isFirstInvt;
+    }
+
+    
+    public void setIsFirstInvt(boolean isFirstInvt) {
+        this.isFirstInvt = isFirstInvt;
+    }
+
+    public Date getSysj() {
 		return sysj;
 	}
 
