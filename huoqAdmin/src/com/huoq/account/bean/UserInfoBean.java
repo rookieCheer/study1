@@ -631,7 +631,7 @@ public class UserInfoBean {
             StringBuffer buffer = new StringBuffer();
             buffer.append("SELECT ");
             buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex IN('男','女')  ");
-           /* if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
                     buffer.append(" AND u.insert_time >= ? ");
@@ -644,7 +644,7 @@ public class UserInfoBean {
                     buffer.append(" AND u.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
-            }*/
+            }
             buffer.append(" ),");
             buffer.append(
                     "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex IN('男','女') AND i.investor_status BETWEEN 1 AND 3),  ");
@@ -653,7 +653,7 @@ public class UserInfoBean {
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
             buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='男'  ");
-            /*if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
                     buffer.append(" AND u.insert_time >= ? ");
@@ -666,7 +666,7 @@ public class UserInfoBean {
                     buffer.append(" AND u.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
-            }*/
+            }
             buffer.append(" ),");
             buffer.append(
                     "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男' AND i.investor_status BETWEEN 1 AND 3),  ");
@@ -675,7 +675,7 @@ public class UserInfoBean {
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
             buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='女'  ");
-            /*if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
                     buffer.append(" AND u.insert_time >= ? ");
@@ -688,7 +688,7 @@ public class UserInfoBean {
                     buffer.append(" AND u.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
-            }*/
+            }
             buffer.append(" ),");
             buffer.append(
                     "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3), ");
@@ -696,7 +696,7 @@ public class UserInfoBean {
                     "(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3)  ");
 
 
-            List<Object[]> list = dao.LoadAllSql(buffer.toString(), null);
+            List<Object[]> list = dao.LoadAllSql(buffer.toString(), sexList.toArray());
             List<Age> ageList = new ArrayList<Age>();
             String titleCount = "";
             if (list.size() > 0) {
