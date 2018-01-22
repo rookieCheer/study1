@@ -33,19 +33,12 @@
 	}
 </style>
 <script type="text/javascript">
-function queryProduct(){
-	var insertTime=$("#insertTime").val();
-	var url = "${pageContext.request.contextPath}/Product/Admin/userStat!platUser.action?insertTime="+insertTime;
-	window.location.href=url;
-}
+    function queryProduct(){
+        var insertTime = $("#insertTime").val();
+        var url ="${pageContext.request.contextPath}/Product/Admin/userStat!loadProvince.action?insertTime=" + insertTime;
+        window.location.href = url;
 
-/* function verify(province) {
-	//解决中文乱麻问题的方法1
-	var myProvince = encodeURI(encodeURI(province,"utf-8"),"utf-8");
-	//alert(myProvince);
-	var url = "${pageContext.request.contextPath}/Product/Admin/userStat!loadCity.action?province=" +myProvince;
-    window.location.href=url;
-};  */
+    }
 
 </script>
 </head>
@@ -56,7 +49,10 @@ function queryProduct(){
 		<h3>用户所在省份统计</h3>
 <%-- 	<span>充值时间:</span> <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
 	<a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a> --%>
-	<table border="0.5" cellspacing="0" cellpadding="0">
+		<span>查询期间:</span>
+		<input id="insertTime" name="insertTime" type="text" value="${insertTime}">
+		<a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
+		<table border="0.5" cellspacing="0" cellpadding="0">
 		<tbody>
 				<tr>
 					<td width="50px" style="text-align: center;">序号</td>
@@ -64,9 +60,9 @@ function queryProduct(){
 					<td width="100px" style="text-align: center;">注册人数</td>
 				</tr>
 				<tr>
-				<td style="text-align: center;"></td> 
-					<td style="text-align: center;">其它</td>
-					<td style="text-align: center;">${totalCount}</td>
+				<%--<td style="text-align: center;"></td> --%>
+					<%--<td style="text-align: center;">其它</td>--%>
+					<%--<td style="text-align: center;">${totalCount}</td>--%>
 				</tr>
 			<c:forEach items="${list}"  var="item" varStatus="i">
 				<tr>
@@ -91,5 +87,14 @@ function queryProduct(){
 		</c:choose>
 </div>
 </div>
+<script type="text/javascript">
+    var k4 = new Kalendae.Input("insertTime", {
+        attachTo: document.body,
+        months: 2,//多少个月显示出来,即看到多少个日历
+        mode: 'range'
+        /* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
+    });
+
+</script>
 </body>
 </html>

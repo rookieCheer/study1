@@ -251,7 +251,7 @@ public class UserInfoBean {
     @SuppressWarnings("unchecked")
 
     public PageUtil<UserInfoList> findUsersByChannel(PageUtil pageUtil, String channel, String username,
-                                                     String insertTime, String acinsertTime, String isbindbank,String islqg, String level, String inMoney1, String inMoney2) {
+                                                     String insertTime, String acinsertTime, String isbindbank, String islqg, String level, String inMoney1, String inMoney2) {
         //是否活期投资
         try {
             List<Object> list = new ArrayList<Object>();
@@ -263,7 +263,7 @@ public class UserInfoBean {
             buff.append(" b.is_bind_bank ,t.in_money,lqg.money/100 ,a.regist_channel,t.pay_time,t.title,t.in_money1 ");
             buff.append(" FROM users a JOIN users_info b ON a.id = b.users_id left join");
             buff.append(" (select SUM(i.in_money/100) as in_money , i.users_id as users_id,p.title AS title,i.pay_time AS pay_time,i.in_money AS in_money1  from investors i  "
-                           + "LEFT JOIN product p ON i.product_id =p.id  ");
+                    + "LEFT JOIN product p ON i.product_id =p.id  ");
             buff.append(" where 1=1 and i.investor_status in ('1','2','3')  GROUP BY i.pay_time Asc)t ");
             buff.append("  on t.users_id = b.users_id ");
             buff.append("  LEFT JOIN account ac ON ac.users_id = a.id  AND ac.STATUS = 1  ");
@@ -273,11 +273,11 @@ public class UserInfoBean {
             buff.append(" GROUP BY cpfr.users_id )lqg ");
             buff.append(" ON lqg.users_id = a.id WHERE 1=1 ");
             if (!QwyUtil.isNullAndEmpty(channel)) {
-                if(!channel.contains("微信")){
+                if (!channel.contains("微信")) {
                     buff.append(" AND a.regist_channel = ? ");
                     list.add(channel);
                 }
-                if(channel.contains("微信")){
+                if (channel.contains("微信")) {
                     buff.append(" AND a.regist_platform = 3 AND regist_channel = '' ");
                 }
             }
@@ -345,12 +345,12 @@ public class UserInfoBean {
                 buff.append(" AND  t.in_money <= ? ");
                 list.add(Double.parseDouble(inMoney2) * 10000);
             }
-            if(!QwyUtil.isNullAndEmpty(islqg)){
-                if(islqg.equals("1")){
+            if (!QwyUtil.isNullAndEmpty(islqg)) {
+                if (islqg.equals("1")) {
                     buff.append("AND a.id NOT IN (SELECT u.id FROM investors i LEFT JOIN users u ON u.id = i.users_id ");
                     buff.append("WHERE i.investor_status IN ('1','2','3') GROUP BY u.id) AND lqg.money IS NOT NULL ");
                 }
-                if(islqg.equals("0")){
+                if (islqg.equals("0")) {
                     buff.append("AND a.id NOT IN (SELECT u.id FROM coin_purse_funds_record cpf LEFT JOIN users u ON u.id = cpf.users_id ");
                     buff.append("WHERE cpf.TYPE ='to' AND u.id IS NOT NULL GROUP BY u.id) AND t.in_money IS NOT NULL ");
                 }
@@ -489,30 +489,74 @@ public class UserInfoBean {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public PageUtil<Region> loadProvince(PageUtil pageUtil) throws Exception {
+    public PageUtil<Region> loadProvince(PageUtil pageUtil, String insertTime) throws Exception {
+        List<Object> regionList = new ArrayList<Object>();
         try {
-            List<Region> regionList = new ArrayList<Region>();
-
-            String hql = "select province,COUNT(province) from users where 1=1 GROUP BY province HAVING province IS NOT NULL ORDER BY COUNT(province) DESC ";
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("  SELECT COUNT(t.province) FROM (");
-            buffer.append(hql);
-            buffer.append(") t ");
-            PageUtil<Object[]> page = dao.getBySqlAndSqlCount(pageUtil, hql, buffer.toString(), null);
-            // list=dao.LoadAllSql("select province,COUNT(province) from users
-            // where 1=1 GROUP BY province HAVING province IS NOT NULL ORDER BY
-            // COUNT(province) DESC ", null);
-            for (int i = 0; i < page.getList().size(); i++) {
-                Object[] objects = page.getList().get(i);
-                Region region = new Region();
-                region.setProvince(objects[0] + "");
-                region.setUsersCount(objects[1] + "");
-                regionList.add(region);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT province,COUNT(province) FROM  users ");
+            sql.append("where 1=1 ");
+            if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    sql.append(" AND insert_time >= ? ");
+                    regionList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    sql.append(" AND insert_time <= ? ");
+                    regionList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    sql.append(" AND insert_time >= ? ");
+                    regionList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    sql.append(" AND insert_time <= ? ");
+                    regionList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
             }
-            pageUtil.setList(regionList);
-            return pageUtil;
+
+            /*if (!QwyUtil.isNullAndEmpty(insertTime)) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length >1) {
+                    sql.append(" AND u.insert_time  BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+                    regionList.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+                    regionList.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                }else{
+                    sql.append(" AND u.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+                    Date parse = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+                    String format = simpleDateFormat.format(parse);
+                    Date parse1 = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
+                    String format1 = simpleDateFormat.format(parse1);
+                    regionList.add(format);
+                    regionList.add(format1);
+                }
+            }*/
+            sql.append("GROUP BY province HAVING province IS NOT NULL ORDER BY COUNT(province) DESC  ");
+            StringBuffer sqlCount = new StringBuffer();
+            sqlCount.append("SELECT COUNT(t.province) FROM ( ");
+            sqlCount.append(sql);
+            sqlCount.append(") t ");
+            PageUtil bySqlAndSqlCount = dao.getBySqlAndSqlCount(pageUtil, sql.toString(), sqlCount.toString(), regionList.toArray());
+            List<Object[]> objlist = bySqlAndSqlCount.getList();
+            List<Region> regions = toProvince(objlist);
+            bySqlAndSqlCount.setList(regions);
+            return bySqlAndSqlCount;
+
         } catch (Exception e) {
             log.error("操作异常: ", e);
+        }
+        return null;
+
+    }
+
+    public List<Region> toProvince(List<Object[]> objects) {
+        List<Region> list = new ArrayList<>();
+        try {
+            for (Object[] obj : objects) {
+                Region region = new Region();
+                region.setProvince(obj[0] + "");
+                region.setUsersCount(obj[1] + "");
+                list.add(region);
+            }
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
 
@@ -651,7 +695,7 @@ public class UserInfoBean {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public List<Age> loadAge(String registPlatform) throws Exception {
+    public List<Age> loadAge(String registPlatform,String insertTime) throws Exception {
         try {
             StringBuffer buffer = new StringBuffer();
             buffer.append("select ");
@@ -1029,7 +1073,7 @@ public class UserInfoBean {
         return userTZTJs;
     }
 
-    public PageUtil<UserInfoList> findIndexUsersByChannel(PageUtil pageUtil, String channel, String username, String insertTime, String acinsertTime, String isbindbank,String level, String inMoney1, String inMoney2) {
+    public PageUtil<UserInfoList> findIndexUsersByChannel(PageUtil pageUtil, String channel, String username, String insertTime, String acinsertTime, String isbindbank, String level, String inMoney1, String inMoney2) {
         try {
             List<Object> list = new ArrayList<Object>();
             StringBuffer buff = new StringBuffer();
