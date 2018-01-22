@@ -460,6 +460,56 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateReturnInvestmentRate(String insertTime) {
+        try {
+            //先查询当天回款且投资的用户数量
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT COUNT(users_id)FROM( ");
+            sql.append("SELECT users_id FROM ( ");
+            sql.append("SELECT bc.users_id users_id FROM (SELECT users_id FROM interest_details  ");
+            sql.append("WHERE update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))bc");
+            sql.append("LEFT JOIN investors i ");
+            sql.append("ON i.users_id = bc.users_id ");
+            sql.append("WHERE i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append("UNION ALL ");
+            sql.append("SELECT bc.users_id users_id FROM (SELECT users_id FROM interest_details  ");
+            sql.append("WHERE update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))bc ");
+            sql.append("LEFT JOIN coin_purse_funds_record cpfr ON cpfr.users_id = bc.users_id ");
+            sql.append("WHERE cpfr.type = 'to' AND cpfr.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))t ");
+            sql.append("GROUP BY users_id)t ");
+            List todaybackCashNumberinList = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double todaybackCashNumberin = 0.0;
+            if (!QwyUtil.isNullAndEmpty(todaybackCashNumberinList.get(0))) {
+                todaybackCashNumberin = Double.valueOf((todaybackCashNumberinList.get(0) + "").replaceAll(",", ""));
+            }
+            //获取当日回款用户
+            list.clear();
+            sql.delete(0,sql.length());
+            list.add(insertTime);
+            list.add(insertTime);
+            sql.append("SELECT COUNT(users_id)FROM( ");
+            sql.append("SELECT users_id FROM interest_details   ");
+            sql.append("WHERE update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append("GROUP BY users_id)t ");
+            List todaybackCashNumberList = dao.LoadAllSql(sql.toString(), list.toArray());
+            Double todaybackCashNumber = 0.0;
+            if (!QwyUtil.isNullAndEmpty(todaybackCashNumberList.get(0))) {
+                todaybackCashNumber = Double.valueOf((todaybackCashNumberList.get(0) + "").replaceAll(",", ""));
+            }
+            Double outInRate = 0.0;
+            if(todaybackCashNumberin != 0.0 && todaybackCashNumber != 0.0){
+                outInRate = (todaybackCashNumberin/todaybackCashNumber);
+            }
+            return outInRate;
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
         return null;
     }
 
@@ -664,8 +714,11 @@ public class UpdateDailyStatementThreadBean {
             List<Object> list = new ArrayList<Object>();
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT SUM(q.strs) FROM qdtj_platform  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            sql.append("SELECT COUNT(nb) FROM ( ");
+            sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,investor_status FROM investors WHERE insert_time <  DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id)t ");
+            sql.append("WHERE t.nb >= 1 AND t.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')AND t.investor_status IN ('1','2','3') ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Integer todayNewBuyNumber = 0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -685,6 +738,35 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateFirstPercentConversion(String insertTime) {
+        try {
+            //获取今日注册人数
+            Integer integer = updateTodayregisterCount(insertTime);
+            //获取今日注册且首投的人数
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT COUNT(nb) FROM ( ");
+            sql.append("SELECT COUNT(i.id) nb ,i.users_id,i.investor_status FROM users u ");
+            sql.append("LEFT JOIN  investors i ON u.id = i.users_id ");
+            sql.append("WHERE i.insert_time BETWEEN DATE_FORMAT('?','%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append("AND u.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append("GROUP BY users_id ");
+            sql.append(")t WHERE t.nb >= 1 AND t.investor_status IN ('1','2','3') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer todayNewBuyNumber = 0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                todayNewBuyNumber = Integer.valueOf((loadAllSql.get(0) + ""));
+            }
+            Double firstPercentConversion = 0.0;
+            if(integer != 0 && todayNewBuyNumber != 0.0){
+                firstPercentConversion = todayNewBuyNumber.doubleValue()/integer.doubleValue();
+            }
+            return firstPercentConversion;
+        } catch (Exception e) {
+            log.error(e);
+        }
         return null;
     }
 
@@ -699,13 +781,11 @@ public class UpdateDailyStatementThreadBean {
             List<Object> list = new ArrayList<Object>();
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT i.`in_money` FROM investors i LEFT JOIN product p ON p.id = i.product_id "
-                    + "WHERE i.investor_status = '1' AND i.insert_time "
-                    + "BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') "
-                    + "ORDER BY i.`insert_time` ASC LIMIT 1");
-            // sql.append("SELECT SUM(i.in_money/100) FROM investors i LEFT JOIN product p ON p.id = i.product_id WHERE i.investor_status = '1' AND i.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ORDER BY i.`insert_time` ASC ");
-            // sql.append("SELECT SUM(q.stje) FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            sql.append("SELECT SUM(in_money) FROM ( ");
+            sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,SUM(in_money)/100 in_money,investor_status FROM investors WHERE insert_time <  DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id )t ");
+            sql.append("WHERE t.nb >= 1 AND t.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')AND t.investor_status IN ('1','2','3') ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double firstInvestmentTotalMoney = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -726,17 +806,13 @@ public class UpdateDailyStatementThreadBean {
      */
     private Double updateFirstInvestmentMoney(String insertTime) {
         try {
-            List<Object> list = new ArrayList<Object>();
-            list.add(insertTime);
-            list.add(insertTime);
-            StringBuffer sql = new StringBuffer();
-            sql.append("SELECT FORMAT((b.stje/a.strs),2) FROM "
-                    + "(SELECT SUM(q.strs) strs FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a,"
-                    + "(SELECT SUM(q.stje) stje FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )b ");
-            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            //首投人数
+            Integer integer = updateTodayfirstBuyNumber(insertTime);
+            //首投金额
+            Double aDouble = updateFirstInvestmentTotalMoney(insertTime);
             Double reInvestmentMoney = 0.0;
-            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
-                reInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            if(integer != 0 && aDouble != 0.0){
+                reInvestmentMoney = aDouble/integer;
             }
             return reInvestmentMoney;
         } catch (Exception e) {
@@ -756,19 +832,15 @@ public class UpdateDailyStatementThreadBean {
             List<Object> list = new ArrayList<Object>();
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT (a.zmoney-b.smoney) FROM "
-                            +"(SELECT SUM(i.`in_money`) AS zmoney FROM investors i LEFT JOIN product p ON p.id = i.product_id "
-                            +"WHERE i.investor_status = '1' AND i.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT('2018-01-18', '%Y-%m-%d 23:59:59') ORDER BY i.`insert_time` ASC)a,"
-                            +"(SELECT i.`in_money` AS smoney FROM investors i LEFT JOIN product p ON p.id = i.product_id "
-                            + "WHERE i.investor_status = '1' AND i.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT('2018-01-18', '%Y-%m-%d 23:59:59') ORDER BY i.`insert_time` ASC LIMIT 1)b ");
-            /*sql.append(
-                    "SELECT SUM(t.money) FROM (SELECT SUM(i.in_money/100) money FROM investors i LEFT JOIN product p ON p.id = i.product_id WHERE i.investor_status IN ('1','2','3') AND i.insert_time "
-                            + "BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') AND p.title NOT LIKE '新华新手%' "
-                            + "UNION ALL "
-                            + "SELECT SUM(cpf.money/100) money FROM coin_purse_funds_record cpf WHERE cpf.type = 'to'  AND cpf.insert_time BETWEEN "
-                            + "DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59'))t");*/
-            // sql.append("SELECT SUM(q.ftje) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            sql.append("SELECT SUM(i.in_money)/100 FROM ( ");
+            sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,in_money in_money,investor_status FROM investors ");
+            sql.append("WHERE insert_time <  DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id )t ");
+            sql.append("JOIN  investors i ON i.users_id = t.users_id ");
+            sql.append("WHERE  i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')AND t.investor_status IN ('1','2','3') ");
+            sql.append("AND i.insert_time > t.insert_time ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double reInvestmentMoney = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -819,7 +891,12 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT SUM(q.ftrs) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            sql.append("SELECT COUNT(1) FROM (SELECT i.users_id FROM ( ");
+            sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,investor_status FROM investors  ");
+            sql.append("WHERE insert_time <  DATE_FORMAT('2018-01-16','%Y-%m-%d 23:59:59') GROUP BY users_id )t ");
+            sql.append("JOIN  investors i ON i.users_id = t.users_id  ");
+            sql.append("WHERE  i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')AND t.investor_status IN ('1','2','3') ");
+            sql.append("AND i.insert_time > t.insert_time GROUP BY users_id)t ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Integer reInvestmentCount = 0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -843,8 +920,21 @@ public class UpdateDailyStatementThreadBean {
             List<Object> list = new ArrayList<Object>();
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT SUM(q.xzftyh) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            sql.append("SELECT COUNT(1) FROM (SELECT i.users_id FROM ( ");
+            sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,investor_status FROM investors ");
+            sql.append("WHERE insert_time <  DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id )t ");
+            sql.append("JOIN  investors i ON i.users_id = t.users_id  ");
+            sql.append("JOIN (SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,investor_status FROM investors  ");
+            sql.append("WHERE insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id )a ");
+            sql.append("ON a.users_id = t.users_id ");
+            sql.append("WHERE  i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')AND t.investor_status IN ('1','2','3') ");
+            sql.append("AND i.insert_time > t.insert_time  ");
+            sql.append("AND t.nb - a.nb < 2 ");
+            sql.append("GROUP BY users_id)t ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Integer addReInvestmentCount = 0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -869,7 +959,18 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT SUM(q.xhftyhtzze) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            sql.append("SELECT i.in_money/100 FROM ( ");
+            sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,investor_status FROM investors ");
+            sql.append("WHERE insert_time <  DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id )t ");
+            sql.append("JOIN  investors i ON i.users_id = t.users_id  ");
+            sql.append("JOIN (SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,investor_status FROM investors ");
+            sql.append("WHERE insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id )a ");
+            sql.append("ON a.users_id = t.users_id ");
+            sql.append("WHERE  i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')AND t.investor_status IN ('1','2','3') ");
+            sql.append("AND i.insert_time > t.insert_time ");
+            sql.append("AND t.nb - a.nb < 2 ");
+            sql.append("GROUP BY i.users_id ");
+            sql.append("ORDER BY i.insert_time ASC ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double addReInvestmentMoney = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -889,6 +990,26 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Integer updateReInvestmentAmount(String insertTime) {
+        try {
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT COUNT(1) FROM (SELECT i.users_id FROM ( ");
+            sql.append("SELECT users_id,MIN(insert_time) insert_time,investor_status FROM investors  ");
+            sql.append("WHERE insert_time <  DATE_FORMAT(?,'%Y-%m-%d 23:59:59') GROUP BY users_id )t ");
+            sql.append("JOIN  investors i ON i.users_id = t.users_id  ");
+            sql.append("WHERE  i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')AND t.investor_status IN ('1','2','3') ");
+            sql.append("AND i.insert_time > t.insert_time )t ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer addReInvestmentMoney = 0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                addReInvestmentMoney = Integer.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            return addReInvestmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
         return null;
     }
 
@@ -900,17 +1021,13 @@ public class UpdateDailyStatementThreadBean {
      */
     private Double updateMultipleRate(String insertTime) {
         try {
-            List<Object> list = new ArrayList<Object>();
-            list.add(insertTime);
-            list.add(insertTime);
-            StringBuffer sql = new StringBuffer();
-            sql.append("SELECT FORMAT((a.xzftyh/b.ftrs),2) FROM " +
-                    " (SELECT SUM(q.xzftyh) xzftyh FROM qdtj q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a," +
-                    " (SELECT SUM(q.ftrs) ftrs FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )b");
-            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            //查询复投用户
+            Integer reInvestmentCount = updateReInvestmentCount(insertTime);
+            //查询新增复投用户
+            Integer addReInvestmentCount = updateAddReInvestmentCount(insertTime);
             Double addReInvestmentMoney = 0.0;
-            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
-                addReInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            if (reInvestmentCount != 0 && addReInvestmentCount != 0) {
+                addReInvestmentMoney = addReInvestmentCount.doubleValue()/reInvestmentCount.doubleValue();
             }
             return addReInvestmentMoney;
         } catch (Exception e) {
@@ -927,6 +1044,29 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateOccupationRatio(String insertTime) {
+        try {
+            //查询复投用户
+            Double reInvestmentMoney = updateReInvestmentMoney(insertTime);
+            //查询今日平台投资金额
+            List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
+            StringBuffer sql = new StringBuffer();
+            sql.append("SELECT SUM(in_money)/100 FROM investors WHERE  investor_status IN ('1','2','3') ");
+            sql.append("AND insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            Integer investmentCount = 0;
+            Double investmentMoney = 0.0;
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+                investmentCount = Integer.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            }
+            if (reInvestmentMoney != 0.0 && investmentCount != 0) {
+                investmentMoney = reInvestmentMoney.doubleValue()/investmentCount.doubleValue();
+            }
+            return investmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
 
         return null;
     }
@@ -938,6 +1078,20 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateReInvestmentRate(String insertTime) {
+        try {
+            //查询复投金额
+            Integer reInvestmentCount = updateReInvestmentCount(insertTime);
+            //查询投资金额
+            Integer investCount = updateInvestCount(insertTime);
+            Double investmentMoney = 0.0;
+            if (reInvestmentCount != 0 && investCount != 0) {
+                investmentMoney = reInvestmentCount.doubleValue()/investCount.doubleValue();
+            }
+            return investmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
+
         return null;
     }
 
@@ -949,17 +1103,13 @@ public class UpdateDailyStatementThreadBean {
      */
     private Double updateSumMoney(String insertTime) {
         try {
-            List<Object> list = new ArrayList<Object>();
-            list.add(insertTime);
-            list.add(insertTime);
-            StringBuffer sql = new StringBuffer();
-            sql.append("SELECT FORMAT((b.ftje/a.ftrs),2) FROM " +
-                    " (SELECT SUM(q.ftrs) ftrs FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a," +
-                    " ( SELECT SUM(q.ftje) ftje FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )b");
-            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+            //复投用户数
+            Integer reInvestmentCount = updateReInvestmentCount(insertTime);
+            //查询复投金额
+            Double reInvestmentMoney = updateReInvestmentMoney(insertTime);
             Double addReInvestmentMoney = 0.0;
-            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
-                addReInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            if (reInvestmentCount != 0 && reInvestmentMoney != 0.0) {
+                addReInvestmentMoney = reInvestmentMoney/reInvestmentCount;
             }
             return addReInvestmentMoney;
         } catch (Exception e) {
@@ -975,8 +1125,19 @@ public class UpdateDailyStatementThreadBean {
      * @return
      */
     private Double updateCapitaInvestmentMoney(String insertTime) {
+        try {
+            //复投用户数
+            Integer investCount = updateInvestCount(insertTime);
+            //查询复投金额
+            Double tradingVolume = updateTradingVolume(insertTime);
+            Double addReInvestmentMoney = 0.0;
+            if (investCount != 0 && tradingVolume != 0.0) {
+                addReInvestmentMoney = investCount/tradingVolume;
+            }
+            return addReInvestmentMoney;
+        } catch (Exception e) {
+            log.error(e);
+        }
         return null;
     }
-
-
 }
