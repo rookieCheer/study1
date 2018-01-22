@@ -32,33 +32,32 @@ public class RankingBean {
      */
     @SuppressWarnings("unchecked")
     public PageUtil<Rank> loadInvestorRank(PageUtil pageUtil, String insertTime) {
-        StringBuffer hql = new StringBuffer();
+        StringBuffer sql = new StringBuffer();
         List<Object> rankList = new ArrayList<Object>();
         try {
-            hql.append("SELECT i.users_id,SUM(in_money) AS in_money,username,real_name " +
+            sql.append("SELECT i.users_id,SUM(in_money) AS in_money,username,real_name " +
                     "FROM investors i,users u,users_info ui WHERE u.id=i.users_id AND i.users_id=ui.users_id " +
                     "AND i.investor_status IN (1,2,3) ");
-
             if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    hql.append(" AND i.insert_time >= ? ");
+                    sql.append(" AND i.insert_time >= ? ");
                     rankList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    hql.append(" AND i.insert_time <= ? ");
+                    sql.append(" AND i.insert_time <= ? ");
                     rankList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
-                    hql.append(" AND i.insert_time >= ? ");
+                    sql.append(" AND i.insert_time >= ? ");
                     rankList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    hql.append(" AND i.insert_time <= ? ");
+                    sql.append(" AND i.insert_time <= ? ");
                     rankList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
             }
-            hql.append("GROUP BY i.users_id ORDER BY in_money DESC  ");
+            sql.append("GROUP BY i.users_id ORDER BY in_money DESC  ");
             StringBuffer buffer = new StringBuffer();
             buffer.append("  SELECT COUNT(t.in_money) FROM (");
-            buffer.append(hql);
+            buffer.append(sql);
             buffer.append(") t ");
-            PageUtil bySqlAndSqlCount = dao.getBySqlAndSqlCount(pageUtil, hql.toString(), buffer.toString(), rankList.toArray());
+            PageUtil bySqlAndSqlCount = dao.getBySqlAndSqlCount(pageUtil, sql.toString(), buffer.toString(), rankList.toArray());
             List<Object[]> objlist = bySqlAndSqlCount.getList();
             List<Rank> ranks = toInvestorRank(objlist);
             bySqlAndSqlCount.setList(ranks);
