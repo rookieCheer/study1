@@ -374,6 +374,64 @@ public class UserStatAction extends BaseAction {
         }
         return null;
     }
+    /**
+     * 导出地域统计信息
+     */
+    public String exportProvince() {
+        if (!QwyUtil.isNullAndEmpty(insertTime)) {
+
+        } else {
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            String time = sd.format(date);
+        }
+        try {
+            PageUtil pageUtil = new PageUtil();
+            pageUtil.setCurrentPage(currentPage);
+            pageUtil.setPageSize(999999);
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet("地域统计表");
+            HSSFRow row = sheet.createRow((int) 0);
+            HSSFCellStyle style = wb.createCellStyle();
+            style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+            HSSFCell cell = row.createCell(0);
+            cell = row.createCell(0);
+            cell.setCellValue("序号");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("省份");
+            cell.setCellStyle(style);
+            cell = row.createCell(2);
+            cell.setCellValue("城市");
+            cell.setCellStyle(style);
+            cell = row.createCell(3);
+            cell.setCellValue("注册人数");
+            cell.setCellStyle(style);
+            cell = row.createCell(4);
+            List<Region> list = bean.loadProvince(pageUtil, insertTime).getList();
+
+            Region  region = null;
+            for (int i = 0; i < list.size(); i++) {
+                row = sheet.createRow((int) i + 1);
+                region = (Region) list.get(i);
+                row.createCell(0).setCellValue((int) i + 1);//序号
+                row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(region.getProvince()) ? region.getProvince():"");
+                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(region.getCity()) ? region.getCity():"");
+                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(region.getUsersCount()) ? region.getUsersCount():"");
+
+            }
+            String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_province.xls";
+            String realPath = request.getServletContext().getRealPath("/report/" + pathname);
+            log.info("地域统计表表地址：" + realPath);
+            FileOutputStream fout = new FileOutputStream(realPath);
+            wb.write(fout);
+            fout.close();
+            response.getWriter().write("/report/" + pathname);
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
+        return null;
+    }
 
     /**
      * 根据省份下属城市统计人数
