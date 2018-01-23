@@ -387,7 +387,7 @@ public class UpdateDailyStatementThreadBean {
             sql.append(" UNION ALL ");
             sql.append(" SELECT in_money money FROM coin_purse cp WHERE in_money > 0 AND update_time < DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             sql.append(" UNION ALL ");
-            sql.append(" SELECT total_money FROM users_info WHERE update_time < DATE_FORMAT(?,'%Y-%m-%d 23:59:59')t ");
+            sql.append(" SELECT total_money FROM users_info WHERE update_time < DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))t ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double tradingVolume = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
