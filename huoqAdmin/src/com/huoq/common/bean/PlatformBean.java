@@ -206,7 +206,8 @@ public class PlatformBean {
                     // 产品id
                     String id = (String) array[0];
                     // 募集总金额
-                    double dtotal = (Double) array[2];
+                    BigDecimal total = new BigDecimal(array[2].toString());
+                    double dtotal = total.doubleValue();
                     // 实际总投资金额
                     double inv = (Double) array[3];
                     if (inv > dtotal * 0.9) {
