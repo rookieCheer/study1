@@ -1134,9 +1134,9 @@ public class UpdateDailyStatementThreadBean {
      */
     private Double updateCapitaInvestmentMoney(String insertTime) {
         try {
-            //复投用户数
+            //投资户数
             Integer investCount = updateInvestCount(insertTime);
-            //查询复投金额
+            //投资金额
             Double tradingVolume = updateTradingVolume(insertTime);
             Double addReInvestmentMoney = 0.0;
             if (investCount != 0 && tradingVolume != 0.0) {

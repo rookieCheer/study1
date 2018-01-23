@@ -609,6 +609,18 @@ public class RegisterUserBean {
 						users.setProvince(QwyUtil.isNullAndEmpty(map.get("province"))?"未知":map.get("province")+"");
 						users.setCity(QwyUtil.isNullAndEmpty(map.get("city"))?"未知":map.get("city")+"");
 						users.setCardType(QwyUtil.isNullAndEmpty(map.get("cardType"))?"未知":map.get("cardType")+"");
+						if(map.get("province").equals("北京")){
+							users.setCity("北京");
+						}
+						if(map.get("province").equals("天津")){
+							users.setCity("天津");
+						}
+						if(map.get("province").equals("上海")){
+							users.setCity("上海");
+						}
+						if(map.get("province").equals("重庆")){
+							users.setCity("重庆");
+						}
 					}
 				} else {
 					users.setProvince("未知");
@@ -746,12 +758,9 @@ public class RegisterUserBean {
 	/**
 	 * 发放红包
 	 * @param currUser 注册用户
-	 * @param invitesUser邀请用户
 	 * @param red 修改红包是否发放红包
 	 * @param send 发放红包记录
-	 * @param record发放红包记录流水
 	 * @param currUserRecord 当前用户资金流水
-	 * @param invitesRecord邀请用户资金流水
 	 * @return
 	 */
 	public boolean sengHongBao(UsersInfo currUser, UsersInfo invitesUser,RedPackets red ,SendRedPackets send,RedPacketsRecord record,FundRecord currUserRecord,FundRecord invitesRecord) {
