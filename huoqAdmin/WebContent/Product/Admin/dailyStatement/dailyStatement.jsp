@@ -156,6 +156,40 @@
                 <td>复投客单金额</td>
                 <td>人均投资金额</td>
             </tr>
+            <tr>
+                <td>合计</td>
+                <td><fmt:formatDate value="${list[0].insertTime}" pattern="yyyy-MM-dd"/></td>
+                <td><fmt:formatNumber value="${tj.tradingVolume}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.loanAmountAll}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.loanAmount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.reimbursementAmount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.reimbursementAmountAll}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.interestpayment}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.todayOutCashMoney}" pattern="#.##"/></td>
+                <td></td>
+                <td><fmt:formatNumber value="${tj.capitalInflow}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.netInflow}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.capitalStock}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.activationCount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.investCount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.todayregisterCount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.todaycertificationCount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.todayNewBuyNumber}" pattern="#.##"/></td>
+                <td></td>
+                <td><fmt:formatNumber value="${tj.firstInvestmentTotalMoney}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.firstInvestmentMoney}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.reInvestmentMoney}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.amountNewMoney}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.reInvestmentCount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.addReInvestmentCount}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.addReInvestmentMoney}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.reInvestmentAmount}" pattern="#.##"/></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><fmt:formatNumber value="${tj.sumMoney}" pattern="#.##"/></td>
+                <td><fmt:formatNumber value="${tj.capitaInvestmentMoney}" pattern="#.##"/></td>
+            </tr>
             <c:forEach items="${list}" var="mylist" varStatus="status">
                 <tr>
                     <td>${status.index + 1}</td>

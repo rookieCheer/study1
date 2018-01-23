@@ -82,6 +82,7 @@ public class DailyStatementAction extends BaseAction {
             if (!QwyUtil.isNullAndEmpty(pageUtil)) {
                 request.setAttribute("pageUtil", pageUtil);
                 request.setAttribute("list", pageUtil.getList());
+                getRequest().setAttribute("tj", bean.tjDailyStatement(pageUtil.getList()));
                 return "dailyStatement";
             }
             return "dailyStatement";
@@ -208,9 +209,10 @@ public class DailyStatementAction extends BaseAction {
             cell.setCellStyle(style);
             cell = row.createCell(31);
             cell.setCellValue("人均投资金额");
+
+            
             List<DailyStatement> list = bean.findDailyStatement(pageUtil, insertTime).getList();
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-
             DailyStatement dailyStatement = null;
             for (int i = 0; i < list.size(); i++) {
                 row = sheet.createRow((int) i + 1);

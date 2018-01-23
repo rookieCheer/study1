@@ -3,6 +3,7 @@ package com.huoq.admin.dailyStatement.bean;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.DailyStatement;
+import com.huoq.orm.Qdtj;
 import com.huoq.thread.dao.ThreadDAO;
 import com.huoq.util.MyLogger;
 import org.springframework.stereotype.Service;
@@ -236,7 +237,7 @@ public class UpdateDailyStatementThreadBean {
                 dailyStatement.setAddReInvestmentCount(Integer.valueOf(addReInvestmentCount.toString().replaceAll(",", "")));
                 //新增复投总金额
                 Double addReInvestmentMoney = updateAddReInvestmentMoney(today);
-                dailyStatement.setAddReInvestmentMoney(Double.valueOf(reInvestmentMoney.toString().replaceAll(",", "")));
+                dailyStatement.setAddReInvestmentMoney(Double.valueOf(addReInvestmentMoney.toString().replaceAll(",", "")));
                 //复投次数
                 Integer reInvestmentAmount = updateReInvestmentAmount(today);
                 dailyStatement.setReInvestmentAmount(Integer.valueOf(reInvestmentAmount.toString().replaceAll(",", "")));
@@ -469,16 +470,18 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT COUNT(users_id)FROM( ");
             sql.append("SELECT users_id FROM ( ");
-            sql.append("SELECT bc.users_id users_id FROM (SELECT users_id FROM interest_details  ");
-            sql.append("WHERE update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))bc");
+            sql.append("SELECT bc.users_id users_id FROM (SELECT users_id FROM interest_details ");
+            sql.append("WHERE update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))bc ");
             sql.append("LEFT JOIN investors i ");
             sql.append("ON i.users_id = bc.users_id ");
             sql.append("WHERE i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             sql.append("UNION ALL ");
-            sql.append("SELECT bc.users_id users_id FROM (SELECT users_id FROM interest_details  ");
+            sql.append("SELECT bc.users_id users_id FROM (SELECT users_id FROM interest_details ");
             sql.append("WHERE update_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))bc ");
             sql.append("LEFT JOIN coin_purse_funds_record cpfr ON cpfr.users_id = bc.users_id ");
             sql.append("WHERE cpfr.type = 'to' AND cpfr.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59'))t ");
@@ -550,11 +553,13 @@ public class UpdateDailyStatementThreadBean {
             List<Object> list = new ArrayList<Object>();
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT FORMAT((a.money  -b.money1),2) FROM "
-                    + "(SELECT SUM(cz.money)/100 money FROM cz_record cz WHERE cz.STATUS = '1' AND TYPE = '1' AND cz.insert_time "
+                    + "(SELECT IFNULL(SUM(cz.money)/100,0) money FROM cz_record cz WHERE cz.STATUS = '1' AND TYPE = '1' AND cz.insert_time "
                     + "BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00')  AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )a,"
-                    + "(SELECT SUM(tr.money/100) money1 FROM tx_record tr  WHERE tr.is_check = '1' AND tr.status = '1' AND tr.check_time "
+                    + "(SELECT IFNULL(SUM(tr.money/100),0) money1 FROM tx_record tr  WHERE tr.is_check = '1' AND tr.status = '1' AND tr.check_time "
                     + "BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59'))b ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double netInflow = 0.0;
@@ -833,7 +838,6 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             list.add(insertTime);
             list.add(insertTime);
-            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT SUM(i.in_money)/100 FROM ( ");
             sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,in_money in_money,investor_status FROM investors ");
@@ -958,6 +962,9 @@ public class UpdateDailyStatementThreadBean {
             List<Object> list = new ArrayList<Object>();
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT i.in_money/100 FROM ( ");
             sql.append("SELECT COUNT(id) nb ,users_id,MIN(insert_time) insert_time,investor_status FROM investors ");
@@ -973,7 +980,7 @@ public class UpdateDailyStatementThreadBean {
             sql.append("ORDER BY i.insert_time ASC ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double addReInvestmentMoney = 0.0;
-            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+            if (!QwyUtil.isNullAndEmpty(loadAllSql) && !QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
                 addReInvestmentMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
             }
             return addReInvestmentMoney;
@@ -992,6 +999,7 @@ public class UpdateDailyStatementThreadBean {
     private Integer updateReInvestmentAmount(String insertTime) {
         try {
             List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
             list.add(insertTime);
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
@@ -1139,5 +1147,169 @@ public class UpdateDailyStatementThreadBean {
             log.error(e);
         }
         return null;
+    }
+
+
+    /**
+     * 运营日报表合计
+     */
+    public DailyStatement tjDailyStatement(List<DailyStatement> dailyStatements) throws Exception {
+        DailyStatement ds = new DailyStatement();
+
+        //交易额
+        if (QwyUtil.isNullAndEmpty(ds.getTradingVolume()))
+            ds.setTradingVolume(0.0);
+
+        //在贷金额（含零钱罐）
+        if (QwyUtil.isNullAndEmpty(ds.getLoanAmountAll()))
+            ds.setLoanAmountAll(0.0);
+
+        //在贷金额（不含零钱罐
+        if (QwyUtil.isNullAndEmpty(ds.getLoanAmount()))
+            ds.setLoanAmount(0.0);
+
+        //回款金额（不含零钱罐）
+        if (QwyUtil.isNullAndEmpty(ds.getReimbursementAmount()))
+            ds.setReimbursementAmount(0.0);
+
+        //回款金额（含零钱罐及余额）
+        if (QwyUtil.isNullAndEmpty(ds.getReimbursementAmountAll()))
+            ds.setReimbursementAmountAll(0.0);
+
+        //支付利息
+        if (QwyUtil.isNullAndEmpty(ds.getInterestpayment()))
+            ds.setInterestpayment(0.0);
+
+        //今日提现金额
+        if (QwyUtil.isNullAndEmpty(ds.getTodayOutCashMoney()))
+            ds.setTodayOutCashMoney(0.0);
+
+        //回款用户投资率
+        if (QwyUtil.isNullAndEmpty(ds.getReturnInvestmentRate()))
+            ds.setReturnInvestmentRate(0.0);
+
+        //资金流入额
+        if (QwyUtil.isNullAndEmpty(ds.getCapitalInflow()))
+            ds.setCapitalInflow(0.0);
+
+        //净流入金额
+        if (QwyUtil.isNullAndEmpty(ds.getNetInflow()))
+            ds.setNetInflow(0.0);
+        //资金存量
+        if (QwyUtil.isNullAndEmpty(ds.getCapitalStock()))
+            ds.setCapitalStock(0.0);
+        //激活用户数
+        if (QwyUtil.isNullAndEmpty(ds.getActivationCount()))
+            ds.setActivationCount(0);
+        //投资用户数
+        if (QwyUtil.isNullAndEmpty(ds.getInvestCount()))
+            ds.setInvestCount(0);
+        //今日注册人数
+        if (QwyUtil.isNullAndEmpty(ds.getTodayregisterCount()))
+            ds.setTodayregisterCount(0);
+        //今日认证用户
+        if (QwyUtil.isNullAndEmpty(ds.getTodaycertificationCount()))
+            ds.setTodaycertificationCount(0);
+        //今日首投用户
+        if (QwyUtil.isNullAndEmpty(ds.getTodayNewBuyNumber()))
+            ds.setTodayNewBuyNumber(0);
+        //首投用户转化率
+        if (QwyUtil.isNullAndEmpty(ds.getFirstPercentConversion()))
+            ds.setFirstPercentConversion(0.0);
+        //首投总金额
+        if (QwyUtil.isNullAndEmpty(ds.getFirstInvestmentTotalMoney()))
+            ds.setFirstInvestmentTotalMoney(0.0);
+        // 首投客单金额（元）
+        if (QwyUtil.isNullAndEmpty(ds.getFirstInvestmentMoney()))
+            ds.setFirstInvestmentMoney(0.0);
+        //复投金额（元）
+        if (QwyUtil.isNullAndEmpty(ds.getReInvestmentMoney()))
+            ds.setReInvestmentMoney(0.0);
+        //零钱罐新增金额（元）
+        if (QwyUtil.isNullAndEmpty(ds.getAmountNewMoney()))
+            ds.setAmountNewMoney(0.0);
+        //复投用户数
+        if (QwyUtil.isNullAndEmpty(ds.getReInvestmentCount()))
+            ds.setReInvestmentCount(0);
+        //新增复投用户数
+        if (QwyUtil.isNullAndEmpty(ds.getAddReInvestmentCount()))
+            ds.setAddReInvestmentCount(0);
+        //新增复投用户投资总额（元）
+        if (QwyUtil.isNullAndEmpty(ds.getAddReInvestmentMoney()))
+            ds.setAddReInvestmentMoney(0.0);
+        //复投次数
+        if (QwyUtil.isNullAndEmpty(ds.getReInvestmentAmount()))
+            ds.setReInvestmentAmount(0);
+        //新增复投率（%）
+        if (QwyUtil.isNullAndEmpty(ds.getMultipleRate()))
+            ds.setMultipleRate(0.0);
+        //复投用户占比（%）
+        if (QwyUtil.isNullAndEmpty(ds.getOccupationRatio()))
+            ds.setOccupationRatio(0.0);
+        //复投金额占比（%）
+        if (QwyUtil.isNullAndEmpty(ds.getReInvestmentRate()))
+            ds.setReInvestmentRate(0.0);
+        //复投客单金额（元）
+        if (QwyUtil.isNullAndEmpty(ds.getSumMoney()))
+            ds.setSumMoney(0.0);
+        //人均投资金额（元）
+        if (QwyUtil.isNullAndEmpty(ds.getCapitaInvestmentMoney()))
+            ds.setCapitaInvestmentMoney(0.0);
+        if (!QwyUtil.isNullAndEmpty(dailyStatements)) {
+            for (DailyStatement dailyStatement : dailyStatements) {
+                if (!QwyUtil.isNullAndEmpty(dailyStatement))
+                //交易额
+                ds.setTradingVolume(QwyUtil.calcNumber(dailyStatement.getTradingVolume(), ds.getTradingVolume(), "+").doubleValue());
+                //在贷金额（含零钱罐）
+                ds.setLoanAmountAll(QwyUtil.calcNumber(dailyStatement.getLoanAmountAll(), ds.getLoanAmountAll(), "+").doubleValue());
+                //在贷金额（不含零钱罐）
+                ds.setLoanAmount(QwyUtil.calcNumber(dailyStatement.getLoanAmount(), ds.getLoanAmount(), "+").doubleValue());
+                //回款金额（不含零钱罐）
+                ds.setReimbursementAmount(QwyUtil.calcNumber(dailyStatement.getReimbursementAmount(), ds.getReimbursementAmount(), "+").doubleValue());
+                //回款金额（含零钱罐及余额）
+                ds.setReimbursementAmountAll(QwyUtil.calcNumber(dailyStatement.getReimbursementAmountAll(), ds.getReimbursementAmountAll(), "+").doubleValue());
+                //支付利息
+                ds.setInterestpayment(QwyUtil.calcNumber(dailyStatement.getInterestpayment(), ds.getInterestpayment(), "+").doubleValue());
+                //今日提现金额
+                ds.setTodayOutCashMoney(QwyUtil.calcNumber(dailyStatement.getTodayOutCashMoney(), ds.getTodayOutCashMoney(), "+").doubleValue());
+                //资金流入额
+                ds.setCapitalInflow(QwyUtil.calcNumber(dailyStatement.getCapitalInflow(), ds.getCapitalInflow(), "+").doubleValue());
+                //净流入金额
+                ds.setNetInflow(QwyUtil.calcNumber(dailyStatement.getNetInflow(), ds.getNetInflow(), "+").doubleValue());
+                //资金存量
+                ds.setCapitalStock(QwyUtil.calcNumber(dailyStatement.getCapitalStock(), ds.getCapitalStock(), "+").doubleValue());
+                //激活用户数
+                ds.setActivationCount(QwyUtil.calcNumber(dailyStatement.getActivationCount(), ds.getActivationCount(), "+").intValue());
+                //投资用户数
+                ds.setInvestCount(QwyUtil.calcNumber(dailyStatement.getInvestCount(), ds.getInvestCount(), "+").intValue());
+                //今日注册人数
+                ds.setTodayregisterCount(QwyUtil.calcNumber(dailyStatement.getTodayregisterCount(), ds.getTodayregisterCount(), "+").intValue());
+                //今日认证用户
+                ds.setTodaycertificationCount(QwyUtil.calcNumber(dailyStatement.getTodaycertificationCount(), ds.getTodaycertificationCount(), "+").intValue());
+                //今日首投用户
+                ds.setTodayNewBuyNumber(QwyUtil.calcNumber(dailyStatement.getTodayNewBuyNumber(), ds.getTodayNewBuyNumber(), "+").intValue());
+                //首投总金额
+                ds.setFirstInvestmentTotalMoney(QwyUtil.calcNumber(dailyStatement.getFirstInvestmentTotalMoney(), ds.getFirstInvestmentTotalMoney(), "+").doubleValue());
+                //首投客单金额（元）
+                ds.setFirstInvestmentMoney(QwyUtil.calcNumber(dailyStatement.getFirstInvestmentMoney(), ds.getFirstInvestmentMoney(), "+").doubleValue());
+                //复投金额（元）
+                ds.setReInvestmentMoney(QwyUtil.calcNumber(dailyStatement.getReInvestmentMoney(), ds.getReInvestmentMoney(), "+").doubleValue());
+                //零钱罐新增金额（元）
+                ds.setAmountNewMoney(QwyUtil.calcNumber(dailyStatement.getAmountNewMoney(), ds.getAmountNewMoney(), "+").doubleValue());
+                //复投用户数
+                ds.setReInvestmentCount(QwyUtil.calcNumber(dailyStatement.getReInvestmentCount(), ds.getReInvestmentCount(), "+").intValue());
+                //新增复投用户数
+                ds.setAddReInvestmentCount(QwyUtil.calcNumber(dailyStatement.getAddReInvestmentCount(), ds.getAddReInvestmentCount(), "+").intValue());
+                //新增复投用户投资总额（元）
+                ds.setAddReInvestmentMoney(QwyUtil.calcNumber(dailyStatement.getAddReInvestmentMoney(), ds.getAddReInvestmentMoney(), "+").doubleValue());
+                //复投次数
+                ds.setReInvestmentAmount(QwyUtil.calcNumber(dailyStatement.getReInvestmentAmount(), ds.getReInvestmentAmount(), "+").intValue());
+                //复投客单金额（元）
+                ds.setSumMoney(QwyUtil.calcNumber(dailyStatement.getSumMoney(), ds.getSumMoney(), "+").doubleValue());
+                //人均投资金额（元）
+                ds.setCapitaInvestmentMoney(QwyUtil.calcNumber(dailyStatement.getCapitaInvestmentMoney(), ds.getCapitaInvestmentMoney(), "+").doubleValue());
+            }
+        }
+        return ds;
     }
 }

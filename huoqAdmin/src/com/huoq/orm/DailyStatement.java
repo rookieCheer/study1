@@ -17,7 +17,7 @@ public class DailyStatement implements Serializable {
     private Double  reimbursementAmountAll;//回款金额（含零钱罐及余额）
     private Double  interestpayment;//支付利息
     private Double  todayOutCashMoney;// 今日提现金额
-    private Double  returnInvestmentRate;// 回款用户投资率
+    private Double  returnInvestmentRate;// 回款用户投资率!!!
     private Double  capitalInflow;// 资金流入额
     private Double  netInflow;// 净流入金额
     private Double  capitalStock;// 资金存量
@@ -26,7 +26,7 @@ public class DailyStatement implements Serializable {
     private Integer todayregisterCount;// 今日注册人数
     private Integer todaycertificationCount;// 今日认证用户
     private Integer todayNewBuyNumber;// 今日首投用户
-    private Double  firstPercentConversion;// 首投用户转化率
+    private Double  firstPercentConversion;// 首投用户转化率!!!
     private Double  firstInvestmentTotalMoney;//首投总金额
     private Double  firstInvestmentMoney ;// 首投客单金额（元）
     private Double  reInvestmentMoney;// 复投金额（元）
@@ -35,9 +35,9 @@ public class DailyStatement implements Serializable {
     private Integer addReInvestmentCount;//新增复投用户数
     private Double  addReInvestmentMoney;//新增复投用户投资总额（元）
     private Integer reInvestmentAmount;//复投次数
-    private Double  multipleRate;// 新增复投率（%）
-    private Double  occupationRatio;// 复投用户占比（%）
-    private Double  reInvestmentRate;// 复投金额占比（%）
+    private Double  multipleRate;// 新增复投率（%）!!!
+    private Double  occupationRatio;// 复投用户占比（%）!!!
+    private Double  reInvestmentRate;// 复投金额占比（%）!!!
     private Double  sumMoney;// 复投客单金额（元）
     private Double  capitaInvestmentMoney;// 人均投资金额（元）
 
