@@ -2,6 +2,8 @@ package com.huoq.admin.product.action;
 
 import javax.annotation.Resource;
 
+import com.huoq.common.util.DESEncrypt;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.struts2.config.Namespace;
 import org.apache.struts2.config.ParentPackage;
 import org.apache.struts2.config.Result;
@@ -13,6 +15,11 @@ import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.Rank;
 import com.huoq.orm.UsersAdmin;
+
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -83,6 +90,71 @@ public class RankingAction extends BaseAction{
 		}
 		return null;
 	}
+
+	/**
+	 * 导出金额排行榜
+	 * @return
+	 */
+	public String exportInvestorsRank() {
+		if (!QwyUtil.isNullAndEmpty(insertTime)) {
+
+		} else {
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = new Date();
+			String time = sd.format(date);
+		}
+		try {
+			PageUtil pageUtil = new PageUtil();
+			pageUtil.setCurrentPage(currentPage);
+			pageUtil.setPageSize(999999);
+			HSSFWorkbook wb = new HSSFWorkbook();
+			HSSFSheet sheet = wb.createSheet("金额排行榜表");
+			HSSFRow row = sheet.createRow((int) 0);
+			HSSFCellStyle style = wb.createCellStyle();
+			style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+			HSSFCell cell = row.createCell(0);
+			cell = row.createCell(0);
+			cell.setCellValue("序号");
+			cell.setCellStyle(style);
+			cell = row.createCell(1);
+			cell.setCellValue("用户id");
+			cell.setCellStyle(style);
+			cell = row.createCell(2);
+			cell.setCellValue("用户名");
+			cell.setCellStyle(style);
+			cell = row.createCell(3);
+			cell.setCellValue("姓名");
+			cell.setCellStyle(style);
+			cell = row.createCell(4);
+			cell.setCellValue("投资总金额（元）");
+			cell.setCellStyle(style);
+			cell = row.createCell(5);
+			List<Rank> list = bean.loadInvestorRank(pageUtil,insertTime).getList();
+
+			Rank  rank = null;
+			for (int i = 0; i < list.size(); i++) {
+				row = sheet.createRow((int) i + 1);
+				rank = (Rank) list.get(i);
+				row.createCell(0).setCellValue((int) i + 1);//序号
+				row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersId()) ?  rank.getUsersId():"");
+				row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersname())? DESEncrypt.jieMiUsername(rank.getUsersname()):"");
+				row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(rank.getRealname()) ? rank.getRealname():"");
+				row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(rank.getInmoney()) ?  (Double.valueOf(rank.getInmoney())*0.01)+"":"");
+
+			}
+			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_investors_rank.xls";
+			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
+			log.info("金额排行榜表地址：" + realPath);
+			FileOutputStream fout = new FileOutputStream(realPath);
+			wb.write(fout);
+			fout.close();
+			response.getWriter().write("/report/" + pathname);
+		} catch (Exception e) {
+			log.error("操作异常: ", e);
+		}
+		return null;
+	}
+
 	/*
 	 * 充值总金额排行榜
 	 */
