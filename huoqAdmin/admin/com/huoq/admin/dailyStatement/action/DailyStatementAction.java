@@ -105,11 +105,11 @@ public class DailyStatementAction extends BaseAction {
 
         }
         try {
-            PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
+            PageUtil<DailyStatement> pageUtil = new PageUtil<DailyStatement>();
             pageUtil.setCurrentPage(currentPage);
             pageUtil.setPageSize(999999);
             HSSFWorkbook wb = new HSSFWorkbook();
-            HSSFSheet sheet = wb.createSheet("绑卡信息统计表");
+            HSSFSheet sheet = wb.createSheet("运营日报表");
             HSSFRow row = sheet.createRow((int) 0);
             HSSFCellStyle style = wb.createCellStyle();
             style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
@@ -209,13 +209,80 @@ public class DailyStatementAction extends BaseAction {
             cell.setCellStyle(style);
             cell = row.createCell(31);
             cell.setCellValue("人均投资金额");
-
-            
             List<DailyStatement> list = bean.findDailyStatement(pageUtil, insertTime).getList();
+            DailyStatement tjDailyStatement = bean.tjDailyStatement(list);
+            if(!QwyUtil.isNullAndEmpty(tjDailyStatement)){
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+                String format = sd.format(list.get(0).getInsertTime());
+                row = sheet.createRow(1);
+                row.createCell(0).setCellValue("合计");//序号
+                //查询日期
+                row.createCell(1).setCellValue(format);
+                //交易额
+                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getTradingVolume()) ? tjDailyStatement.getTradingVolume() : 0.0);
+                //在贷金额（含零钱罐）
+                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getLoanAmountAll()) ? tjDailyStatement.getLoanAmountAll() : 0.0);
+                //在贷金额（不含零钱罐）
+                row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getLoanAmount()) ? tjDailyStatement.getLoanAmount() : 0.0);
+                //回款金额（不含零钱罐）
+                row.createCell(5).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getReimbursementAmount()) ? tjDailyStatement.getReimbursementAmount() : 0.0);
+                //回款金额（含零钱罐及余额）
+                row.createCell(6).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getReimbursementAmountAll()) ? tjDailyStatement.getReimbursementAmountAll() : 0.0);
+                //支付利息
+                row.createCell(7).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getInterestpayment()) ? tjDailyStatement.getInterestpayment() : 0.0);
+                //今日提现金额
+                row.createCell(8).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getTodayOutCashMoney()) ? tjDailyStatement.getTodayOutCashMoney() : 0.0);
+                // 回款用户投资率
+                row.createCell(9).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getReturnInvestmentRate()) ? (QwyUtil.jieQuFa( (tjDailyStatement.getReturnInvestmentRate()*100),2))  +"%": "0.0");
+                // 资金流入额
+                row.createCell(10).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getCapitalInflow()) ? tjDailyStatement.getCapitalInflow():0.0);
+                // 净流入金额
+                row.createCell(11).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getNetInflow()) ? tjDailyStatement.getNetInflow(): 0.0);
+                //平台资金存量
+                row.createCell(12).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getCapitalStock()) ? tjDailyStatement.getCapitalStock() : 0.0);
+                //激活用户数
+                row.createCell(13).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getActivationCount()) ?tjDailyStatement.getActivationCount() : 0);
+                //投资用户数
+                row.createCell(14).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getInvestCount()) ?tjDailyStatement.getInvestCount() : 0);
+                //今日注册用户
+                row.createCell(15).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getTodayregisterCount()) ?tjDailyStatement.getTodayregisterCount() : 0);
+                //今日认证用户
+                row.createCell(16).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getTodaycertificationCount()) ?tjDailyStatement.getTodaycertificationCount() : 0);
+                //今日首投人数
+                row.createCell(17).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getTodayNewBuyNumber()) ? tjDailyStatement.getTodayNewBuyNumber() : 0);
+                // 首投用户转化率
+                row.createCell(18).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getFirstPercentConversion()) ?  (QwyUtil.jieQuFa((tjDailyStatement.getFirstPercentConversion()*100),2))  +"%": "0.0");
+                //首投总金额
+                row.createCell(19).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getFirstInvestmentTotalMoney()) ? tjDailyStatement.getFirstInvestmentTotalMoney() : 0.0);
+                // 首投客单金额（元）
+                row.createCell(20).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getFirstInvestmentMoney()) ? tjDailyStatement.getFirstInvestmentMoney() : 0.0);
+                // 复投金额（元）
+                row.createCell(21).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getReInvestmentMoney()) ? tjDailyStatement.getReInvestmentMoney() : 0.0);
+                // 零钱罐新增金额（元）
+                row.createCell(22).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getAmountNewMoney()) ? tjDailyStatement.getAmountNewMoney() : 0.0);
+                //复投用户数
+                row.createCell(23).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getReInvestmentCount()) ? tjDailyStatement.getReInvestmentCount() : 0);
+                //新增复投用户数
+                row.createCell(24).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getAddReInvestmentCount()) ? tjDailyStatement.getAddReInvestmentCount() : 0);
+                //新增复投用户投资总额（元）
+                row.createCell(25).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getAddReInvestmentMoney()) ? tjDailyStatement.getAddReInvestmentMoney() : 0.0);
+                //复投次数
+                row.createCell(26).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getReInvestmentAmount()) ? tjDailyStatement.getReInvestmentAmount() : 0);
+                // 新增复投率（%）
+                row.createCell(27).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getMultipleRate()) ?  (QwyUtil.jieQuFa((tjDailyStatement.getMultipleRate()*100),2))  +"%": "0.0");
+                // 复投用户占比（%）
+                row.createCell(28).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getOccupationRatio()) ? (QwyUtil.jieQuFa((tjDailyStatement.getOccupationRatio()*100),2))  +"%": "0.0");
+                // 复投金额占比（%）
+                row.createCell(29).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getReInvestmentRate()) ? (QwyUtil.jieQuFa((tjDailyStatement.getReInvestmentRate()*100),2))  +"%": "0.0");
+                // 复投客单金额（元）
+                row.createCell(30).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getSumMoney()) ? tjDailyStatement.getSumMoney(): 0.0);
+                // 人均投资金额（元）
+                row.createCell(31).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getCapitaInvestmentMoney() )? tjDailyStatement.getCapitaInvestmentMoney() : 0.0);
+            }
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
             DailyStatement dailyStatement = null;
             for (int i = 0; i < list.size(); i++) {
-                row = sheet.createRow((int) i + 1);
+                row = sheet.createRow((int) i + 2);
                 dailyStatement = (DailyStatement) list.get(i);
                 String format = sd.format(dailyStatement.getInsertTime());
                 row.createCell(0).setCellValue((int) i + 1);//序号
