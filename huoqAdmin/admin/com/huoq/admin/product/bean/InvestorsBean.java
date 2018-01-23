@@ -118,8 +118,8 @@ public class InvestorsBean {
                 sqlChannel.append("SELECT id,regist_channel channel from users where id in(:userIds) and id is not null group by id");
 
                 StringBuffer source = new StringBuffer("");
-                source.append("select select cou.id,cou.type,cou.note from investors inv join coupon cou on cou.id=inv.counpId where inv.counpId is not null ");
-                source.append(" and cou.id in(:counpIds) group by cou.id,cou.type");
+                source.append("select  cou.id,cou.type,cou.note from investors inv join coupon cou on cou.id=inv.counpId where inv.counpId is not null ");
+                source.append(" and cou.id in(:counpIds)");
                 Set<Long> userIds = new HashSet<Long>();
                 Set<String> ids = new HashSet<String>();
                 for (Investors inv : listInv) {

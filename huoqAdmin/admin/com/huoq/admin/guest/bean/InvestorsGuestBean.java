@@ -4,12 +4,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
-
 import com.huoq.admin.product.dao.InvestorsDAO;
 import com.huoq.common.util.DESEncrypt;
 import com.huoq.common.util.PageUtil;
