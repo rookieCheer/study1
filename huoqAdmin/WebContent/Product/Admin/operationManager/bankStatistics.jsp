@@ -42,7 +42,7 @@
     <jsp:include page="/Product/Admin/common/head.jsp"/>    
     <div class="main" align="center">
     <h3>银行卡数据统计</h3>
-    <form id="frm" action="${pageContext.request.contextPath}/Product/Admin/userStat!loadbankStatistics.action">
+    <form id="frm" action="${pageContext.request.contextPath}/Product/Admin/userStat!loadbankStatistics.action" onsubmit="return checkTime()">
         <span>时间:</span> 
          <input style="width: 100px" id="begin" name="begin" type="text" class="form-control" placeholder="开始时间" >
          <label class="">--</label>
@@ -78,7 +78,7 @@
 </body>
 <script type="text/javascript">
 
-   function beginSearch(){
+   function checkTime(){
        var begin = $("#begin").val();
        var end=$("#end").val();
        console.log(begin);
@@ -95,35 +95,41 @@
                return false;
            }
        }
+       return true;
        //window.location.href="${pageContext.request.contextPath}/Product/Admin/userStat!loadbankStatistics.action?begin="+begin+"&end="+end;
-      /** var form = $("<form>");
-       form.attr('target', 'iframe');
-       form.attr('method', 'post');
-       form.attr('action', 'userStat!loadbankStatistics.action');
-       var input1 = $('<input>');
-       input1.attr('type', 'hidden');
-       input1.attr('name', 'begin');
-       input1.attr('value', begin);
-       var input2 = $('<input>');
-       input2.attr('type', 'hidden');
-       input2.attr('name', 'end');
-       input2.attr('value', end);
-       var iframe = $("<iframe>")
-       iframe.attr('id', 'iframe');
-       iframe.attr('name', 'iframe');
-       iframe.attr('src', 'about:blank');
-       iframe.attr('style', 'display:none;');
-       $('body').append(iframe);
-       $('body').append(form);
-       form.append(input1);
-       form.append(input2);
-       form.submit();
-       */
+     
         
    }
 
 
-
+function exportExcel(){
+	if(checkTime()){
+		debugger;
+		 var form = $("<form>");
+	       form.attr('target', 'iframe');
+	       form.attr('method', 'post');
+	       form.attr('action', 'userStat!loadbankStatistics.action');
+	       var input1 = $('<input>');
+	       input1.attr('type', 'hidden');
+	       input1.attr('name', 'begin');
+	       input1.attr('value', begin);
+	       var input2 = $('<input>');
+	       input2.attr('type', 'hidden');
+	       input2.attr('name', 'end');
+	       input2.attr('value', end);
+	       var iframe = $("<iframe>")
+	       iframe.attr('id', 'iframe');
+	       iframe.attr('name', 'iframe');
+	       iframe.attr('src', 'about:blank');
+	       iframe.attr('style', 'display:none;');
+	       $('body').append(iframe);
+	       $('body').append(form);
+	       form.append(input1);
+	       form.append(input2);
+	       form.submit();
+	       
+	}
+}
 
 
 
