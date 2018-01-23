@@ -236,24 +236,6 @@
             .css('background-color', 'white')
             .css('border', '1px solid #ccc')
     })
-    function sub(){
-        var myDate = new Date();
-        var date = formatDate(myDate);
-        var insetTime = $("#insertTime").val();
-        $("#qdtjTime").val(insetTime);
-        if(insetTime == null || insetTime==''){
-            alert("请选择时间");
-            return false;
-        }
-        if(date < insetTime){
-            alert("选择的时间不能超过昨天");
-            return false;
-        }
-        if(!confirm('确定要提交吗')){
-            return false;
-        }
-        return true;
-    }
     //获取当前日期
     var formatDate=function (date) {
         date=new Date();
@@ -264,6 +246,33 @@
         d = d < 10 ? ('0' + d) : d;
         return m + '/' + d + '/' + y;
     };
+    function sub(){
+        var myDate = new Date();
+        var date = formatDate(myDate);
+        var insetTime = $("#insertTime").val();
+        var re = /([a-zA-Z]|[\u4e00-\u9fa5]|[%&',;=?~+^($")@#*|、<>/])+$/;
+        $("#qdtjTime").val(insetTime);
+        if(insetTime == null || insetTime==''){
+            alert("请选择时间");
+            return false;
+        }
+        var b = re.test($("#ChannelCost").val());
+        var allInputs = $('.cost');
+        for(var i = 0;i<allInputs.length;i++){
+            if(re.test(allInputs[i].value)){
+                alert("渠道费用只能填写数字");
+                return false;
+            }
+        }
+        if(date < insetTime){
+            alert("选择的时间不能超过昨天");
+            return false;
+        }
+        if(!confirm('确定要提交吗')){
+            return false;
+        }
+        return true;
+    }
 </script>
 </body>
 </html>
