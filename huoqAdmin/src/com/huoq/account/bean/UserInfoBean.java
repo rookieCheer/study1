@@ -1346,23 +1346,6 @@ public class UserInfoBean {
             }
             return ageList;
         }
-        
-//        String sql = buffer.toString();
-//        List<Object[]> list = dao.LoadAllSql(buffer.toString(), null);
-//        List<Age> ageList = new ArrayList<Age>();
-//        if (list!=null && list.size() > 0) {
-//            for (int i = 0; i < list.size(); i++) {
-//                Object[] objects = list.get(i);
-//                Age age = new Age();
-//                age.setBankName(objects[0] + "");
-//                age.setRsCount(objects[1] + "");
-//                age.setJeCount(objects[2] + "");
-//                age.setCgCount(objects[3] + "");
-//                age.setSbCount(objects[4] + "");
-//                ageList.add(age);
-//            }
-//
-//        }
         return null;
 
     }
