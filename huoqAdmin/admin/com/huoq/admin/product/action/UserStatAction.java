@@ -803,6 +803,7 @@ public class UserStatAction extends BaseAction {
 //        pageUtil.setPageUrl(url.toString());
 //        pageUtil = checkTxsqBean.loadTxRecord(pageUtil, status, name, insertTime);、
         HttpServletRequest request = getRequest();
+       
         String begin = request.getParameter("begin");
         String end = request.getParameter("end");
         List<Age> bankList = bean.loadbank(begin, end);

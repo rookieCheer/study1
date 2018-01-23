@@ -102,7 +102,9 @@
 
 function exportExcel(){
 	if(checkTime()){
-		debugger;
+		
+		 var begin = $("#begin").val();
+	       var end=$("#end").val();
 		 var form = $("<form>");
 	       form.attr('target', 'iframe');
 	       form.attr('method', 'post');
