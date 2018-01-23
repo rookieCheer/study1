@@ -35,7 +35,7 @@ public class UserInfoBean {
 
     private static Logger log = Logger.getLogger(UserInfoBean.class);
     @Resource
-    private UserInfoDAO dao;
+    private UserInfoDAO   dao;
 
     /**
      * 根据用户id查找用户
@@ -47,7 +47,7 @@ public class UserInfoBean {
         StringBuffer buff = new StringBuffer();
         buff.append("FROM UsersInfo userInfo ");
         buff.append("WHERE userInfo.usersId= ? ");
-        UsersInfo userInfo = (UsersInfo) dao.findJoinActive(buff.toString(), new Object[]{id});
+        UsersInfo userInfo = (UsersInfo) dao.findJoinActive(buff.toString(), new Object[] { id });
         return userInfo;
     }
 
@@ -66,12 +66,11 @@ public class UserInfoBean {
     public UsersInfo isEmailband(String email) {
         Object ob = null;
         try {
-            if (QwyUtil.isNullAndEmpty(email))
-                return null;
+            if (QwyUtil.isNullAndEmpty(email)) return null;
             StringBuffer hql = new StringBuffer();
             hql.append("FROM UsersInfo ui ");
             hql.append("WHERE ui.email = ?");
-            ob = dao.findJoinActive(hql.toString(), new Object[]{email});
+            ob = dao.findJoinActive(hql.toString(), new Object[] { email });
             if (ob != null) {
                 return (UsersInfo) ob;
             }
@@ -91,7 +90,7 @@ public class UserInfoBean {
         StringBuffer buff = new StringBuffer();
         buff.append("FROM Users user ");
         buff.append("WHERE user.id= ? ");
-        Users users = (Users) dao.findJoinActive(buff.toString(), new Object[]{id});
+        Users users = (Users) dao.findJoinActive(buff.toString(), new Object[] { id });
         return users;
     }
 
@@ -245,18 +244,18 @@ public class UserInfoBean {
     /**
      * 根据渠道去获取用户信息
      *
-     * @param channel    入口渠道
+     * @param channel 入口渠道
      * @param pageUtil
-     * @param username   用户名
+     * @param username 用户名
      * @param insertTime 插入时间
      * @param isbindbank 是否绑定银行卡
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
 
-    public PageUtil<UserInfoList> findUsersByChannel(PageUtil pageUtil, String channel, String username,
-                                                     String insertTime, String acinsertTime, String isbindbank, String islqg, String level, String inMoney1, String inMoney2) {
-        //是否活期投资
+    public PageUtil<UserInfoList> findUsersByChannel(PageUtil pageUtil, String channel, String username, String insertTime, String acinsertTime, String isbindbank, String islqg,
+                                                     String level, String inMoney1, String inMoney2) {
+        // 是否活期投资
         try {
             List<Object> list = new ArrayList<Object>();
             StringBuffer buff = new StringBuffer();
@@ -267,7 +266,7 @@ public class UserInfoBean {
             buff.append(" b.is_bind_bank ,t.in_money,lqg.money/100 ,a.regist_channel,t.pay_time,t.title,t.in_money1 ");
             buff.append(" FROM users a JOIN users_info b ON a.id = b.users_id left join");
             buff.append(" (select SUM(i.in_money/100) as in_money , i.users_id as users_id,p.title AS title,i.pay_time AS pay_time,i.in_money AS in_money1  from investors i  "
-                    + "LEFT JOIN product p ON i.product_id =p.id  ");
+                        + "LEFT JOIN product p ON i.product_id =p.id  ");
             buff.append(" where 1=1 and i.investor_status in ('1','2','3')  GROUP BY i.pay_time Asc)t ");
             buff.append("  on t.users_id = b.users_id ");
             buff.append("  LEFT JOIN account ac ON ac.users_id = a.id  AND ac.STATUS = 1  ");
@@ -331,7 +330,6 @@ public class UserInfoBean {
                 }
             }
 
-
             if (!QwyUtil.isNullAndEmpty(level)) {
                 buff.append(" AND b.level = ? ");
                 list.add(level);
@@ -394,8 +392,7 @@ public class UserInfoBean {
                 plat.setRealName(object[8] == null ? "" : object[8] + "");
                 plat.setSex(object[9] == null ? "" : object[9] + "");
                 plat.setAge(object[10] == null ? "" : object[10] + "");
-                plat.setBirthday(object[11] == null ? ""
-                        : object[11].toString().trim().substring(object[11].toString().indexOf("-") + 1, 10) + "");
+                plat.setBirthday(object[11] == null ? "" : object[11].toString().trim().substring(object[11].toString().indexOf("-") + 1, 10) + "");
                 if (object[14] == null) {
                     plat.setLevel("0");
                 } else {
@@ -417,20 +414,13 @@ public class UserInfoBean {
     }
 
     public String userLevel(double money) {
-        if (money > 5 && money <= 10)
-            return "1";
-        else if (money > 10 && money <= 50)
-            return "2";
-        else if (money > 50 && money <= 150)
-            return "3";
-        else if (money > 150 && money <= 300)
-            return "4";
-        else if (money > 300 && money <= 500)
-            return "5";
-        else if (money > 500)
-            return "6";
-        else
-            return "0";
+        if (money > 5 && money <= 10) return "1";
+        else if (money > 10 && money <= 50) return "2";
+        else if (money > 50 && money <= 150) return "3";
+        else if (money > 150 && money <= 300) return "4";
+        else if (money > 300 && money <= 500) return "5";
+        else if (money > 500) return "6";
+        else return "0";
 
     }
     // @SuppressWarnings("unchecked")
@@ -538,7 +528,7 @@ public class UserInfoBean {
                 Region region = new Region();
                 region.setProvince(obj[0] + "");
                 region.setUsersCount(obj[1] + "");
-                region.setCity(obj[2]+"");
+                region.setCity(obj[2] + "");
                 list.add(region);
             }
             return list;
@@ -560,8 +550,7 @@ public class UserInfoBean {
     public PageUtil<Region> loadCity(String province, PageUtil pageUtil) throws Exception {
         try {
             List<Region> regionList = new ArrayList<Region>();
-            String hql = "select city,COUNT(city) from users where province = '" + province
-                    + "' GROUP BY city HAVING city IS NOT NULL ORDER BY COUNT(city) DESC ";
+            String hql = "select city,COUNT(city) from users where province = '" + province + "' GROUP BY city HAVING city IS NOT NULL ORDER BY COUNT(city) DESC ";
             StringBuffer buffer = new StringBuffer();
             buffer.append("  SELECT COUNT(t.city) FROM (");
             buffer.append(hql);
@@ -633,10 +622,8 @@ public class UserInfoBean {
                 }
             }
             buffer.append(" ),");
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex IN('男','女') AND i.investor_status BETWEEN 1 AND 3),  ");
-            buffer.append(
-                    "(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex IN('男','女') AND i.investor_status BETWEEN 1 AND 3) ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex IN('男','女') AND i.investor_status BETWEEN 1 AND 3),  ");
+            buffer.append("(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex IN('男','女') AND i.investor_status BETWEEN 1 AND 3) ");
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
             buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='男'  ");
@@ -655,10 +642,8 @@ public class UserInfoBean {
                 }
             }
             buffer.append(" ),");
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男' AND i.investor_status BETWEEN 1 AND 3),  ");
-            buffer.append(
-                    "(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男'AND i.investor_status BETWEEN 1 AND 3) ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男' AND i.investor_status BETWEEN 1 AND 3),  ");
+            buffer.append("(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男'AND i.investor_status BETWEEN 1 AND 3) ");
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
             buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='女'  ");
@@ -677,11 +662,8 @@ public class UserInfoBean {
                 }
             }
             buffer.append(" ),");
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3), ");
-            buffer.append(
-                    "(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3)  ");
-
+            buffer.append("(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3), ");
+            buffer.append("(SELECT COUNT(*) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='女' AND i.investor_status BETWEEN 1 AND 3)  ");
 
             List<Object[]> list = dao.LoadAllSql(buffer.toString(), sexList.toArray());
             List<Age> ageList = new ArrayList<Age>();
@@ -697,13 +679,11 @@ public class UserInfoBean {
                         titleCount = age.getRsCount();
                     } else if (i == 1) {
                         age.setSexChina("男");
-                        float maleRate = Float.valueOf(age.getRsCount()).floatValue()
-                                / Float.valueOf(titleCount).floatValue();
+                        float maleRate = Float.valueOf(age.getRsCount()).floatValue() / Float.valueOf(titleCount).floatValue();
                         age.setRate(maleRate);
                     } else if (i == 2) {
                         age.setSexChina("女");
-                        float femaleRate = Float.valueOf(age.getRsCount()).floatValue()
-                                / Float.valueOf(titleCount).floatValue();
+                        float femaleRate = Float.valueOf(age.getRsCount()).floatValue() / Float.valueOf(titleCount).floatValue();
                         age.setRate(femaleRate);
                     }
                     if (QwyUtil.isNullAndEmpty(objects[1])) {
@@ -729,7 +709,7 @@ public class UserInfoBean {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public List<Age> loadAge(String registPlatform,String insertTime) throws Exception {
+    public List<Age> loadAge(String registPlatform, String insertTime) throws Exception {
         List<Object> ageList1 = new ArrayList<Object>();
         try {
             StringBuffer buffer = new StringBuffer();
@@ -756,8 +736,7 @@ public class UserInfoBean {
             }
             buffer.append("),");
             // 投资总额
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>0 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
@@ -822,8 +801,7 @@ public class UserInfoBean {
             }
             buffer.append("),");
             // [1,20)，投资总额
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>0 AND age<20 AND i.investor_status BETWEEN 1 AND 3");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "' ");
@@ -888,8 +866,7 @@ public class UserInfoBean {
             }
             buffer.append("),");
             // [20,30)，投资总额
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>19 AND age<30 AND i.investor_status BETWEEN 1 AND 3");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "' ");
@@ -954,8 +931,7 @@ public class UserInfoBean {
             }
             buffer.append("),");
             // [30,40)，投资总额
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>29 AND age<40 AND i.investor_status BETWEEN 1 AND 3");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "' ");
@@ -1020,8 +996,7 @@ public class UserInfoBean {
             }
             buffer.append("),");
             // [40,50)，投资总额
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>39 AND age<50 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
@@ -1086,8 +1061,7 @@ public class UserInfoBean {
             }
             buffer.append("),");
             // [50,60)，投资总额
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>49 AND age<60 AND i.investor_status BETWEEN 1 AND 3 ");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
@@ -1152,8 +1126,7 @@ public class UserInfoBean {
             }
             buffer.append("),");
             // 大于60岁，投资总额
-            buffer.append(
-                    "(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i , users_info  ui LEFT JOIN users u ON ui.users_id=u.id ");
             buffer.append(" WHERE ui.users_id=i.users_id AND age>59 AND i.investor_status BETWEEN 1 AND 3");
             if (!QwyUtil.isNullAndEmpty(registPlatform) && !"all".equals(registPlatform)) {
                 buffer.append(" AND u.regist_platform='" + registPlatform + "'");
@@ -1264,87 +1237,87 @@ public class UserInfoBean {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<Age> loadbank(String begin,String end) {
+    public List<Age> loadbank(String begin, String end) {
 
         StringBuffer buffer = new StringBuffer();
-        Object[] params =null;
-       
+        Object[] params = null;
+
         buffer.append("select acc.bank_name name,sum(inv.in_money)/100 total,inv.investor_status  status from investors inv ");
         buffer.append(" join account acc on inv.users_id = acc.users_id ");
         buffer.append(" where  acc.users_id is not null ");
         buffer.append(" and acc.status=1 and acc.bank_name is not null and acc.bank_name!='' ");
-        if(begin!=null && end!=null){
+        if (begin != null && end != null) {
             begin = begin.trim();
             end = end.trim();
-            if(!"".equals(begin)&&!"".equals(end) ){
+            if (!"".equals(begin) && !"".equals(end)) {
                 buffer.append(" and inv.insert_time>=? and inv.insert_time<=? ");
                 params = new Object[2];
-                params[0]=begin;
-                params[1]=end;
+                params[0] = begin;
+                params[1] = end;
             }
         }
         buffer.append(" group by acc.bank_name,inv.investor_status ");
         String sql = buffer.toString();
-        List list = dao.LoadAllSql(sql,params);
-        if(list!=null && list.size()>0){
-           // List<Age> ageList = new ArrayList<Age>();
+        List list = dao.LoadAllSql(sql, params);
+        if (list != null && list.size() > 0) {
+            // List<Age> ageList = new ArrayList<Age>();
             int size = list.size();
-            //存储所有name
+            // 存储所有name
             Set<String> nameSet = new HashSet<String>();
-            for(int i=0;i<size;i++){
+            for (int i = 0; i < size; i++) {
                 Object[] obj = (Object[]) list.get(i);
-                String name =(String)obj[0];
+                String name = (String) obj[0];
                 nameSet.add(name);
             }
-            //将name相同的记录放入List
+            // 将name相同的记录放入List
             List<List<Object[]>> separtList = new ArrayList<List<Object[]>>();
-            //原始集合转换成迭代器
+            // 原始集合转换成迭代器
             Iterator<Object[]> sepObj = list.iterator();
-            //名称转换成迭代器
+            // 名称转换成迭代器
             Iterator<String> nameIt = nameSet.iterator();
-            while(nameIt.hasNext()){
+            while (nameIt.hasNext()) {
                 String name = nameIt.next();
                 List<Object[]> element = new ArrayList<Object[]>();
-                while(sepObj.hasNext()){
-                   Object[] one = sepObj.next();
-                   String nameOne = (String)one[0];
-                   if(nameOne!=null){
-                       if(nameOne.equals(name)){
-                           element.add(one);
-                           sepObj.remove();
-                       }
-                   }
+                while (sepObj.hasNext()) {
+                    Object[] one = sepObj.next();
+                    String nameOne = (String) one[0];
+                    if (nameOne != null) {
+                        if (nameOne.equals(name)) {
+                            element.add(one);
+                            sepObj.remove();
+                        }
+                    }
                 }
                 separtList.add(element);
                 sepObj = list.iterator();
             }
             List<Age> ageList = new ArrayList<Age>();
-            for(List<Object[]> listOne:separtList){
+            for (List<Object[]> listOne : separtList) {
                 Age age = new Age();
-                Double sum =0.0; //投资
-                int suessNum =0;
-                int failNum=0;
-                String bankName =null;
+                Double sum = 0.0; // 投资
+                int suessNum = 0;
+                int failNum = 0;
+                String bankName = null;
                 int bangDingNumber = listOne.size();
-                for(Object[] obj:listOne){
-                    Double total =(Double)obj[1];
-                    if(total!=null){
-                       sum = sum+total.doubleValue(); 
+                for (Object[] obj : listOne) {
+                    Double total = (Double) obj[1];
+                    if (total != null) {
+                        sum = sum + total.doubleValue();
                     }
-                    String status =(String)obj[2];
-                    if("1".equals(status)||"2".equals(status)||"3".equals(status)){
-                       suessNum = suessNum+1; 
+                    String status = (String) obj[2];
+                    if ("1".equals(status) || "2".equals(status) || "3".equals(status)) {
+                        suessNum = suessNum + 1;
                     }
-                    if("0".equals(status)||"4".equals(status)){
-                        failNum = failNum+1;   
+                    if ("0".equals(status) || "4".equals(status)) {
+                        failNum = failNum + 1;
                     }
-                   bankName =(String) obj[0];
+                    bankName = (String) obj[0];
                 }
                 age.setBankName(bankName);
-                age.setRsCount(bangDingNumber+"");
-                age.setJeCount(sum+"");
-                age.setSbCount(failNum+"");
-                age.setCgCount(suessNum+"");
+                age.setRsCount(bangDingNumber + "");
+                age.setJeCount(sum + "");
+                age.setSbCount(failNum + "");
+                age.setCgCount(suessNum + "");
                 ageList.add(age);
             }
             return ageList;
@@ -1358,21 +1331,19 @@ public class UserInfoBean {
      *
      * @param pageUtil
      * @param username 用户名
-     * @param date     日期
-     * @param isBuy    是否投资:投资次数大于0 = 'y'
-     * @param isZero   账户余额是否为0: 0 = 'y'
-     * @param zcpt     注册平台
+     * @param date 日期
+     * @param isBuy 是否投资:投资次数大于0 = 'y'
+     * @param isZero 账户余额是否为0: 0 = 'y'
+     * @param zcpt 注册平台
      * @return
      */
-    public PageUtil<UserTZTJ> loadUserTZTJ(PageUtil pageUtil, String username, String date, String isBuy, String isZero,
-                                           String zcpt) {
+    public PageUtil<UserTZTJ> loadUserTZTJ(PageUtil pageUtil, String username, String date, String isBuy, String isZero, String zcpt) {
         try {
             List<Object> list = new ArrayList<>();
             StringBuilder sb = new StringBuilder();
-            sb.append(
-                    " SELECT us.id , us.username , us.regist_platform , IF(usi.invest_count = 0,'n','y'), usi.invest_count, "
-                            + " usi.left_money, us.insert_time,IF(usi.left_money = 0,'y','n') FROM users us LEFT JOIN investors ins ON "
-                            + " us.id= ins.users_id LEFT JOIN users_info usi ON us.id = usi.users_id WHERE 1=1 ");
+            sb.append(" SELECT us.id , us.username , us.regist_platform , IF(usi.invest_count = 0,'n','y'), usi.invest_count, "
+                      + " usi.left_money, us.insert_time,IF(usi.left_money = 0,'y','n') FROM users us LEFT JOIN investors ins ON "
+                      + " us.id= ins.users_id LEFT JOIN users_info usi ON us.id = usi.users_id WHERE 1=1 ");
             if (!QwyUtil.isNullAndEmpty(username)) { // 按用户名查询
                 sb.append("AND us.username = ?");
                 list.add(DESEncrypt.jiaMiUsername(username));
@@ -1433,18 +1404,16 @@ public class UserInfoBean {
             utztj.setZcpt(!QwyUtil.isNullAndEmpty(obj[2]) ? obj[2].toString() : "");
             utztj.setIsBuy(!QwyUtil.isNullAndEmpty(obj[3]) ? obj[3].toString() : "");
             utztj.setInvestCount(!QwyUtil.isNullAndEmpty(obj[4]) ? obj[4].toString() : "0");
-            utztj.setAccountBalance(
-                    !QwyUtil.isNullAndEmpty(obj[5])
-                            ? QwyUtil.jieQuFa(QwyUtil.calcNumber(Double.parseDouble(obj[5].toString()), 0.01, "*", 2)
-                            .doubleValue(), 2) + ""
-                            : "0");
+            utztj.setAccountBalance(!QwyUtil.isNullAndEmpty(obj[5]) ? QwyUtil.jieQuFa(QwyUtil.calcNumber(Double.parseDouble(obj[5].toString()), 0.01, "*", 2).doubleValue(), 2)
+                                                                      + "" : "0");
             utztj.setInsertTime(!QwyUtil.isNullAndEmpty(obj[6]) ? QwyUtil.fmyyyyMMddHHmmss.format(obj[6]) : "");
             userTZTJs.add(utztj);
         }
         return userTZTJs;
     }
 
-    public PageUtil<UserInfoList> findIndexUsersByChannel(PageUtil pageUtil, String channel, String username, String insertTime, String acinsertTime, String isbindbank, String level, String inMoney1, String inMoney2) {
+    public PageUtil<UserInfoList> findIndexUsersByChannel(PageUtil pageUtil, String channel, String username, String insertTime, String acinsertTime, String isbindbank,
+                                                          String level, String inMoney1, String inMoney2) {
         try {
             List<Object> list = new ArrayList<Object>();
             StringBuffer buff = new StringBuffer();
@@ -1462,7 +1431,6 @@ public class UserInfoBean {
             buff.append("  SELECT cpfr.users_id 'users_id',SUM(cpfr.money) 'money', cpfr.insert_time 'insert_time' FROM coin_purse_funds_record cpfr WHERE cpfr.type = 'to'  AND  cpfr.status = 0   ");
             buff.append("  GROUP BY cpfr.users_id )lqg ");
             buff.append("  ON lqg.users_id = a.id WHERE 1=1 ");
-
 
             if (!QwyUtil.isNullAndEmpty(channel)) {
                 buff.append(" AND a.regist_channel = ? ");
@@ -1513,7 +1481,6 @@ public class UserInfoBean {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
             }
-
 
             if (!QwyUtil.isNullAndEmpty(level)) {
                 buff.append(" AND b.level = ? ");
