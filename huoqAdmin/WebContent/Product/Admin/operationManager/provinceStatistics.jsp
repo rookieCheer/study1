@@ -35,8 +35,7 @@
 </style>
 <script type="text/javascript">
     function ireportDo() {
-        alert(111);
-        var interval = $("#insertTime").val();
+		var interval = $("#insertTime").val();
         if (interval == null || interval == '' || interval.length == 0) {
             alert("请选择要导出报表日期！");
             return false;
@@ -55,7 +54,6 @@
             }
         }
         var insertTime = $("#insertTime").val();
-        alert(insertTime);
 		var url = "${pageContext.request.contextPath}/Product/Admin/userStat!exportProvince.action?insertTime=" + insertTime;
         var list = "${list}";
         if (list != null && list != "[]") {

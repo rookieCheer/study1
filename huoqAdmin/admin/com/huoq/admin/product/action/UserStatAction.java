@@ -573,6 +573,66 @@ public class UserStatAction extends BaseAction {
     }
 
     /**
+     * 导出用户年龄分布表信息
+     */
+    public String exportAge() {
+        if (!QwyUtil.isNullAndEmpty(insertTime)) {
+
+        } else {
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            String time = sd.format(date);
+        }
+        try {
+            PageUtil pageUtil = new PageUtil();
+            pageUtil.setCurrentPage(currentPage);
+            pageUtil.setPageSize(999999);
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet("用户年龄分布表");
+            HSSFRow row = sheet.createRow((int) 0);
+            HSSFCellStyle style = wb.createCellStyle();
+            style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+            HSSFCell cell = row.createCell(0);
+            cell = row.createCell(0);
+            cell.setCellValue("年龄段");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("人数");
+            cell.setCellStyle(style);
+            cell = row.createCell(2);
+            cell.setCellValue("投资次数");
+            cell.setCellStyle(style);
+            cell = row.createCell(3);
+            cell.setCellValue("投资总额");
+            cell.setCellStyle(style);
+            cell = row.createCell(4);
+            List<Age> list = bean.loadAge(registPlatform, insertTime);
+
+            Age  age = null;
+            for (int i = 0; i < list.size(); i++) {
+                row = sheet.createRow((int) i + 1);
+                age = (Age) list.get(i);
+                row.createCell(0).setCellValue(!QwyUtil.isNullAndEmpty(age.getAgeCeng())?age.getAgeCeng():"");
+                row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(age.getRsCount()) ? age.getRsCount():"");
+                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getCsCount()) ? age.getCsCount():"");
+                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getJeCount()) ? age.getJeCount():"");
+
+            }
+            String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_age.xls";
+            String realPath = request.getServletContext().getRealPath("/report/" + pathname);
+            log.info("用户年龄分布表表地址：" + realPath);
+            FileOutputStream fout = new FileOutputStream(realPath);
+            wb.write(fout);
+            fout.close();
+            response.getWriter().write("/report/" + pathname);
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
+        return null;
+    }
+
+
+    /**
      * 查询用户信息
      *
      * @return
