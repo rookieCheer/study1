@@ -800,9 +800,12 @@ public class InvestorsBean {
     }
 
     public List getInvestorsBySqlSecond(String sql, Object[] params) {
-        @SuppressWarnings("unchecked")
         List result = dao.LoadAllSql(sql, params);
         return result;
 
+    }
+    public List getListBySql(String sql, Object[] params,List list,String inName) {
+       
+       return  dao.LoadAllSql(sql, params, list, inName);
     }
 }

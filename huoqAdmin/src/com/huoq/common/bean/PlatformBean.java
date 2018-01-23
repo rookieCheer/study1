@@ -4,6 +4,7 @@ import com.huoq.admin.product.bean.InvestorsBean;
 import com.huoq.common.dao.MyWalletDAO;
 import com.huoq.common.util.ArrayUtils;
 import com.huoq.common.util.DateUtils;
+import com.huoq.common.util.ListUtils;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.Platform;
 import com.huoq.product.bean.ProductBean;
@@ -215,7 +216,11 @@ public class PlatformBean {
                     }
                 }
             }
-            return productId.size();
+            //return productId.size();
+            String[] productIdArray =  productId.toArray(new String[productId.size()]);
+            List<String> productIdList = ArrayUtils.converArrayToList(productIdArray);
+            productIdList = ListUtils.removeNullAndEmpty(productIdList);
+            return productIdList.size();
         }
         return 0;
     }
