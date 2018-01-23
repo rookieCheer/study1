@@ -37,6 +37,13 @@
         }
     </style>
     <script type="text/javascript">
+        function queryProduct() {
+            var insertTime = $("#insertTime").val();
+            var url = "${pageContext.request.contextPath}/Product/Admin/userStat!loadAge.action?insertTime=" + insertTime;
+            window.location.href = url;
+        }
+    </script>
+    <script type="text/javascript">
         $(function () {
             var value = '${registPlatform}';
             if (value == '') {
@@ -52,9 +59,6 @@
     <jsp:include page="/Product/Admin/common/head.jsp"/>
     <div class="main" align="center">
         <h3>用户年龄分布表</h3>
-        <span>查询期间:</span>
-        <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
-        <a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
         <div id="div_condition">
             <span>注册平台</span>
             <label><input type="radio" id="" value="all" name="registPlatform" checked="checked">全部</label>&nbsp;&nbsp;
@@ -63,6 +67,10 @@
             <label><input type="radio" value="2" name="registPlatform">IOS移动端</label>&nbsp;&nbsp;
             <label><input type="radio" value="3" name="registPlatform">微信注册</label>&nbsp;&nbsp;
         </div>
+        <span>查询期间:</span>
+        <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
+        <a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
+
         <table border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
             <tr>
                 <td width="200px;">年龄段</td>
@@ -86,11 +94,6 @@
     $("#div_condition input[name='registPlatform']").click(function () {
         window.location.href = "${pageContext.request.contextPath}/Product/Admin/userStat!loadAge.action?registPlatform=" + $('input[name="registPlatform"]:checked').val();
     });
-    /* 	$("#div_condition input[name='registPlatform']").each(function(){
-            if($(this).attr("value")=="${registPlatform}" || "${registPlatform}"==""){
-			$(this).attr("checked",true);
-		}
-	}); */
 
     var k4 = new Kalendae.Input("insertTime", {
         attachTo: document.body,

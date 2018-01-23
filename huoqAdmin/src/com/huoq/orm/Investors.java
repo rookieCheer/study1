@@ -22,7 +22,7 @@ public class Investors implements java.io.Serializable {
 	private Long usersId;// 购买人id
 	private String productId;// 投资人对应的理财项目id
 	private String investorType;// 类别 预留,默认为0
-	private String investorStatus;// 状态;0:待付款 ,1:已付款, 2:结算中, 3:已结算,4:已删除
+	private String investorStatus;// 状态;0:待付款 失败 ,(1:已付款, 2:结算中, 3:已结算)成功,4:已删除 失败
 	private Date insertTime;// 插入时间
 	private Date payTime;// 支付时间
 	private Date updateTime;// 更新时间
