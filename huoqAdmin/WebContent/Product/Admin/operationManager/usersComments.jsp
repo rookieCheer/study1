@@ -47,37 +47,55 @@
     </script>
     <script type="text/javascript">
         function ireportDo() {
-            var list = '${table}';
-            if (list != '1') {
-                alert("无数据");
+            var interval = $("#insertTime").val();
+            if (interval == null || interval == '' || interval.length == 0) {
+                alert("请选择要导出报表日期！");
                 return false;
             }
+            if (interval.indexOf("-") != -1) {
+                var startDate = interval.split("-")[0];
+                var endDate = interval.split("-")[1];
+                var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
+                    .getTime();
+                var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
+                    .getTime();
+                var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
+                if (31 - dates <= 0) {
+                    alert("请选择日期间隔为31天的数据导出！")
+                    return false;
+                }
+            }
             var insertTime = $("#insertTime").val();
-            var registPlatform = $("#registPlatform option:selected").val();
-            var url = '${pageContext.request.contextPath}/Product/Admin/activity!iportQdcbTable.action';
-            var my = art.dialog({
-                title: '提示',
-                content: document.getElementById("psi_load"),
-                height: 60,
-                lock: true,
-                cancel: false
-            });
-            $.post(url, $("#frm").serialize(), function (data) {
-                my.close();
-                var ssss = "导出成功&nbsp;&nbsp;&nbsp;&nbsp;<a href='" + data + "' style='color:red;'>点击下载</a>";
-                art.dialog({
+            var url = "${pageContext.request.contextPath}/Product/Admin/usersComment!exportUsersComment.action?insertTime=" + insertTime;
+            var list = "${list}";
+            if (list != null && list != "[]") {
+                var my = art.dialog({
                     title: '提示',
-                    content: ssss,
+                    content: document.getElementById("psi_load"),
                     height: 60,
                     lock: true,
-                    ok: function () {
-                        //mysss.close();
-                    }
+                    cancel: false
                 });
-            });
+                $.post(
+                    url,
+                    $("#sereach").serialize(),
+                    function (data) {
+                        my.close();
+                        data = '${pageContext.request.contextPath}'
+                            + data;
+                        var ssss = "导出成功&nbsp;&nbsp;&nbsp;&nbsp;<a href='" + data + "' style='color:red;'>点击下载</a>";
+                        art.dialog({
+                            title: '提示',
+                            content: ssss,
+                            height: 60,
+                            lock: true,
+                            ok: function () {
 
+                            }
+                        });
+                    });
+            }
         }
-
         $(function () {
             $("#registPlatform option[value='${registPlatform}']").attr("selected", true);
         });
@@ -92,7 +110,7 @@
             <span>查询期间:</span>
             <input id="insertTime" name="insertTime" type="text" value="${insertTime}">
             <a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
-            <!--<input type="button" value="导出报表" onclick="ireportDo()">  -->
+            <input type="button" value="导出报表" onclick="ireportDo()">
         </form>
         <table border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
             <tr>
