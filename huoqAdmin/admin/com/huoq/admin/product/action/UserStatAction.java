@@ -5,13 +5,19 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import com.huoq.admin.product.bean.InvestorsBean;
 import com.huoq.orm.*;
+import com.huoq.util.ExcelUtil;
+
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.struts2.config.Namespace;
 import org.apache.struts2.config.ParentPackage;
@@ -756,7 +762,8 @@ public class UserStatAction extends BaseAction {
             String end = request.getParameter("end");
             List<Age> bankList = bean.loadbank(begin, end);
             request.setAttribute("list", bankList);
-
+            request.setAttribute("begin",begin);
+            request.setAttribute("end",end);
             return "loadBank";
 
 
@@ -766,6 +773,61 @@ public class UserStatAction extends BaseAction {
         }
         return "loadBank";
     }
+    
+    
+    /**
+     * 导出银行卡数据统计列表
+    * @author：zhuhaojie  
+    * @time：2018年1月23日 下午2:21:52   
+    * @version    
+    * @throws Exception
+     */
+    public void exportExcelList() throws Exception {
+       
+//        // 根据状态来加载提现的记录;
+//        PageUtil<TxRecord> pageUtil = new PageUtil<TxRecord>();
+//        pageUtil.setCurrentPage(currentPage);
+//        pageUtil.setPageSize(1000000);
+//        StringBuffer url = new StringBuffer();
+//        url.append(getRequest().getServletContext().getContextPath());
+//        url.append("/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?status=" + status);
+//
+//        if (!QwyUtil.isNullAndEmpty(name)) {
+//            url.append("&name=");
+//            url.append(name);
+//        }
+//        if (!QwyUtil.isNullAndEmpty(insertTime)) {
+//            url.append("&insertTime=");
+//            url.append(insertTime);
+//        }
+//        pageUtil.setPageUrl(url.toString());
+//        pageUtil = checkTxsqBean.loadTxRecord(pageUtil, status, name, insertTime);、
+        HttpServletRequest request = getRequest();
+        String begin = request.getParameter("begin");
+        String end = request.getParameter("end");
+        List<Age> bankList = bean.loadbank(begin, end);
+        if (bankList != null && bankList.size() > 0) {
+               
+                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+                response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+                response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+                ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+                LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+               
+                fieldMap.put("银行", "bankName");
+                fieldMap.put("绑定人数", "rsCount");
+                fieldMap.put("投资金额(元)", "jeCount");
+                fieldMap.put("投资成功次数", "cgCount");
+                fieldMap.put("投资失败次数", "sbCount");
+                ExcelUtil.exportExcelNew(outputStream, "银行卡数据统计列表", fieldMap, bankList,null);
+
+            }
+        
+    }
+    
+    
+    
+    
 
     /**
      * 获取注册用户信息;根据日期.
