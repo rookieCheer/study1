@@ -267,7 +267,6 @@ public class PlatformBean {
      * @author：zhuhaojie
      * @time：2018年1月16日 下午2:52:12
      * @version
-     * @param insertTime
      * @return
      */
     public Double updateUAuditingOutCashMoney() {
@@ -351,12 +350,9 @@ public class PlatformBean {
                 list.add(date);
                 sql.append("AND insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             }
-            // String yesterday =
-            // QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(),
-            // -1).getTime());
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double allCapitalStock = 0.0;
-            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
+            if (!QwyUtil.isNullAndEmpty(loadAllSql) && !QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
                 allCapitalStock = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
             }
             return allCapitalStock;
@@ -560,7 +556,6 @@ public class PlatformBean {
             }
             return allBuyMoney;
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("操作异常: ", e);
         }
         return null;
