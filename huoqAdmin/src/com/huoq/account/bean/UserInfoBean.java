@@ -497,7 +497,7 @@ public class UserInfoBean {
         List<Object> regionList = new ArrayList<Object>();
         try {
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT province,COUNT(province) FROM  users ");
+            sql.append("SELECT province,COUNT(province),city FROM  users ");
             sql.append("where 1=1 ");
             if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
@@ -513,24 +513,6 @@ public class UserInfoBean {
                     regionList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
             }
-
-            /*if (!QwyUtil.isNullAndEmpty(insertTime)) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String[] time = QwyUtil.splitTime(insertTime);
-                if (time.length >1) {
-                    sql.append(" AND u.insert_time  BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
-                    regionList.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    regionList.add(QwyUtil.fmMMddyyyy.parse(time[1]));
-                }else{
-                    sql.append(" AND u.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
-                    Date parse = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
-                    String format = simpleDateFormat.format(parse);
-                    Date parse1 = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
-                    String format1 = simpleDateFormat.format(parse1);
-                    regionList.add(format);
-                    regionList.add(format1);
-                }
-            }*/
             sql.append("GROUP BY province HAVING province IS NOT NULL ORDER BY COUNT(province) DESC  ");
             StringBuffer sqlCount = new StringBuffer();
             sqlCount.append("SELECT COUNT(t.province) FROM ( ");
@@ -556,6 +538,7 @@ public class UserInfoBean {
                 Region region = new Region();
                 region.setProvince(obj[0] + "");
                 region.setUsersCount(obj[1] + "");
+                region.setCity(obj[2]+"");
                 list.add(region);
             }
             return list;
