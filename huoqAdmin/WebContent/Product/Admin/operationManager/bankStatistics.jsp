@@ -43,7 +43,10 @@
     <div class="main" align="center">
     <h3>银行卡数据统计</h3>
     <form id="frm" action="${pageContext.request.contextPath}/Product/Admin/userStat!loadbankStatistics.action">
-        <span>时间:</span> <input type="text" id="insertTime" name="insertTime" value="${insertTime}">
+        <span>时间:</span> 
+         <input style="width: 100px" id="begin" name="begin" type="text" class="form-control" placeholder="开始时间" >
+         <label class="">--</label>
+         <input style="width: 100px" class="form-control inp-user" id="end" name="end" placeholder="结束时间">
         <input type="submit" value="查询">
         <input type="button" value="导出报表" onclick="exportExcel()">
     </form>
@@ -92,7 +95,7 @@
                return false;
            }
        }
-       window.location.href="${pageContext.request.contextPath}/Product/Admin/userStat!loadbankStatistics.action?begin="+begin+"&end="+end;
+       //window.location.href="${pageContext.request.contextPath}/Product/Admin/userStat!loadbankStatistics.action?begin="+begin+"&end="+end;
       /** var form = $("<form>");
        form.attr('target', 'iframe');
        form.attr('method', 'post');
