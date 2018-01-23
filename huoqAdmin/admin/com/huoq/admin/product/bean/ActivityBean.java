@@ -2278,6 +2278,8 @@ public class ActivityBean {
         if (!QwyUtil.isNullAndEmpty(channelType)) {
             sb.append(" AND qd.channel_type = ? ");
             list.add(channelType);
+        }else{
+            sb.append(" AND qd.channel_type = 1 ");
         }
         if (!QwyUtil.isNullAndEmpty(channelName)) {
             sb.append(" AND qd.channelName like '%"+channelName+"%' ");
