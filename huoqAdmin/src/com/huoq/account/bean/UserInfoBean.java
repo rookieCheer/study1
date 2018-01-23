@@ -1264,7 +1264,7 @@ public class UserInfoBean {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<Age> loadbank(String time) {
+    public List<Age> loadbank(String begin,String end) {
 
         StringBuffer buffer = new StringBuffer();
         Object[] params =null;
@@ -1273,11 +1273,14 @@ public class UserInfoBean {
         buffer.append(" join account acc on inv.users_id = acc.users_id ");
         buffer.append(" where  acc.users_id is not null ");
         buffer.append(" and acc.status=1 and acc.bank_name is not null and acc.bank_name!='' ");
-        if(time!=null){
-            time = time.trim();
-            if(!"".equals(time)){
+        if(begin!=null && end!=null){
+            begin = begin.trim();
+            end = end.trim();
+            if(!"".equals(begin)&&!"".equals(end) ){
                 buffer.append(" and inv.insert_time>=? and inv.insert_time<=? ");
                 params = new Object[2];
+                params[0]=begin;
+                params[1]=end;
             }
         }
         buffer.append(" group by acc.bank_name,inv.investor_status ");

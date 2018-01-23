@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import com.huoq.admin.product.bean.InvestorsBean;
 import com.huoq.orm.*;
@@ -750,10 +751,11 @@ public class UserStatAction extends BaseAction {
                     return "err";
                 }
             }
-           String time = getRequest().getParameter("time");
-            List<Age> bankList = bean.loadbank(time);
+            HttpServletRequest request = getRequest();
+            String begin = request.getParameter("begin");
+            String end = request.getParameter("end");
+            List<Age> bankList = bean.loadbank(begin, end);
             request.setAttribute("list", bankList);
-
 
             return "loadBank";
 
