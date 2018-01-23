@@ -531,6 +531,68 @@ public class UserStatAction extends BaseAction {
     }
 
     /**
+     * 导出性别统计表信息
+     */
+    public String exportSex() {
+        if (!QwyUtil.isNullAndEmpty(insertTime)) {
+
+        } else {
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            String time = sd.format(date);
+        }
+        try {
+            PageUtil pageUtil = new PageUtil();
+            pageUtil.setCurrentPage(currentPage);
+            pageUtil.setPageSize(999999);
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet("性别统计表");
+            HSSFRow row = sheet.createRow((int) 0);
+            HSSFCellStyle style = wb.createCellStyle();
+            style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+            HSSFCell cell = row.createCell(0);
+            cell = row.createCell(0);
+            cell.setCellValue("性别");
+            cell.setCellStyle(style);
+            cell = row.createCell(1);
+            cell.setCellValue("人数");
+            cell.setCellStyle(style);
+            cell = row.createCell(2);
+            cell.setCellValue("人数比例");
+            cell.setCellStyle(style);
+            cell = row.createCell(3);
+            cell.setCellValue("投资次数");
+            cell.setCellStyle(style);
+            cell = row.createCell(4);
+            cell.setCellValue("投资总额");
+            cell.setCellStyle(style);
+            cell = row.createCell(5);
+            List<Age> list = bean.loadSex(insertTime);
+
+            Age  age = null;
+            for (int i = 0; i < list.size(); i++) {
+                row = sheet.createRow((int) i + 1);
+                age = (Age) list.get(i);
+                row.createCell(0).setCellValue(!QwyUtil.isNullAndEmpty(age.getSexChina())?age.getSexChina():"");
+                row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(age.getRsCount()) ? age.getRsCount():"");
+                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getRate()) ?  (Double.valueOf(age.getRate())*100)+"%":"");
+                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getCsCount()) ? age.getCsCount():"");
+                row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(age.getJeCount())?(Double.valueOf(age.getJeCount())*0.01)+"":"");
+
+            }
+            String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_sex.xls";
+            String realPath = request.getServletContext().getRealPath("/report/" + pathname);
+            log.info("性别统计表表地址：" + realPath);
+            FileOutputStream fout = new FileOutputStream(realPath);
+            wb.write(fout);
+            fout.close();
+            response.getWriter().write("/report/" + pathname);
+        } catch (Exception e) {
+            log.error("操作异常: ", e);
+        }
+        return null;
+    }
+    /**
      * 用户年龄段分布表
      *
      * @return
