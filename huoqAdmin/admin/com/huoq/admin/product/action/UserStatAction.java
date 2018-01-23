@@ -407,12 +407,9 @@ public class UserStatAction extends BaseAction {
             cell.setCellValue("省份");
             cell.setCellStyle(style);
             cell = row.createCell(2);
-            cell.setCellValue("城市");
-            cell.setCellStyle(style);
-            cell = row.createCell(3);
             cell.setCellValue("注册人数");
             cell.setCellStyle(style);
-            cell = row.createCell(4);
+            cell = row.createCell(3);
             List<Region> list = bean.loadProvince(pageUtil, insertTime).getList();
 
             Region region = null;
@@ -421,8 +418,7 @@ public class UserStatAction extends BaseAction {
                 region = (Region) list.get(i);
                 row.createCell(0).setCellValue((int) i + 1);// 序号
                 row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(region.getProvince()) ? region.getProvince() : "");
-                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(region.getCity()) ? region.getCity() : "");
-                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(region.getUsersCount()) ? region.getUsersCount() : "");
+                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(region.getUsersCount()) ? region.getUsersCount() : "");
 
             }
             String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_province.xls";

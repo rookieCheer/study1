@@ -107,21 +107,19 @@
 				<tr>
 					<td width="50px" style="text-align: center;">序号</td>
 					<td width="200px" style="text-align: center;">省份</td>
-					<td width="200px" style="text-align: center;">城市</td>
 					<td width="100px" style="text-align: center;">注册人数</td>
 				</tr>
-				<%--<tr>--%>
-				    <%--<td style="text-align: center;"></td>--%>
-					<%--<td style="text-align: center;">其它</td>--%>
-					<%--<td style="text-align: center;">${totalCount}</td>--%>
-				<%--</tr>--%>
+				<tr>
+				    <td style="text-align: center;"></td>
+					<td style="text-align: center;">其它</td>
+					<td style="text-align: center;">${totalCount}</td>
+				</tr>
 			<c:forEach items="${list}"  var="item" varStatus="i">
 				<tr>
 				<td style="text-align: center;">${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td> 
 					<td style="text-align: center;">
 						<a class="a" href="${pageContext.request.contextPath}/Product/Admin/userStat!loadCity.action?province=${item.province}">${item.province}</a>
 					</td>
-					<td style="text-align: center;">${item.city}</td>
 					<td style="text-align: center;">
 						${item.usersCount}
 					</td>
