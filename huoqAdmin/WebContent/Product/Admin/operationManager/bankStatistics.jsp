@@ -42,21 +42,11 @@
     <jsp:include page="/Product/Admin/common/head.jsp"/>    
     <div class="main" align="center">
     <h3>银行卡数据统计</h3>
-    <div id="div_condition" style="text-align: center;">
-                
-                <!--div class="searchBox"-->
-                                <label class="optionName">时间段 </label>
-                            </div>
-                            <div class="searchBox">
-                                <input style="width: 100px" id="begin" name="begin" type="text" class="form-control" placeholder="开始时间" >
-                            </div>
-                            <div class="searchBox"><label class="">--</label></div>
-                            <div class="searchBox">
-                                <input style="width: 100px" class="form-control inp-user" id="end" name="end" placeholder="结束时间">
-                            </div>
-                             <button type="button" class="btn btn-primary lead statisticsData" onclick="beginSearch();">统计</button>
-          </div>
-            <!--/div-->
+    <form id="frm" action="${pageContext.request.contextPath}/Product/Admin/userStat!loadbankStatistics.action">
+        <span>时间:</span> <input type="text" id="insertTime" name="insertTime" value="${insertTime}">
+        <input type="submit" value="查询">
+        <input type="button" value="导出报表" onclick="exportExcel()">
+    </form>
     <table border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
         <tr>
             <td width="200px;">序号</td>
