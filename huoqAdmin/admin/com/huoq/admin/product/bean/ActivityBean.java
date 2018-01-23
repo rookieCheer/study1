@@ -2055,6 +2055,8 @@ public class ActivityBean {
         if (!QwyUtil.isNullAndEmpty(channelType)) {
             sb.append(" AND qd.channel_type = ? ");
             list.add(channelType);
+        }else{
+            sb.append(" AND qd.channel_type = 1 ");
         }
         sb.append("GROUP BY qd.channelCode ");
         sb.append(" ORDER BY qd.channel+0 ASC ");

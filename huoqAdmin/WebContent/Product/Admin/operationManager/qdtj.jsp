@@ -169,6 +169,11 @@
 </head>
 <body>
 <div class="center">
+    <style>
+        .ct-table tr td {
+            min-width: 60px !important;
+        }
+    </style>
     <jsp:include page="/Product/Admin/common/head.jsp"/>
     <div class="main" align="center">
         <h3>渠道统计汇总表</h3>
@@ -205,141 +210,143 @@
             <input type="button" value="新增费用" id="addChannelOperate" class="sereach">
         </form>
         <div id="fixtop" class="fixtop"></div>
-        <table id="tHead" class="ct-table" border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
-            <thead>
-            <tr>
-                <td width="30px;">序号</td>
-                <td width="30px;">渠道编号</td>
-                <td width="auto;">渠道名称</td>
-                <td width="auto;">点击量</td>
-                <td width="auto;">下载量</td>
-                <td width="auto;">激活量</td>
-                <td width="65px;">渠道费用(元)</td>
-                <td width="auto;">激活成本</td>
-                <td width="65px;">激活注册转化率(%)</td>
-                <td width="45px;">总注册人数</td>
-                <td width="30px;">注册成本</td>
-                <td width="30px;">认证人数</td>
-                <td width="65px;">注册认证转化率(%)</td>
-                <td width="65px;">认证首投转化率(%)</td>
-                <td width="30px;">首投人数</td>
-                <td width="65px;">首投成本(元)</td>
-                <td width="65px;">首投总金额(元)</td>
-                <td width="65px;">人均首投总金额（元）</td>
-                <td width="auto;">首投ROI</td>
-                <td width="30px;">复投人数</td>
-                <td width="30px;">复投成本</td>
-                <td width="auto;">复投金额(元)</td>
-                <td width="auto;">人均复投金额(元)</td>
-                <td width="auto;">复投ROI</td>
-                <td width="45px;">新增复投用户数</td>
-                <td width="auto;">新增复投用户投资总额(元)</td>
-                <td width="auto;">新增复投率</td>
-                <td width="30px;">投资人数</td>
-                <td width="auto;">投资金额(元)</td>
-                <td width="auto;">零钱罐金额(元)</td>
-                <td width="auto;">人均投资金额(元)</td>
-                <td width="auto;">投资ROI</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>合计</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><fmt:formatNumber value="${tj.activityCount}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.channelCost}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.activityCost}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.regCount}" pattern="#,##0.##"/></td>
-                <td></td>
-                <td><fmt:formatNumber value="${tj.bindCount}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="" pattern="0.##"/></td>
-                <td></td>
-                <td><fmt:formatNumber value="${tj.strs}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.fristBuyCost}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.stje}" pattern="#,##0.##"/></td>
-                <c:choose>
-                	<c:when test="${tj.strs eq '0'}">
-                	<td>0</td>
-                	</c:when>
-                	<c:otherwise>
-		                <td><fmt:formatNumber value="${tj.stje/tj.strs}" pattern="#,##0.##"/></td>
-                	</c:otherwise>
-                </c:choose>
-                <td><fmt:formatNumber value="${tj.fristBuyROI}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.ftrs}" pattern="#,##0.##"/></td>
-                <td></td>
-                <td><fmt:formatNumber value="${tj.ftje}" pattern="#,##0.##"/></td>
-                <c:choose>
-                    <c:when test="${tj.ftrs eq '0'}">
-                        <td>0</td>
-                    </c:when>
-                    <c:otherwise>
-                        <td><fmt:formatNumber value="${tj.ftje/tj.ftrs}" pattern="#,##0.##"/></td>
-                    </c:otherwise>
-                </c:choose>
-                <td></td>
-                <td><fmt:formatNumber value="${tj.xzftyh}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.xhftyhtzze}" pattern="#,##0.##"/></td>
-                <td></td>
-                <td><fmt:formatNumber value="${tj.tzrs}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.tzje}" pattern="#,##0.##"/></td>
-                <td><fmt:formatNumber value="${tj.lqgje}" pattern="#,##0.##"/></td>
-                <c:choose>
-                	<c:when test="${tj.tzrs eq '0'}">
-                	<td>0</td>
-                	</c:when>
-                	<c:otherwise>
-		                <td><fmt:formatNumber value="${tj.tzje/tj.tzrs}" pattern="#,##0.##"/></td>
-                	</c:otherwise>
-                </c:choose>
-                <td><fmt:formatNumber value="${tj.buyROI}" pattern="#,##0.##"/></td>
-            </tr>
-            <c:forEach items="${list}" var="item">
+        <div style="overflow-x: scroll;">
+            <table id="tHead" class="ct-table" border="1" cellspacing="0" cellpadding="0" style="text-align: center;">
+                <thead>
                 <tr>
-                    <td>${item.index}</td>
-                    <td><a class="a" target="_blank"
-                           href="${pageContext.request.contextPath}/Product/Admin/activity!loadQdtjDetails.action?registChannel=${item.channel}&channelCode=${item.channelCode}">${item.channel}</a>
-                    </td>
-                    <td><a class="a" target="_blank"
-                           href="${pageContext.request.contextPath}/Product/Admin/activity!loadQdtjDetails.action?registChannel=${item.channel}&channelCode=${item.channelCode}">${item.channelName}</a>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td><fmt:formatNumber value="${item.activityCount}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.channelCost}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.activityCost}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.qdzhl}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.regCount}" pattern="#,##0.##"/></td>
-                    <td></td>
-                    <td><fmt:formatNumber value="${item.bindCount}" pattern="#,##0.##"/></td>
-			        <td><fmt:formatNumber value="${item.zcjhzhl}" pattern="0.##"/></td>
-                    <td><fmt:formatNumber value="${item.rzstzhl}" pattern="0.##"/></td>
-                    <td><fmt:formatNumber value="${item.strs}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.fristBuyCost}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.stje}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.rjstje}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.fristBuyROI}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.ftrs}" pattern="#,##0.##"/></td>
-                    <td></td>
-                    <td><fmt:formatNumber value="${item.ftje}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.rjftje}" pattern="#,##0.##"/></td>
-                    <td></td>
-                    <td><fmt:formatNumber value="${item.xzftyh}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.xhftyhtzze}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.xzftl}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.tzrs}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.tzje}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.lqgje}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.rjtzje}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${item.buyROI}" pattern="#,##0.##"/></td>
+                    <td width="30px;">序号</td>
+                    <td width="30px;">渠道编号</td>
+                    <td width="auto;">渠道名称</td>
+                    <td width="auto;">点击量</td>
+                    <td width="auto;">下载量</td>
+                    <td width="auto;">激活量</td>
+                    <td width="65px;">渠道费用(元)</td>
+                    <td width="auto;">激活成本</td>
+                    <td width="65px;">激活注册转化率(%)</td>
+                    <td width="45px;">总注册人数</td>
+                    <td width="30px;">注册成本</td>
+                    <td width="30px;">认证人数</td>
+                    <td width="65px;">注册认证转化率(%)</td>
+                    <td width="65px;">认证首投转化率(%)</td>
+                    <td width="30px;">首投人数</td>
+                    <td width="65px;">首投成本(元)</td>
+                    <td width="65px;">首投总金额(元)</td>
+                    <td width="65px;">人均首投总金额（元）</td>
+                    <td width="auto;">首投ROI</td>
+                    <td width="30px;">复投人数</td>
+                    <td width="30px;">复投成本</td>
+                    <td width="auto;">复投金额(元)</td>
+                    <td width="auto;">人均复投金额(元)</td>
+                    <td width="auto;">复投ROI</td>
+                    <td width="45px;">新增复投用户数</td>
+                    <td width="auto;">新增复投用户投资总额(元)</td>
+                    <td width="auto;">新增复投率</td>
+                    <td width="30px;">投资人数</td>
+                    <td width="auto;">投资金额(元)</td>
+                    <td width="auto;">零钱罐金额(元)</td>
+                    <td width="auto;">人均投资金额(元)</td>
+                    <td width="auto;">投资ROI</td>
                 </tr>
-            </c:forEach>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>合计</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><fmt:formatNumber value="${tj.activityCount}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.channelCost}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.activityCost}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.regCount}" pattern="#,##0.##"/></td>
+                    <td></td>
+                    <td><fmt:formatNumber value="${tj.bindCount}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="" pattern="0.##"/></td>
+                    <td></td>
+                    <td><fmt:formatNumber value="${tj.strs}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.fristBuyCost}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.stje}" pattern="#,##0.##"/></td>
+                    <c:choose>
+                        <c:when test="${tj.strs eq '0'}">
+                        <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.stje/tj.strs}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
+                    <td><fmt:formatNumber value="${tj.fristBuyROI}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.ftrs}" pattern="#,##0.##"/></td>
+                    <td></td>
+                    <td><fmt:formatNumber value="${tj.ftje}" pattern="#,##0.##"/></td>
+                    <c:choose>
+                        <c:when test="${tj.ftrs eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.ftje/tj.ftrs}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
+                    <td></td>
+                    <td><fmt:formatNumber value="${tj.xzftyh}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.xhftyhtzze}" pattern="#,##0.##"/></td>
+                    <td></td>
+                    <td><fmt:formatNumber value="${tj.tzrs}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.tzje}" pattern="#,##0.##"/></td>
+                    <td><fmt:formatNumber value="${tj.lqgje}" pattern="#,##0.##"/></td>
+                    <c:choose>
+                        <c:when test="${tj.tzrs eq '0'}">
+                        <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.tzje/tj.tzrs}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
+                    <td><fmt:formatNumber value="${tj.buyROI}" pattern="#,##0.##"/></td>
+                </tr>
+                <c:forEach items="${list}" var="item">
+                    <tr>
+                        <td>${item.index}</td>
+                        <td><a class="a" target="_blank"
+                               href="${pageContext.request.contextPath}/Product/Admin/activity!loadQdtjDetails.action?registChannel=${item.channel}&channelCode=${item.channelCode}">${item.channel}</a>
+                        </td>
+                        <td><a class="a" target="_blank"
+                               href="${pageContext.request.contextPath}/Product/Admin/activity!loadQdtjDetails.action?registChannel=${item.channel}&channelCode=${item.channelCode}">${item.channelName}</a>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td><fmt:formatNumber value="${item.activityCount}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.channelCost}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.activityCost}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.qdzhl}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.regCount}" pattern="#,##0.##"/></td>
+                        <td></td>
+                        <td><fmt:formatNumber value="${item.bindCount}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.zcjhzhl}" pattern="0.##"/></td>
+                        <td><fmt:formatNumber value="${item.rzstzhl}" pattern="0.##"/></td>
+                        <td><fmt:formatNumber value="${item.strs}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.fristBuyCost}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.stje}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.rjstje}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.fristBuyROI}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.ftrs}" pattern="#,##0.##"/></td>
+                        <td></td>
+                        <td><fmt:formatNumber value="${item.ftje}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.rjftje}" pattern="#,##0.##"/></td>
+                        <td></td>
+                        <td><fmt:formatNumber value="${item.xzftyh}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.xhftyhtzze}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.xzftl}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.tzrs}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.tzje}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.lqgje}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.rjtzje}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${item.buyROI}" pattern="#,##0.##"/></td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
         <c:choose>
             <c:when test="${list ne '[]' &&  list ne '' && list ne null}">
                 <jsp:include page="/Product/page.jsp"/>
