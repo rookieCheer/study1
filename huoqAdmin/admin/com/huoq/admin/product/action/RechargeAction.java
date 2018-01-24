@@ -1221,7 +1221,7 @@ public class RechargeAction extends BaseAction {
                         sql.delete(0, sql.length());
                         sql.append("select vir.product_id,vir.pay_in_mony/1000 from product pro JOIN virtual_ins_record vir ON vir.product_id = pro.id  ").append(" where product_id in(:productIds)");
                         sql2 = sql.toString();
-                        List virList = investorsService.getListBySql(sql2, null, productIdList, "productIds");
+                        List<Object> virList = investorsService.getListBySql(sql2, null, productIdList, "productIds");
                         if (virList != null) {
                             int virListSize = virList.size();
                             if (virListSize > 0) {
@@ -1239,7 +1239,7 @@ public class RechargeAction extends BaseAction {
                                             String productId = (String) element[0];
                                             if (productId.equals(id)) {
                                                 innerList.add(obj);
-                                                listIt.remove();
+                                                virIt.remove();
                                             }
                                         }
                                     }
