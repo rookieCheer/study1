@@ -176,7 +176,7 @@
         <tr>
         <td width="5%">${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
         <td width="5%">${list.recordNumber}</td>
-        <td width="5%"><a class="a"  href="${pageContext.request.contextPath}/Product/Admin/userStat!loadUserInfo.action?username=${myel:jieMiUsername(list.users.username)}">${myel:jieMiUsername(list.users.username)}</a></td> 
+        <td width="5%">${myel:jieMiUsername(list.users.username)}</td> 
         <td width="5%"><fmt:formatNumber value="${list.money * 0.01}" pattern="#,##0.##"/></td>
         <td width="5%">
         ${list.users.usersInfo.realName}
@@ -222,26 +222,6 @@
 	
 		function search() {
 			window.location.href="${pageContext.request.contextPath}/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?name="+$("#name").val()+"&insertTime="+$('#insertTime').val();
-			
-			/**
-			var begin=$('#createST').val();
-			var end=$('#createET').val();
-			if(begin!="" && end==""){
-			   alert("请选择结束时间");
-			   return false;
-			}else if(begin=="" && end!=''){
-			 alert("请选择开始时间");
-               return false;
-			}else if(begin!="" && end!=''){
-			  insertTime=begin+"-"+end;
-			}else{
-			  insertTime="";
-			}
-			debugger;
-			*/
-			
-			 
-			//window.location.href = "${pageContext.request.contextPath}/Product/Admin/recharge!uAuditiongOutCashTotalMoneyDetail.action?name=" + $("#name").val() + "&status=" + $('input[name="status"]:checked').val() + "&insertTime=" +insertTime ;
 		}
 	</script>
 	<script type="text/javascript">
