@@ -44,7 +44,7 @@ public class Qdtj {
 	private String channelType;//渠道状态
 	private String channelCost;//渠道费用
 	private String activityCost;//激活成本
-	private String registerCost;//激活成本
+	private String registerCost;//注册成本
 	private String fristBuyCost;//首投成本
 	private String fristBuyROI;//首投ROI
 	private String secondCost;//复投成本

@@ -2341,7 +2341,7 @@ public class ActivityBean {
                     qdtj.setRegisterCost("0");
                 }
                 //获取首投人数
-                Integer strs = Integer.valueOf(qdtj.getTzrs());
+                Integer strs = Integer.valueOf(qdtj.getStrs());
                 //计算首投成本
                 if(!QwyUtil.isNullAndEmpty(strs)&& strs > 0){
                     qdtj.setFristBuyCost((channelCost/strs)+"");
@@ -2349,16 +2349,16 @@ public class ActivityBean {
                     qdtj.setFristBuyCost("0");
                 }
                 //获取首投总金额
-                Double stje = Double.valueOf(qdtj.getStje());
+                Double stje = Double.valueOf(qdtj.getStje())/100;
                 //计算首投ROI
                 //计算首投成本
-                if(!QwyUtil.isNullAndEmpty(stje)&& stje > 0){
+                if(!QwyUtil.isNullAndEmpty(stje) && stje > 0){
                     qdtj.setFristBuyROI((stje/channelCost)+"");
                 }else{
                     qdtj.setFristBuyROI("0");
                 }
                 //获取投资金额
-                Double tzje = Double.valueOf(qdtj.getTzje());
+                Double tzje = Double.valueOf(qdtj.getTzje())/100;
                 //计算投资ROI
                 if(!QwyUtil.isNullAndEmpty(tzje)&& tzje > 0){
                     qdtj.setBuyROI((tzje/channelCost)+"");

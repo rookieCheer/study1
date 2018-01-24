@@ -257,15 +257,75 @@
                     <td></td>
                     <td><fmt:formatNumber value="${tj.activityCount}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${tj.channelCost}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${tj.activityCost}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="" pattern="#,##0.##"/></td>
+                    <c:choose>
+                        <c:when test="${tj.activityCount eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.channelCost eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.channelCost/tj.activityCount}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${tj.activityCount eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.regCount eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.regCount/tj.activityCount*100}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
                     <td><fmt:formatNumber value="${tj.regCount}" pattern="#,##0.##"/></td>
-                    <td></td>
+                    <c:choose>
+                        <c:when test="${tj.regCount eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.channelCost eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.regCount/tj.channelCost}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
                     <td><fmt:formatNumber value="${tj.bindCount}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="" pattern="0.##"/></td>
-                    <td></td>
+                    <c:choose>
+                        <c:when test="${tj.regCount eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.bindCount eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.bindCount/tj.regCount*100}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
+                    <c:choose>
+                        <c:when test="${tj.strs eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.bindCount eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.strs/tj.bindCount*100}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
                     <td><fmt:formatNumber value="${tj.strs}" pattern="#,##0.##"/></td>
-                    <td><fmt:formatNumber value="${tj.fristBuyCost}" pattern="#,##0.##"/></td>
+                    <c:choose>
+                        <c:when test="${tj.strs eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.channelCost eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.channelCost/tj.strs}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
                     <td><fmt:formatNumber value="${tj.stje}" pattern="#,##0.##"/></td>
                     <c:choose>
                         <c:when test="${tj.strs eq '0'}">
@@ -275,7 +335,17 @@
                             <td><fmt:formatNumber value="${tj.stje/tj.strs}" pattern="#,##0.##"/></td>
                         </c:otherwise>
                     </c:choose>
-                    <td><fmt:formatNumber value="${tj.fristBuyROI}" pattern="#,##0.##"/></td>
+                    <c:choose>
+                        <c:when test="${tj.stje eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.channelCost eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.stje/tj.channelCost}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
                     <td><fmt:formatNumber value="${tj.ftrs}" pattern="#,##0.##"/></td>
                     <td></td>
                     <td><fmt:formatNumber value="${tj.ftje}" pattern="#,##0.##"/></td>
@@ -290,7 +360,17 @@
                     <td></td>
                     <td><fmt:formatNumber value="${tj.xzftyh}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${tj.xhftyhtzze}" pattern="#,##0.##"/></td>
-                    <td></td>
+                    <c:choose>
+                        <c:when test="${tj.ftrs eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.xzftyh eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.xzftyh/tj.ftrs*100}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
                     <td><fmt:formatNumber value="${tj.tzrs}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${tj.tzje}" pattern="#,##0.##"/></td>
                     <td><fmt:formatNumber value="${tj.lqgje}" pattern="#,##0.##"/></td>
@@ -302,7 +382,17 @@
                             <td><fmt:formatNumber value="${tj.tzje/tj.tzrs}" pattern="#,##0.##"/></td>
                         </c:otherwise>
                     </c:choose>
-                    <td><fmt:formatNumber value="${tj.buyROI}" pattern="#,##0.##"/></td>
+                    <c:choose>
+                        <c:when test="${tj.tzje eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:when test="${tj.channelCost eq '0'}">
+                            <td>0</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><fmt:formatNumber value="${tj.tzje/tj.channelCost}" pattern="#,##0.##"/></td>
+                        </c:otherwise>
+                    </c:choose>
                 </tr>
                 <c:forEach items="${list}" var="item">
                     <tr>
@@ -320,7 +410,7 @@
                         <td><fmt:formatNumber value="${item.activityCost}" pattern="#,##0.##"/></td>
                         <td><fmt:formatNumber value="${item.qdzhl}" pattern="#,##0.##"/></td>
                         <td><fmt:formatNumber value="${item.regCount}" pattern="#,##0.##"/></td>
-                        <td></td>
+                        <td><fmt:formatNumber value="${item.registerCost}" pattern="#,##0.##"/></td>
                         <td><fmt:formatNumber value="${item.bindCount}" pattern="#,##0.##"/></td>
                         <td><fmt:formatNumber value="${item.zcjhzhl}" pattern="0.##"/></td>
                         <td><fmt:formatNumber value="${item.rzstzhl}" pattern="0.##"/></td>
