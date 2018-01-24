@@ -28,7 +28,6 @@ import com.huoq.common.util.DateUtils;
 import com.huoq.bean.FullScaleCompanyMessage;
 import com.huoq.bean.InnerCompanyMessage;
 import com.alibaba.fastjson.JSON;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -377,18 +376,18 @@ public class ExcelUtil<T> {
         // 产生表格标题行
         HSSFRow row = sheet.createRow(0);
         Iterator<Map.Entry<String, String>> iter = fieldMap.entrySet().iterator();
-        int i = 0;
+        int index = 0;
         while (iter.hasNext()) {
             Map.Entry<String, String> entry = iter.next();
-            HSSFCell cell = row.createCell(i);
+            HSSFCell cell = row.createCell(index);
             cell.setCellStyle(style);
             HSSFRichTextString text = new HSSFRichTextString(entry.getKey());
             cell.setCellValue(text);
-            i++;
+            index++;
         }
 
         Iterator<FullScaleCompanyMessage> it = data.iterator();
-        int index = 0;
+        index = 0;
         HSSFCellStyle style1 = workbook.createCellStyle();
         // 设置这些样式
 
@@ -405,7 +404,10 @@ public class ExcelUtil<T> {
             List<InnerCompanyMessage> innerList = message.getInnerMessage();
             if (innerList != null) {
                 int j = 5;
-                int k = index * childBidNumber - 1;
+                int k = index * childBidNumber;
+                if (childBidNumber > 1) {
+                    k = k - 1;
+                }
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 for (InnerCompanyMessage innerMessage : innerList) {
                     HSSFRow innerRow = sheet.createRow(k);
@@ -433,46 +435,49 @@ public class ExcelUtil<T> {
             HSSFCell cell = row.createCell(0); // 序号
 
             HSSFRichTextString no = new HSSFRichTextString(message.getNo());
-            cell.setCellValue(no);
-
             // 四个参数分别是：起始行，结束行，开始列，结束列
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 0, 0));
+            cell.setCellValue(no);
             cell.setCellStyle(style1);
             HSSFCell cell2 = row.createCell(1); // 借款公司名称
 
             HSSFRichTextString name = new HSSFRichTextString(message.getCompanyName());
-            cell2.setCellValue(name);
+
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 1, 1));
+            cell2.setCellValue(name);
             cell2.setCellStyle(style1);
+
             HSSFCell cell3 = row.createCell(2); // 借款额度
             cell3.setCellStyle(style1);
             double browLimit = message.getBrowLimit().doubleValue();
-            cell3.setCellValue(browLimit);
+
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 2, 2));
+            cell3.setCellValue(browLimit);
             HSSFCell cell4 = row.createCell(3); // 标的类型
             cell4.setCellStyle(style1);
             HSSFRichTextString type = new HSSFRichTextString(message.getType());
-            cell4.setCellValue(type);
+
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 3, 3));
+            cell4.setCellValue(type);
             HSSFCell cell5 = row.createCell(4); // 创建第5个单元格
 
+            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 4, 4));
             cell5.setCellValue(childBidNumber);
             cell5.setCellStyle(style1);
-            sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 4, 4));
-
             //
             HSSFCell cell9 = row.createCell(8); // 企业到期时间
             Date date = (Date) message.getCompanyDueTime();
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            cell9.setCellValue(sdf.format(date));
 
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 8, 8));
             cell9.setCellStyle(style1);
+            cell9.setCellValue(sdf.format(date));
             HSSFCell cell10 = row.createCell(9); // 企业回款时间
             Date dueTime = (Date) message.getBackMoneyTime();
-            cell10.setCellValue(sdf.format(dueTime));
+
             sheet.addMergedRegion(new CellRangeAddress(index, index + childBidNumber - 1, 9, 9));
+            cell10.setCellValue(sdf.format(dueTime));
             cell10.setCellStyle(style1);
             HSSFCell cell12 = row.createCell(11); // 实际投资总额
             cell12.setCellValue(message.getRealInvest().doubleValue());
