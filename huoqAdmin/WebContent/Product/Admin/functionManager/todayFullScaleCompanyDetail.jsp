@@ -34,7 +34,6 @@
 			<tr>
 				<td>序号</td>
 				<td>借款公司</td>
-				<td>法人</td>
 				<td>借款额度(元)</td>
 				<td>标的类型</td>
 				<td>子标数目</td>
@@ -54,7 +53,7 @@
 					<td width="6%" >
 					${list.companyName}
 					</td>
-					<td width="3%" >${list.legalPerson}</td>
+					
 					<td width="3%" >${list.browLimit}</td>
 					<td width="3%" >${list.type}</td>
 					<td width="3%" >${list.childBidNumber}</td>
