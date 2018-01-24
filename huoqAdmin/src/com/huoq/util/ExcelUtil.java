@@ -341,7 +341,6 @@ public class ExcelUtil<T> {
 
         // 表格
         HSSFSheet sheet = workbook.createSheet(title);
-
         HSSFCellStyle style = workbook.createCellStyle();
         // 设置这些样式
         style.setFillForegroundColor(HSSFColor.WHITE.index);
@@ -375,6 +374,7 @@ public class ExcelUtil<T> {
         style2.setFont(font2);
         // 产生表格标题行
         HSSFRow row = sheet.createRow(0);
+        //sheet.setColumnWidth((short) 0, (short) 2500);
         Iterator<Map.Entry<String, String>> iter = fieldMap.entrySet().iterator();
         int index = 0;
         while (iter.hasNext()) {
@@ -397,7 +397,7 @@ public class ExcelUtil<T> {
             index++;
             // 创建一行
             row = sheet.createRow(index);
-
+            sheet.setDefaultColumnWidth(18); //修改by Gaoqs
             // 获取单个数据
             FullScaleCompanyMessage message = it.next();
             int childBidNumber = message.getChildBidNumber();
