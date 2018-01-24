@@ -158,71 +158,52 @@
 				border="1">
 				<tr>
 					<td width="3%">序号</td>
-					<td width="5%">用户名</td>
+					<td width="5%">流水号</td>
+					<td width="3%">用户名</td>
 					<td width="3%">提现金额(元)</td>
 					<td width="3%">姓名</td>
-					<td width="3%">所属省份</td>
-					<td width="3%">所属城市</td>
-					<td width="3%">持卡人好友</td>
-					<td width="5%">提现状态</td>
-					<td width="10%">备注</td>
-					<td width="3%">流水号</td>
 					<td width="8%">申请提现时间</td>
-					<td width="8%">审核提现时间</td>
-					<td width="5%">提现类型</td>
+                    <td width="8%">审核提现时间</td>
 					<td width="10%">平台订单号</td>
 					<td width="8%">交易流水号</td>
-					<td width="5%">提现方式</td>
-					<c:if test="${usersAdmin.id!=11020}">
+					<td width="5%">提现状态</td>
+					 <td width="15%">备注</td>
+				  <c:if test="${usersAdmin.id!=11020}">
 						<td width="10%">操作</td>
 					</c:if>
 				</tr>
 				<c:forEach items="${txRecordList}" var="list" varStatus="i">
-					<tr>
-						<td width="3%">${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
-						<td width="5%"></td>
-						<td width="3%"><fmt:formatNumber value="${list.money * 0.01}"
-								pattern="#,##0.##" /></td>
-						<td width="3%">${list.realName}</td>
-						<td width="3%">${list.province}</td>
-						<td width="3%">${list.city}</td>
-						<td width="3%">${list.category}</td>
-						<td width="5%">${list.txzt}</td>
-						<td width="10%">${list.note}</td>
-						<td width="3%">${list.recordNumber}</td>
-						<td width="8%"><fmt:formatDate value="${list.insertTime}"
-								pattern="yyyy-MM-dd HH:mm:ss" /></td>
-						<td width="8%"><fmt:formatDate value="${list.checkTime}"
-								pattern="yyyy-MM-dd HH:mm:ss" /></td>
-						<td width="5%"><c:choose>
-								<c:when test="${list.drawType eq '0'}">T+0</c:when>
-								<c:otherwise>T+1</c:otherwise>
-							</c:choose></td>
-						<td width="10%">${list.requestId}</td>
-						<td width="8%">${list.ybOrderId}</td>
-						<td width="5%"><c:choose>
-								<c:when test="${list.type eq '0'}">易宝提现</c:when>
-								<c:when test="${list.type eq '1'}">支付宝提现</c:when>
-								<c:otherwise>连连提现</c:otherwise>
-							</c:choose></td>
-						<c:if test="${usersAdmin.id!=11020}">
-							<td width="10%"><c:if test="${list.status eq '0'}">
-									<a class="a"
-										href="javascript:checkUsersMoney('${list.usersId}','${list.id}');">审核资金</a>
-									<c:if test="${list.isCheck eq '1'}">
-										<c:if test="${list.txStatus eq '1'}">
-											<a class="a" href="javascript:allclearTx('${list.id}');">解除警报</a>
-										</c:if>
-										<br>
-										<a class="a"
-											href="javascript:shenhe('${list.id}','1','${list.txStatus}','${list.isCheck}');">审核通过</a>
-										<a class="a"
-											href="javascript:shenhe('${list.id}','2','${list.txStatus}','${list.isCheck}');">审核不通过</a>
-									</c:if>
-								</c:if></td>
-						</c:if>
-					</tr>
-				</c:forEach>
+        <tr>
+        <td width="5%">${i.count + (pageUtil.currentPage-1)*pageUtil.pageSize}</td>
+        <td width="5%">${list.recordNumber}</td>
+        <td width="5%"><a class="a"  href="${pageContext.request.contextPath}/Product/Admin/userStat!loadUserInfo.action?username=${myel:jieMiUsername(list.users.username)}">${myel:jieMiUsername(list.users.username)}</a></td> 
+        <td width="5%"><fmt:formatNumber value="${list.money * 0.01}" pattern="#,##0.##"/></td>
+        <td width="5%">
+        ${list.users.usersInfo.realName}
+        </td>
+        <td width="10%"><fmt:formatDate value="${list.insertTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+        <td width="10%"><fmt:formatDate value="${list.checkTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+        <td width="10%">${list.requestId}</td>
+        <td width="10%">${list.ybOrderId}</td>
+        <td width="5%">${list.txzt}</td>
+        <td width="15%">${list.note}</td>
+        <c:if test="${usersAdmin.id!=11020}">
+        <td width="10%">
+            <c:if test="${list.status eq '0'}">
+            <a class="a" href="javascript:checkUsersMoney('${list.usersId}','${list.id}');">审核资金</a>
+                <c:if test="${list.isCheck eq '1'}">
+                    <c:if test="${list.txStatus eq '1'}">
+                        <a class="a" href="javascript:allclearTx('${list.id}');">解除警报</a>
+                    </c:if>
+                <br>
+                <a class="a" href="javascript:shenhe('${list.id}','1','${list.txStatus}','${list.isCheck}');">审核通过</a>
+                <a class="a" href="javascript:shenhe('${list.id}','2','${list.txStatus}','${list.isCheck}');">审核不通过</a>
+                </c:if>
+            </c:if>
+        </td>
+        </c:if>
+        </tr>
+        </c:forEach>
 			</table>
 			<c:choose>
 				<c:when

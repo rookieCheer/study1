@@ -61,6 +61,7 @@ import com.huoq.orm.TxRecord;
 import com.huoq.orm.UserCzTx;
 import com.huoq.orm.Users;
 import com.huoq.orm.UsersAdmin;
+import com.huoq.orm.UsersInfo;
 import com.huoq.orm.WeekLeftMoney;
 import com.huoq.product.bean.ProductBean;
 import com.huoq.util.ExcelUtil;
@@ -1591,21 +1592,16 @@ public class RechargeAction extends BaseAction {
                 ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
                 LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
                 fieldMap.put("序号", "no");
-                fieldMap.put("用户名", "userName");
+                fieldMap.put("流水号", "recordNumber");
+                fieldMap.put("用户名", "userName");// 需要解密
                 fieldMap.put("提现金额(元)", "money");
                 fieldMap.put("姓名", "realName");
-                fieldMap.put("所属省份", "province");
-                fieldMap.put("所属城市", "city");
-                fieldMap.put("持卡人好友", "category");
-                fieldMap.put("提现状态", "txzt");
-                fieldMap.put("备注", "note");
-                fieldMap.put("流水号", "recordNumber");
                 fieldMap.put("申请提现时间", "insertTime");
                 fieldMap.put("审核提现时间", "checkTime");
-                fieldMap.put("提现类型", "drawType");
                 fieldMap.put("平台订单号", "requestId");
                 fieldMap.put("交易流水号", "ybOrderId");
-                fieldMap.put("提现方式", "type");
+                fieldMap.put("提现状态", "txzt");
+                fieldMap.put("备注", "note");
                 Map<String, String> dataStyle = new HashMap<String, String>(2);
                 dataStyle.put("insertTime", "yyyy-MM-dd HH:mm:ss");
                 dataStyle.put("checkTime", "yyyy-MM-dd HH:mm:ss");
@@ -1626,22 +1622,23 @@ public class RechargeAction extends BaseAction {
                     money = money.doubleValue() * 0.01;
                     record.setMoney(money);
                 }
-                String drawType = record.getDrawType();
-                if ("0".equals(drawType)) {
-                    drawType = "T+0";
-                } else {
-                    drawType = "T+1";
+                Users users = record.getUsers();
+                if (users != null) {
+                    String userName = users.getUsername();
+                    /**
+                     * 需要解密
+                     */
+                    if (userName != null) {
+                        userName = DESEncrypt.jieMiUsername(userName);
+                        record.setUserName(userName);
+                    }
+
+                    UsersInfo info = users.getUsersInfo();
+                    if (info != null) {
+                        String realName = info.getRealName();
+                        record.setRealName(realName);
+                    }
                 }
-                record.setDrawType(drawType);
-                String type = record.getType();
-                if ("0".equals(type)) {
-                    type = "易宝提现";
-                } else if ("1".equals(type)) {
-                    type = "支付宝提现";
-                } else {
-                    type = "连连提现";
-                }
-                record.setType(type);
                 list.set(i, record);
             }
         }
