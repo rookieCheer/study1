@@ -35,24 +35,24 @@
 </style>
 <script type="text/javascript">
     function ireportDo() {
-		var interval = $("#insertTime").val();
-        if (interval == null || interval == '' || interval.length == 0) {
-            alert("请选择要导出报表日期！");
-            return false;
-        }
-        if (interval.indexOf("-") != -1) {
-            var startDate = interval.split("-")[0];
-            var endDate = interval.split("-")[1];
-            var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-                .getTime();
-            var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-                .getTime();
-            var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-            if (31 - dates <= 0) {
-                alert("请选择日期间隔为31天的数据导出！")
-                return false;
-            }
-        }
+        // var interval = $("#insertTime").val();
+        // if (interval == null || interval == '' || interval.length == 0) {
+        //     alert("请选择要导出报表日期！");
+        //     return false;
+        // }
+        // if (interval.indexOf("-") != -1) {
+        //     var startDate = interval.split("-")[0];
+        //     var endDate = interval.split("-")[1];
+        //     var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
+        //         .getTime();
+        //     var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
+        //         .getTime();
+        //     var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
+        //     if (31 - dates <= 0) {
+        //         alert("请选择日期间隔为31天的数据导出！")
+        //         return false;
+        //     }
+        // }
         var insertTime = $("#insertTime").val();
 		var url = "${pageContext.request.contextPath}/Product/Admin/userStat!exportProvince.action?insertTime=" + insertTime;
         var list = "${list}";
