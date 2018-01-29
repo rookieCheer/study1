@@ -244,19 +244,25 @@
         m = m < 10 ? '0' + m : m;
         var d = date.getDate()-1;
         d = d < 10 ? ('0' + d) : d;
-        return m + '/' + d + '/' + y;
+        return y + '/' + m + '/' + d;
+    };
+    //将填入事物日期格式化为固定格式
+    var newformatDate=function (date) {
+        var m = date.substring(0,2);
+        var d = date.substring(3,5);
+        var y = date.substring(6,date.length);
+        return y + '/' + m + '/' + d;
     };
     function sub(){
-        var myDate = new Date();
-        var date = formatDate(myDate);
+        var date = formatDate();
         var insetTime = $("#insertTime").val();
+        var mydate = newformatDate(insetTime);
         var re = /([a-zA-Z]|[\u4e00-\u9fa5]|[%&',;=?~+^($")@#*|、<>/])+$/;
         $("#qdtjTime").val(insetTime);
         if(insetTime == null || insetTime==''){
             alert("请选择时间");
             return false;
         }
-        var b = re.test($("#ChannelCost").val());
         var allInputs = $('.cost');
         for(var i = 0;i<allInputs.length;i++){
             if(re.test(allInputs[i].value)){
@@ -264,7 +270,7 @@
                 return false;
             }
         }
-        if(date < insetTime){
+        if(date <= mydate){
             alert("选择的时间不能超过昨天");
             return false;
         }
