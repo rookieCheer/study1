@@ -118,21 +118,19 @@
 			<input type="button" value="导出报表" onclick="ireportDo()">
 			<table border="1" width="80%">
 					<tr>
-						<td>序号</td>
-						<td>手机号</td>
-						<td>姓名</td>
-						<td>所属省份</td>
-						<td>所属城市</td>
-						<td>持卡人好友</td>
-						<td>渠道</td>
+						<td>编号</td>
+						<td>注册日期</td>
+						<td>绑定日期</td>
 						<td>开户银行</td>
 						<td>银行卡号</td>
 						<td>注册平台</td>
-						<td>注册日期</td>
-						<td>绑定日期</td>
-						<td>用户id</td>
+						<td>用户ID</td>
+						<td>姓名</td>
+						<td>手机号</td>
 						<td>电话类型</td>
-						<td>身份证号</td>
+						<td>身份证号码</td>
+						<td>所属省份</td>
+						<td>所属城市</td>
 						<td>性别</td>
 						<td>年龄</td>
 						<td>生日</td>
@@ -140,20 +138,18 @@
 					<c:forEach items="${list}" var="mylist" varStatus="number">
 						<tr>
 							<td>${number.index + 1}</td>
-							<td>${mylist.phone}</td>
-							<td>${mylist.realName}</td>
-							<td>${mylist.province}</td>
-							<td>${mylist.city}</td>
-							<td>${mylist.cardFriend}</td>
-							<td>${mylist.channel}</td>
+							<td>${mylist.zinsertTime}<!--fmt:formatDate value="" pattern="yyyy-MM-dd HH:mm:ss"--></td>
+                            <td>${mylist.insertTime}<!--fmt:formatDate value="${mylist.insertTime}" pattern="yyyy-MM-dd HH:mm:ss"--></td>
 							<td>${mylist.bankName}</td>
 							<td>${mylist.bankAccount}</td>
 							<td>${mylist.registPlatform}</td>
-							<td>${mylist.zinsertTime}</td>
-							<td>${mylist.insertTime}</td>
 							<td>${mylist.id}</td>
+							<td>${mylist.realName}</td>
+							<td>${mylist.phone}</td>
 							<td>${mylist.cardType}</td>
 							<td>${mylist.idCard}</td>
+							<td>${mylist.province}</td>
+							<td>${mylist.city}</td>
 							<td>${mylist.gender}</td>
 							<td>${mylist.age}</td>
 							<td>${mylist.birthday}</td>

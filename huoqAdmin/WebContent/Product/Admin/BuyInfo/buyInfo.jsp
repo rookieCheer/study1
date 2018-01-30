@@ -120,44 +120,44 @@
 				<tr>
 					<td>序号</td>
 					<td>购买产品</td>
+					<td>兑付日期倒计时</td>
 					<td>购买金额(元)</td>
 					<td>客户姓名</td>
+					<td>好友</td>
 					<td>所属省份</td>
 					<td>所属城市</td>
-					<td>持卡人好友</td>
 					<td>手机</td>
 					<td>购买日期</td>
 					<td>兑付日期</td>
-					<td>兑付日期倒计时</td>
 					<td>性别</td>
 				</tr>
 				<c:forEach items="${list}" var="mylist" varStatus="status">
 					<tr>
 						<td>${status.index + 1}</td>
 						<td>${mylist.productName}</td>
+						<c:choose>
+                            <c:when test="${mylist.productName =='零钱罐'}">
+                            <td></td>
+                            </c:when>
+                            <c:otherwise>
+                            <td>${mylist.endTime}</td>
+                            </c:otherwise>
+                        </c:choose>
 						<td>${mylist.inMoney/100}</td>
 						<td>${mylist.realName}</td>
-						<td>${mylist.province}</td>
-						<td>${mylist.city}</td>
 						<td>${mylist.category}</td>
+						<td>${mylist.province}</td>
+                        <td>${mylist.city}</td>
 						<td>${myel:jieMiUsername(mylist.phone)}</td>
-						<td>${mylist.insterTime}</td>
-						<c:choose>
-							<c:when test="${mylist.productName =='零钱罐'}">
-							<td></td>
-							</c:when>
-							<c:otherwise>
-							<td>${mylist.finishTime}</td>
-							</c:otherwise>
-						</c:choose>
-						<c:choose>
-							<c:when test="${mylist.productName =='零钱罐'}">
-							<td></td>
-							</c:when>
-							<c:otherwise>
-							<td>${mylist.endTime}</td>
-							</c:otherwise>
-						</c:choose>
+						<td><fmt:formatDate value="${mylist.insterTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                        <c:choose>
+                            <c:when test="${mylist.productName =='零钱罐'}">
+                            <td></td>
+                            </c:when>
+                            <c:otherwise>
+                            <td><fmt:formatDate value="${mylist.finishTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                            </c:otherwise>
+                        </c:choose>
 						<td>${mylist.gender}</td>
 					</tr>
 				</c:forEach>
