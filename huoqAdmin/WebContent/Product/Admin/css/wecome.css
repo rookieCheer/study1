@@ -21,7 +21,7 @@
 }
 .fund-data .accumulate-data li,.fund-data .today-data li,.user-data .today-data li,.user-data .accumulate-data li{
 	float:left;
-	width:13.5%;
+	width:11%;
 	height:100px;
 	text-align:center;
 	border-radius:7px;
