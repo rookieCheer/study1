@@ -5,10 +5,14 @@ import java.io.Serializable;
 import com.huoq.common.util.QwyUtil;
 
 public class BuyProductInfo implements Serializable{
-	//private Integer id; //id
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    //private Integer id; //id
 	private String username; //用户名
 	private String insterTime; //购买时间
-	private double inMoney; //购买金额
+	private Double inMoney; //购买金额
 	private String productName; //商品名称
 	private String finishTime; //兑付时间
 	private String endTime; //兑付倒计时
@@ -18,7 +22,18 @@ public class BuyProductInfo implements Serializable{
 	private String category;//类别
 	private String province; //省份
 	private String city; //城市
-	/*public Integer getId() {
+	private String friend;//朋友
+	
+	
+	
+    public String getFriend() {
+        return friend;
+    }
+    
+    public void setFriend(String friend) {
+        this.friend = friend;
+    }
+    /*public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
@@ -36,10 +51,10 @@ public class BuyProductInfo implements Serializable{
 	public void setInsterTime(String insterTime) {
 		this.insterTime = insterTime;
 	}
-	public double getInMoney() {
+	public Double getInMoney() {
 		return inMoney;
 	}
-	public void setInMoney(double inMoney) {
+	public void setInMoney(Double inMoney) {
 		this.inMoney = inMoney;
 	}
 	public String getProductName() {
@@ -123,13 +138,14 @@ public class BuyProductInfo implements Serializable{
 	}
 	public BuyProductInfo() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
-	@Override
-	public String toString() {
-		return "BuyProductInfo [username=" + username + ", insterTime=" + insterTime + ", inMoney=" + inMoney
-				+ ", productName=" + productName + ", finishTime=" + finishTime + ", endTime=" + endTime + ", realName="
-				+ realName + ", gender=" + gender + ", phone=" + phone + ", category=" + category + ", province="
-				+ province + ", city=" + city + "]";
-	}
+
+    @Override
+    public String toString() {
+        return "BuyProductInfo [username=" + username + ", insterTime=" + insterTime + ", inMoney=" + inMoney + ", productName=" + productName + ", finishTime=" + finishTime
+               + ", endTime=" + endTime + ", realName=" + realName + ", gender=" + gender + ", phone=" + phone + ", category=" + category + ", province=" + province + ", city="
+               + city + ", friend=" + friend + "]";
+    }
+	
 }

@@ -6,15 +6,20 @@ import com.huoq.common.util.DESEncrypt;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.*;
+import com.huoq.util.ExcelUtil;
+
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.struts2.config.Namespace;
 import org.apache.struts2.config.ParentPackage;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -240,102 +245,79 @@ public class UserBuyAction extends BaseAction {
 	}
 
 	/**
-	 * 导出购买情况统计表
-	 */
-	public String exportBuyProductInfo() {
-		FileOutputStream fout = null;
-		try {
-			PageUtil<BuyProductInfo> pageUtil = new PageUtil<BuyProductInfo>();
-			pageUtil.setCurrentPage(currentPage);
-			pageUtil.setPageSize(999999);
-			HSSFWorkbook wb = new HSSFWorkbook();
-			HSSFSheet sheet = wb.createSheet("购买情况统计表");
-			HSSFRow row = sheet.createRow((int) 0);
-			HSSFCellStyle style = wb.createCellStyle();
-			style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
-			HSSFCell cell = row.createCell(0);
-			cell.setCellValue("序号");
-			cell.setCellStyle(style);
-			cell = row.createCell(1);
-			cell.setCellValue("购买产品");
-			cell.setCellStyle(style);
-			cell = row.createCell(2);
-			cell.setCellValue("购买金额（元）");
-			cell.setCellStyle(style);
-			cell = row.createCell(3);
-			cell.setCellValue("客户姓名");
-			cell.setCellStyle(style);
-			cell = row.createCell(4);
-			cell.setCellValue("所属省份");
-			cell.setCellStyle(style);
-			cell = row.createCell(5);
-			cell.setCellValue("所属城市");
-			cell.setCellStyle(style);
-			cell = row.createCell(6);
-			cell.setCellValue("持卡人好友");
-			cell.setCellStyle(style);
-			cell = row.createCell(7);
-			cell.setCellValue("手机");
-			cell.setCellStyle(style);
-			cell = row.createCell(8);
-			cell.setCellValue("购买日期");
-			cell.setCellStyle(style);
-			cell = row.createCell(9);
-			cell.setCellValue("兑付日期");
-			cell.setCellStyle(style);
-			cell = row.createCell(10);
-			cell.setCellValue("兑付日期倒计时");
-			cell.setCellStyle(style);
-			cell = row.createCell(11);
-			cell.setCellValue("性别");
-			cell.setCellStyle(style);
-			cell = row.createCell(12);
-			BuyProductInfo buyInfo = null;
-			List list = BuyProductInfoBean.productInfo(pageUtil, insertTime, phone, isnew).getList();
-			for (int i = 0; i < list.size(); i++) {
-				buyInfo = (BuyProductInfo) list.get(i);
-				row = sheet.createRow((int) i + 1);
-				row.createCell(0).setCellValue((int) i + 1);
-				row.createCell(1).setCellValue(
-						!QwyUtil.isNullAndEmpty(buyInfo.getProductName()) ? buyInfo.getProductName() : "");
-				row.createCell(2)
-						.setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getInMoney()) ? buyInfo.getInMoney() / 100 : 0.0);
-				row.createCell(3)
-						.setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getRealName()) ? buyInfo.getRealName() : "");
-				row.createCell(4)
-						.setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getProvince()) ? buyInfo.getProvince() : "");
-				row.createCell(5).setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getCity()) ? buyInfo.getCity() : "");
-				row.createCell(6)
-						.setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getCategory()) ? buyInfo.getCategory() : "");
-				row.createCell(7).setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getPhone())
-								? DESEncrypt.jieMiUsername(buyInfo.getPhone())
-								: "");
-				row.createCell(8)
-				.setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getInsterTime()) ? buyInfo.getInsterTime() : "");
-				row.createCell(9)
-						.setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getFinishTime()) ? buyInfo.getFinishTime() : "");
-				row.createCell(10)
-						.setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getEndTime()) ? buyInfo.getEndTime() : "");
-				row.createCell(11).setCellValue(!QwyUtil.isNullAndEmpty(buyInfo.getGender()) ? buyInfo.getGender() : "");
-			}
-			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_buyProduct_info.xls";
-			// String path = "D:/Develop/";
-			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
-			log.info("购买情况统计表地址：" + realPath);
-			fout = new FileOutputStream(realPath);
-			wb.write(fout);
-			response.getWriter().write("/report/" + pathname);
-		} catch (Exception e) {
-			log.error("操作异常: ", e);
-		}finally {
-			try{
-				fout.close();
-			}catch (Exception e){
+     * 导出购买情况统计表
+     */
+    public void exportExcelBuyProductInfoList() throws Exception {
+       
+        PageUtil<BuyProductInfo> pageUtil = new PageUtil<BuyProductInfo>();
+        pageUtil.setCurrentPage(currentPage);
+        pageUtil.setPageSize(1000000);
+        StringBuffer url = new StringBuffer();
+        url.append(getRequest().getServletContext().getContextPath());
+        url.append("/Product/buyInfo/userBuy!productInfo.action");
+        if (!QwyUtil.isNullAndEmpty(insertTime)) {
+            url.append("&insertTime=");
+            url.append(insertTime);
+        }
+        if (!QwyUtil.isNullAndEmpty(phone)) {
+            url.append("&phone=");
+            url.append(phone);
+        }
+        if (!QwyUtil.isNullAndEmpty(isnew)) {
+            url.append("&isnew=");
+            url.append(isnew);
+        }
+        pageUtil.setPageUrl(url.toString());
+        // 查询统计
+       pageUtil = BuyProductInfoBean.productInfo(pageUtil, insertTime, phone, isnew);
+        if (pageUtil != null) {
+            List<BuyProductInfo> list = pageUtil.getList();
+            if (list != null && list.size() > 0) {
+                deal(list);
+                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+                response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+                response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+                ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+                LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+                fieldMap.put("购买产品", "productName");
+                fieldMap.put("兑付日期倒计时", "endTime");
+                fieldMap.put("购买金额(元)", "inMoney"); //inMoney/100
+                fieldMap.put("客户姓名", "realName");
+                fieldMap.put("好友", "friend");
+                fieldMap.put("所属省份", "province");
+                fieldMap.put("所属城市", "city");
+                fieldMap.put("手机", "phone");  // mylist.phone 需要解密
+                fieldMap.put("购买日期", "insterTime");//String
+                fieldMap.put("兑付日期", "finishTime");
+                fieldMap.put("性别", "gender");
+                
+                ExcelUtil.exportExcelNew(outputStream, "购买情况统计表", fieldMap, list, null);
 
-			}
-		}
-		return null;
-	}
+            }
+        }
+    }
+    
+    private void deal(List<BuyProductInfo> list){
+        if(list!=null ){
+            int size = list.size();
+            if(size>0){
+               for(int i=0;i<size;i++){
+                   BuyProductInfo info = list.get(i);
+                   Double inMoney = info.getInMoney();
+                   if(inMoney!=null){
+                       inMoney = inMoney /100;
+                       info.setInMoney(inMoney);
+                   }
+                 String phone = info.getPhone();
+                 if(phone!=null){
+                     phone = DESEncrypt.jieMiUsername(phone);
+                     info.setPhone(phone);
+                 }
+                 list.set(i,info);
+               } 
+            }
+        }
+    }
 
 	/**
 	 * 导出绑卡统计表
