@@ -416,7 +416,7 @@ public class ActivityAction extends BaseAction {
             for (Qdtj qgdj:qdtjlist) {
                 //获取时间,渠道名称查询出已经在数据库的相关数据
                 String channelName = qgdj.getChannelName();
-                String channelCost = qgdj.getChannelCost();
+                String channelCost = qgdj.getChannelCost().trim();
                 //查询出相关数据
                 List<Qdtj> newqdtjlist = bean.loadQdtj(insertTime, channelName);
                 if(!QwyUtil.isNullAndEmpty(newqdtjlist)){
