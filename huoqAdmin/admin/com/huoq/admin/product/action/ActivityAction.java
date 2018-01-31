@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * 入口;
@@ -463,6 +464,7 @@ public class ActivityAction extends BaseAction {
      * @return
      */
     public String iportQdtjMainTable() {
+        FileOutputStream fout = null;
         try {
             String sDate = "";
             String eDate = "";
@@ -525,31 +527,93 @@ public class ActivityAction extends BaseAction {
                 row.createCell(4).setCellValue("");//下载量
                 row.createCell(5).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getActivityCount()), 0));//激活量
                 row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost()), 0));//渠道费用(元)
-                row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost())/Double.valueOf(tj.getActivityCount()), 2));//激活成本
-                row.createCell(8).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount())/Double.valueOf(tj.getActivityCount())*100,2));//激活注册转化率(%)
+                Double activityCount = Double.valueOf(tj.getActivityCount());
+                Double channelCost = Double.valueOf(tj.getChannelCost());
+                if(activityCount > 0 && channelCost > 0){
+                    row.createCell(7).setCellValue(QwyUtil.jieQuFa(channelCost/channelCost, 2));//激活成本
+                }else{
+                    row.createCell(7).setCellValue(0);//激活成本
+                }
+                Double regCount = Double.valueOf(tj.getRegCount());
+                if(activityCount > 0 && regCount > 0){
+                    row.createCell(8).setCellValue(QwyUtil.jieQuFa(regCount/activityCount*100,2));//激活注册转化率(%)
+                }else{
+                    row.createCell(8).setCellValue(0);//激活注册转化率(%)
+                }
                 row.createCell(9).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount()), 0));//总注册人数
-                row.createCell(10).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount())/Double.valueOf(tj.getChannelCost()), 2));//注册成本
+                if(regCount > 0 && channelCost > 0){
+                    row.createCell(10).setCellValue(QwyUtil.jieQuFa(regCount/channelCost, 2));//注册成本
+                }else{
+                    row.createCell(10).setCellValue(0);//注册成本
+                }
                 row.createCell(11).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getBindCount()), 0));//认证人数
-                row.createCell(12).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getBindCount())/Double.valueOf(tj.getRegCount())*100, 2));//注册认证转化率(%)
-                row.createCell(13).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStrs())/Double.valueOf(tj.getBindCount())*100, 2));//认证首投转化率(%)
-                row.createCell(14).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStrs()), 0));//首投人数
-                row.createCell(15).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost())/Double.valueOf(tj.getStrs()),2));//首投成本(元)
-                row.createCell(16).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStje()), 2));//首投总金额(元)
-                row.createCell(17).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStje())/Double.valueOf(tj.getStrs()),2));//人均首投总金额(元)
-                row.createCell(18).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStje())/Double.valueOf(tj.getChannelCost()),2));//首投ROI
+                Double BindCount = Double.valueOf(tj.getBindCount());
+                if(regCount > 0 && BindCount > 0){
+                    row.createCell(12).setCellValue(QwyUtil.jieQuFa(BindCount/regCount*100, 2));//注册认证转化率(%)
+                }else{
+                    row.createCell(12).setCellValue(0);//注册认证转化率(%)
+                }
+                Double strs = Double.valueOf(tj.getStrs());
+                if(strs > 0 && BindCount > 0){
+                    row.createCell(13).setCellValue(QwyUtil.jieQuFa(strs/BindCount*100, 2));//认证首投转化率(%)
+                }else{
+                    row.createCell(13).setCellValue(0);//认证首投转化率(%)
+                }
+                row.createCell(14).setCellValue(QwyUtil.jieQuFa(strs, 0));//首投人数
+                if(strs > 0 && channelCost > 0){
+                    row.createCell(15).setCellValue(QwyUtil.jieQuFa(channelCost/strs,2));//首投成本(元)
+                }else{
+                    row.createCell(15).setCellValue(0);//首投成本(元)
+                }
+                Double stje = Double.valueOf(tj.getStje());
+                row.createCell(16).setCellValue(QwyUtil.jieQuFa(stje, 2));//首投总金额(元)
+                if(stje > 0 && strs > 0){
+                    row.createCell(17).setCellValue(QwyUtil.jieQuFa(stje/strs,2));//人均首投总金额(元)
+                }else{
+                    row.createCell(17).setCellValue(0);//人均首投总金额(元)
+                }
+                if(stje > 0 && channelCost > 0){
+                    row.createCell(18).setCellValue(QwyUtil.jieQuFa(stje/channelCost,2));//首投ROI
+                }else{
+                    row.createCell(18).setCellValue(0);//人均首投总金额(元)
+                }
                 row.createCell(19).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getFtrs()), 0));//复投人数
                 row.createCell(20).setCellValue("");//复投成本
                 row.createCell(21).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getFtje()), 2));//复投金额(元)
-                row.createCell(22).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getFtje())/Double.valueOf(tj.getFtrs()),2));//人均复投金额(元)
+                Double ftje = Double.valueOf(tj.getFtje());
+                Double ftrs = Double.valueOf(tj.getFtrs());
+                if(ftje > 0 && ftrs > 0){
+                    row.createCell(22).setCellValue(QwyUtil.jieQuFa(ftje/ftrs,2));//人均复投金额(元)
+                }else{
+                    row.createCell(22).setCellValue(0);//人均复投金额(元)
+                }
                 row.createCell(23).setCellValue("");//复投ROI
                 row.createCell(24).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getXzftyh()), 0));//新增复投用户数
                 row.createCell(25).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getXhftyhtzze()), 2));//新增复投金额金额(元)
-                row.createCell(26).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getXzftyh())/Double.valueOf(tj.getFtrs())*100, 2));//新增复投率(元)
+                Double xzftyh = Double.valueOf(tj.getXzftyh());
+                if(xzftyh > 0 && ftrs > 0){
+                    row.createCell(26).setCellValue(QwyUtil.jieQuFa(xzftyh/ftrs*100,2));//新增复投率(元)
+                }else{
+                    row.createCell(26).setCellValue(0);//新增复投率(元)
+                }
+
                 row.createCell(27).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzrs()), 0));//投资人数
                 row.createCell(28).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzje()), 2));//投资金额(元)
                 row.createCell(29).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getLqgje()), 2));//零钱罐投资金额(元)
-                row.createCell(30).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzje())/Double.valueOf(tj.getTzrs()),2));//人均投资金额(元)
-                row.createCell(31).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzje())/Double.valueOf(tj.getChannelCost()),2));//投资ROI
+                Double tzje = Double.valueOf(tj.getTzje());
+                Double tzrs = Double.valueOf(tj.getTzrs());
+                if(tzje > 0 && tzrs > 0){
+                    row.createCell(30).setCellValue(QwyUtil.jieQuFa(tzje/tzrs,2));//人均投资金额(元)
+                }else{
+                    row.createCell(30).setCellValue(0);//人均投资金额(元)
+                }
+                if(tzje > 0 && channelCost > 0){
+                    row.createCell(31).setCellValue(QwyUtil.jieQuFa(tzje/channelCost,2));//投资ROI
+                }else{
+                    row.createCell(31).setCellValue(0);//投资ROI
+                }
+
+
 
             }
             if (!QwyUtil.isNullAndEmpty(tj)) {
@@ -564,11 +628,11 @@ public class ActivityAction extends BaseAction {
                     row.createCell(5).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getActivityCount()), 0));//激活量
                     row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getChannelCost()), 0));//渠道费用(元)
                     row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getActivityCost()), 0));//激活成本
-                    row.createCell(8).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getZcjhzhl()), 2));//激活注册转化率(%)
+                    row.createCell(8).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getQdzhl()), 2));//激活注册转化率(%)
                     row.createCell(9).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getRegCount()), 0));//总注册人数
                     row.createCell(10).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getRegisterCost()), 0));//注册成本
                     row.createCell(11).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getBindCount()), 0));//认证人数
-                    row.createCell(12).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getQdzhl()), 2));//注册认证转化率(%)
+                    row.createCell(12).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getZcjhzhl()), 2));//注册认证转化率(%)
                     row.createCell(13).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getRzstzhl()), 2));//认证首投转化率(%)
                     row.createCell(14).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getStrs()), 0));//首投人数
                     row.createCell(15).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getFristBuyCost()), 0));//首投成本(元)
@@ -592,12 +656,17 @@ public class ActivityAction extends BaseAction {
             }
             String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "qdtjMainTable.xls";
             String realPath = request.getServletContext().getRealPath("/report/" + pathname);
-            FileOutputStream fout = new FileOutputStream(realPath);
+            fout = new FileOutputStream(realPath);
             wb.write(fout);
-            fout.close();
             response.getWriter().write("/report/" + pathname);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+        }finally {
+            try{
+                fout.close();
+            }catch (Exception e){
+
+            }
         }
         return null;
     }
@@ -609,6 +678,7 @@ public class ActivityAction extends BaseAction {
      * @return
      */
     public String iportQdtjDetailsTable() {
+        FileOutputStream fout = null;
         try {
             PageUtil<BackStatsOperateDay> pageUtil = new PageUtil<BackStatsOperateDay>();
             pageUtil.setCurrentPage(currentPage);
@@ -665,31 +735,90 @@ public class ActivityAction extends BaseAction {
                 row.createCell(5).setCellValue("");//下载量
                 row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getActivityCount()), 0));//激活量
                 row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost()), 0));//渠道费用(元)
-                row.createCell(8).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost())/Double.valueOf(tj.getActivityCount()), 2));//激活成本
-                row.createCell(9).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount())/Double.valueOf(tj.getActivityCount())*100,2));//激活注册转化率(%)
+                Double activityCount = Double.valueOf(tj.getActivityCount());
+                Double channelCost = Double.valueOf(tj.getChannelCost());
+                if(activityCount > 0 && channelCost > 0){
+                    row.createCell(8).setCellValue(QwyUtil.jieQuFa(channelCost/channelCost, 2));//激活成本
+                }else{
+                    row.createCell(8).setCellValue(0);//激活成本
+                }
+                Double regCount = Double.valueOf(tj.getRegCount());
+                if(activityCount > 0 && regCount > 0){
+                    row.createCell(9).setCellValue(QwyUtil.jieQuFa(regCount/activityCount*100,2));//激活注册转化率(%)
+                }else{
+                    row.createCell(9).setCellValue(0);//激活注册转化率(%)
+                }
                 row.createCell(10).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount()), 0));//总注册人数
-                row.createCell(11).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount())/Double.valueOf(tj.getChannelCost()), 2));//注册成本
+                if(regCount > 0 && channelCost > 0){
+                    row.createCell(11).setCellValue(QwyUtil.jieQuFa(regCount/channelCost, 2));//注册成本
+                }else{
+                    row.createCell(11).setCellValue(0);//注册成本
+                }
                 row.createCell(12).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getBindCount()), 0));//认证人数
-                row.createCell(13).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getBindCount())/Double.valueOf(tj.getRegCount())*100, 2));//注册认证转化率(%)
-                row.createCell(14).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStrs())/Double.valueOf(tj.getBindCount())*100, 2));//认证首投转化率(%)
+                Double BindCount = Double.valueOf(tj.getBindCount());
+                if(regCount > 0 && BindCount > 0){
+                    row.createCell(13).setCellValue(QwyUtil.jieQuFa(BindCount/regCount*100, 2));//注册认证转化率(%)
+                }else{
+                    row.createCell(13).setCellValue(0);//注册认证转化率(%)
+                }
+                Double strs = Double.valueOf(tj.getStrs());
+                if(strs > 0 && BindCount > 0){
+                    row.createCell(14).setCellValue(QwyUtil.jieQuFa(strs/BindCount*100, 2));//认证首投转化率(%)
+                }else{
+                    row.createCell(14).setCellValue(0);//认证首投转化率(%)
+                }
                 row.createCell(15).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStrs()), 0));//首投人数
-                row.createCell(16).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost())/Double.valueOf(tj.getStrs()),2));//首投成本(元)
-                row.createCell(17).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStje()), 2));//首投总金额(元)
-                row.createCell(18).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStje())/Double.valueOf(tj.getStrs()),2));//人均首投总金额(元)
-                row.createCell(19).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getStje())/Double.valueOf(tj.getChannelCost()),2));//首投ROI
+                if(strs > 0 && channelCost > 0){
+                    row.createCell(16).setCellValue(QwyUtil.jieQuFa(channelCost/strs,2));//首投成本(元)
+                }else{
+                    row.createCell(16).setCellValue(0);//首投成本(元)
+                }
+                Double stje = Double.valueOf(tj.getStje());
+                row.createCell(17).setCellValue(QwyUtil.jieQuFa(stje, 2));//首投总金额(元)
+                if(stje > 0 && strs > 0){
+                    row.createCell(18).setCellValue(QwyUtil.jieQuFa(stje/strs,2));//人均首投总金额(元)
+                }else{
+                    row.createCell(18).setCellValue(0);//人均首投总金额(元)
+                }
+                if(stje > 0 && channelCost > 0){
+                    row.createCell(19).setCellValue(QwyUtil.jieQuFa(stje/channelCost,2));//首投ROI
+                }else{
+                    row.createCell(19).setCellValue(0);//人均首投总金额(元)
+                }
                 row.createCell(20).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getFtrs()), 0));//复投人数
                 row.createCell(21).setCellValue("");//复投成本
                 row.createCell(22).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getFtje()), 2));//复投金额(元)
-                row.createCell(23).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getFtje())/Double.valueOf(tj.getFtrs()),2));//人均复投金额(元)
+                Double ftje = Double.valueOf(tj.getFtje());
+                Double ftrs = Double.valueOf(tj.getFtrs());
+                if(ftje > 0 && ftrs > 0){
+                    row.createCell(23).setCellValue(QwyUtil.jieQuFa(ftje/ftrs,2));//人均复投金额(元)
+                }else{
+                    row.createCell(23).setCellValue(0);//人均复投金额(元)
+                }
                 row.createCell(24).setCellValue("");//复投ROI
                 row.createCell(25).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getXzftyh()), 0));//新增复投用户数
                 row.createCell(26).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getXhftyhtzze()), 2));//新增复投金额金额(元)
-                row.createCell(27).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getXzftyh())/Double.valueOf(tj.getFtrs())*100, 2));//新增复投率(元)
+                Double xzftyh = Double.valueOf(tj.getXzftyh());
+                if(xzftyh > 0 && ftrs > 0){
+                    row.createCell(27).setCellValue(QwyUtil.jieQuFa(xzftyh/ftrs*100,2));//新增复投率(元)
+                }else{
+                    row.createCell(27).setCellValue(0);//新增复投率(元)
+                }
                 row.createCell(28).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzrs()), 0));//投资人数
                 row.createCell(29).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzje()), 2));//投资金额(元)
                 row.createCell(30).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getLqgje()), 2));//零钱罐投资金额(元)
-                row.createCell(31).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzje())/Double.valueOf(tj.getTzrs()),2));//人均投资金额(元)
-                row.createCell(32).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getTzje())/Double.valueOf(tj.getChannelCost()),2));//投资ROI
+                Double tzje = Double.valueOf(tj.getTzje());
+                Double tzrs = Double.valueOf(tj.getTzrs());
+                if(tzje > 0 && tzrs > 0){
+                    row.createCell(31).setCellValue(QwyUtil.jieQuFa(tzje/tzrs,2));//人均投资金额(元)
+                }else{
+                    row.createCell(31).setCellValue(0);//人均投资金额(元)
+                }
+                if(tzje > 0 && channelCost > 0){
+                    row.createCell(32).setCellValue(QwyUtil.jieQuFa(tzje/channelCost,2));//投资ROI
+                }else{
+                    row.createCell(32).setCellValue(0);//投资ROI
+                }
 
             }
             for (int i = 0; i < list.size(); i++) {
@@ -730,12 +859,19 @@ public class ActivityAction extends BaseAction {
                 row.createCell(32).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getBuyROI()), 0));//投资ROI
             }
             String realPath = request.getServletContext().getRealPath("/report/" + name + ".xls");
-            FileOutputStream fout = new FileOutputStream(realPath);
+            fout = new FileOutputStream(realPath);
             wb.write(fout);
-            fout.close();
             response.getWriter().write("/report/" + name + ".xls");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+        }finally {
+            try{
+                if(fout != null){
+                    fout.close();
+                }
+            }catch (Exception e){
+
+            }
         }
         return null;
     }
