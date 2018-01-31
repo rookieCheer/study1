@@ -270,7 +270,7 @@
                 return false;
             }
         }
-        if(date <= mydate){
+        if(date < mydate){
             alert("选择的时间不能超过昨天");
             return false;
         }
