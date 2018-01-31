@@ -36,73 +36,49 @@
 }
 </style>
 <script type="text/javascript">
-	function ireportDo() {
-		var interval = $("#insertTime").val();
-		if (interval == null || interval == '' || interval.length == 0) {
-			alert("请选择要导出报表日期！");
-			return false;
-		}
-		if (interval.indexOf("-") != -1) {
-			var startDate = interval.split("-")[0];
-			var endDate = interval.split("-")[1];
-			var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-					.getTime();
-			var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-					.getTime();
-			var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-			if (31 - dates <= 0) {
-				alert("请选择日期间隔为31天的数据导出！")
-				return false;
-			}
-			//alert(dates);
-		}
-		var insertTime=$("#insertTime").val();
-		var phone=$("#phone").val();
-		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!exportTiedCardInfo.action?currentPage=${currentPage}&insertTime="+insertTime
-			+ "&phone="+phone;
-		var list = "${list}";
-		if (list != null && list != "[]") {
-			var my = art.dialog({
-				title : '提示',
-				content : document.getElementById("psi_load"),
-				height : 60,
-				lock : true,
-				cancel : false
-			});
-			$.post(
-					url,
-					$("#sereach").serialize(),
-					function(data) {
-						my.close();
-						data = '${pageContext.request.contextPath}'
-								+ data;
-						var ssss = "导出成功&nbsp;&nbsp;&nbsp;&nbsp;<a href='"+data+"' style='color:red;'>点击下载</a>";
-						art.dialog({
-							title : '提示',
-							content : ssss,
-							height : 60,
-							lock : true,
-							ok : function() {
-							//mysss.close();
-							}
-						});
-					});
-		}
-	}
+
 	
 	function queryProduct(){
 		var insertTime=$("#insertTime").val();
 		var phone=$("#phone").val();
-		/* var username=$("#username").val();
-		var isbindbank=$("#isbindbank option:selected").val();
-		var level=$("#level option:selected").val();
-		var inMoney1=$("#inMoney1").val();
-		var inMoney2=$("#inMoney2").val();
-		var channel=$("#channel").val(); */
+		
 
 		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!tiedCardInfo.action?insertTime="+insertTime+"&phone="+phone;
 		window.location.href=url;
 	}
+	
+	function exportExcel() {
+        
+        var insertTime=$("#insertTime").val();
+        var phone=$("#phone").val();
+       
+        var form = $("<form>");
+     form.attr('target', 'iframe');
+     form.attr('method', 'post');
+     form.attr('action', 'userBuy!exportExcelTiedCardInfoList.action');
+     var input1 = $('<input>');
+     input1.attr('type', 'hidden');
+     input1.attr('name', 'insertTime');
+     input1.attr('value', insertTime);
+
+     var input2 = $('<input>');
+     input2.attr('type', 'hidden');
+     input2.attr('name', 'phone');
+     input2.attr('value', phone);
+    
+
+     var iframe = $("<iframe>")
+     iframe.attr('id', 'iframe');
+     iframe.attr('name', 'iframe');
+     iframe.attr('src', 'about:blank');
+     iframe.attr('style', 'display:none;');
+     $('body').append(iframe);
+     $('body').append(form);
+     form.append(input1);
+     form.append(input2);
+    
+     form.submit();
+ }
 </script>
 </head>
 <body>
@@ -115,7 +91,7 @@
 			<span>手机号:</span>
 			<input id="phone" name="phone" type="text" value="${phone}">
 			<a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a> 
-			<input type="button" value="导出报表" onclick="ireportDo()">
+			<input type="button" value="导出报表" onclick="exportExcel()">
 			<table border="1" width="80%">
 					<tr>
 						<td>编号</td>

@@ -37,34 +37,12 @@
 </style>
 <script type="text/javascript">
 	function exportExcel() {
-		var interval = $("#insertTime").val();
-        /**
-        if (interval == null || interval == '' || interval.length == 0) {
-            alert("请选择要导出报表日期！");
-            return false;
-        }
-        */
-        if (interval.indexOf("-") != -1) {
-            var startDate = interval.split("-")[0];
-            var endDate = interval.split("-")[1];
-            var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-                    .getTime();
-            var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-                    .getTime();
-            var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-            if (31 - dates < 0) {
-                alert("选择的日期间隔不能大于31天！")
-                return false;
-            }
-        }
+		
            var insertTime=$("#insertTime").val();
            var phone=$("#phone").val();
            var realname=$("#realname").val();
            var isnew=$("#isnew").val();
-
-
-
-        var form = $("<form>");
+           var form = $("<form>");
         form.attr('target', 'iframe');
         form.attr('method', 'post');
         form.attr('action', 'userBuy!exportExcelBuyProductInfoList.action');
@@ -85,9 +63,6 @@
         input4.attr('type', 'hidden');
         input4.attr('name', 'isnew');
         input4.attr('value', isnew);
-
-
-
 
         var iframe = $("<iframe>")
         iframe.attr('id', 'iframe');

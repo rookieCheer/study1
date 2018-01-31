@@ -30,7 +30,21 @@ public class TiedCard implements Serializable{
 	private String birthday;//生日
 	private String cardFriend;//持卡人好友
 	private String channel;//渠道
-	public String getInsertTime() {
+	/**
+	 * 编号
+	 */
+	private int no;
+	
+	
+	
+    public int getNo() {
+        return no;
+    }
+    
+    public void setNo(int no) {
+        this.no = no;
+    }
+    public String getInsertTime() {
 		return insertTime;
 	}
 	public void setInsertTime(String insertTime) {

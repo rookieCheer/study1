@@ -166,6 +166,7 @@ public class UserBuyAction extends BaseAction {
                 size = list.size();
                 for (int i = 0; i < size; i++) {
                     TiedCard tiedCard = list.get(i);
+                    tiedCard.setNo(i+1);
                     String age = tiedCard.getAge();
                     age = replaceNullStringToNull(age);
                     String bankAccount = tiedCard.getBankAccount();
@@ -402,113 +403,54 @@ public class UserBuyAction extends BaseAction {
     /**
      * 导出绑卡统计表
      */
-    public String exportTiedCardInfo() {
-        FileOutputStream fout = null;
-        try {
-            PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
-            pageUtil.setCurrentPage(currentPage);
-            pageUtil.setPageSize(999999);
-            HSSFWorkbook wb = new HSSFWorkbook();
-            HSSFSheet sheet = wb.createSheet("绑卡信息统计表");
-            HSSFRow row = sheet.createRow((int) 0);
-            HSSFCellStyle style = wb.createCellStyle();
-            style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
-            HSSFCell cell = row.createCell(0);
-            cell.setCellValue("序号");
-            cell.setCellStyle(style);
-            cell = row.createCell(1);
-            cell.setCellValue("手机号");
-            cell.setCellStyle(style);
-            cell = row.createCell(2);
-            cell.setCellValue("姓名");
-            cell.setCellStyle(style);
-            cell = row.createCell(3);
-            cell.setCellValue("所属省份");
-            cell.setCellStyle(style);
-            cell = row.createCell(4);
-            cell.setCellValue("所属城市");
-            cell.setCellStyle(style);
-            cell = row.createCell(5);
-            cell.setCellValue("持卡人好友");
-            cell.setCellStyle(style);
-            cell = row.createCell(6);
-            cell.setCellValue("渠道");
-            cell.setCellStyle(style);
-            cell = row.createCell(7);
-            cell.setCellValue("开户银行");
-            cell.setCellStyle(style);
-            cell = row.createCell(8);
-            cell.setCellValue("银行卡号");
-            cell.setCellStyle(style);
-            cell = row.createCell(9);
-            cell.setCellValue("注册平台");
-            cell.setCellStyle(style);
-            cell = row.createCell(10);
-            cell.setCellValue("注册日期");
-            cell.setCellStyle(style);
-            cell = row.createCell(11);
-            cell.setCellValue("绑定日期");
-            cell.setCellStyle(style);
-            cell = row.createCell(12);
-            cell.setCellValue("用户id");
-            cell.setCellStyle(style);
-            cell = row.createCell(13);
-            cell.setCellValue("电话类型");
-            cell.setCellStyle(style);
-            cell = row.createCell(14);
-            cell.setCellValue("身份证号");
-            cell.setCellStyle(style);
-            cell = row.createCell(15);
-            cell.setCellValue("性别");
-            cell.setCellStyle(style);
-            cell = row.createCell(16);
-            cell.setCellValue("年龄");
-            cell.setCellStyle(style);
-            cell = row.createCell(17);
-            cell.setCellValue("生日");
-            cell.setCellStyle(style);
-            cell = row.createCell(18);
-            TiedCard tiedCard = null;
-            List list = tiedCardBean.findTiedCard(pageUtil, insertTime, phone, isnew).getList();
-            for (int i = 0; i < list.size(); i++) {
-                row = sheet.createRow((int) i + 1);
-                tiedCard = (TiedCard) list.get(i);
-                row = sheet.createRow((int) i + 1);
-                row.createCell(0).setCellValue((int) i + 1);
-                row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getPhone()) ? tiedCard.getPhone() : "");
-                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getRealName()) ? tiedCard.getRealName() : "");
-                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getProvince()) ? tiedCard.getProvince() : "");
-                row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getCity()) ? tiedCard.getCity() : "");
-                row.createCell(5).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getCardFriend()) ? tiedCard.getCardFriend() : "");
-                row.createCell(6).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getChannel()) ? tiedCard.getChannel() : "");
-                row.createCell(7).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getBankName()) ? tiedCard.getBankName() : "");
-                row.createCell(8).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getBankAccount()) ? DESEncrypt.jieMiUsername(tiedCard.getBankAccount()) : "");
-                row.createCell(9).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getRegistPlatform()) ? tiedCard.getRegistPlatform() : "");
-                row.createCell(10).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getZinsertTime()) ? DESEncrypt.jieMiIdCard(tiedCard.getZinsertTime()) : "");
-                row.createCell(11).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getInsertTime()) ? tiedCard.getInsertTime() : "");
-                row.createCell(12).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getId()) ? tiedCard.getId() : "");
-                row.createCell(13).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getCardType()) ? tiedCard.getCardType() : "");
-                row.createCell(14).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getIdCard()) ? tiedCard.getIdCard() : "");
-                row.createCell(15).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getGender()) ? tiedCard.getGender() : "");
-                row.createCell(16).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getBirthday()) ? tiedCard.getBirthday() : "");
-                row.createCell(17).setCellValue(!QwyUtil.isNullAndEmpty(tiedCard.getAge()) ? tiedCard.getAge() : "");
-            }
-            String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_tiedCard_info.xls";
-            String realPath = request.getServletContext().getRealPath("/report/" + pathname);
-            log.info("绑卡信息统计表地址：" + realPath);
-            fout = new FileOutputStream(realPath);
-            wb.write(fout);
-            response.getWriter().write("/report/" + pathname);
-        } catch (Exception e) {
-            log.error("操作异常: ", e);
-        } finally {
-            try {
-                fout.close();
-            } catch (Exception e) {
+    public void exportExcelTiedCardInfoList() throws Exception{
+       
+        PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
+        pageUtil.setCurrentPage(currentPage);
+        pageUtil.setPageSize(1000000);
+        StringBuffer url = new StringBuffer();
+        url.append(getRequest().getServletContext().getContextPath());
+        url.append("/Product/buyInfo/userBuy!tiedCardInfo.action?");
+        if (!QwyUtil.isNullAndEmpty(insertTime)) {
+            url.append("&insertTime=");
+            url.append(insertTime);
+        }
+        if (!QwyUtil.isNullAndEmpty(phone)) {
+            url.append("&phone=");
+            url.append(phone);
+        }
+        pageUtil.setPageUrl(url.toString());
+        pageUtil = tiedCardBean.findTiedCard(pageUtil, insertTime, phone, isnew);
+        if (pageUtil != null) {
+            List<TiedCard> list = pageUtil.getList();
+            if (list != null && list.size() > 0) {
+                deleteNull(list);
+                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+                response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+                response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+                ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+                LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+                fieldMap.put("编号", "no");
+                fieldMap.put("注册日期", "zinsertTime");
+                fieldMap.put("绑定日期", "insertTime"); //
+                fieldMap.put("开户银行", "bankName");
+                fieldMap.put("银行卡号", "bankAccount");
+                fieldMap.put("注册平台", "registPlatform");
+                fieldMap.put("用户id", "id");
+                fieldMap.put("姓名", "realName"); 
+                fieldMap.put("手机号", "phone");
+                fieldMap.put("电话类型", "cardType");
+                fieldMap.put("身份证号码", "idCard");
+                fieldMap.put("所属省份", "province"); 
+                fieldMap.put("所属城市", "city");
+                fieldMap.put("性别", "gender");
+                fieldMap.put("年龄", "age");
+                fieldMap.put("生日", "birthday"); 
+               
+               ExcelUtil.exportExcelNew(outputStream, "绑卡情况统计表", fieldMap, list, null);
 
             }
         }
-        return null;
     }
 
     /**
