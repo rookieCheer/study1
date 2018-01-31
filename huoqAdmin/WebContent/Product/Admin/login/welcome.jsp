@@ -48,7 +48,7 @@ $(function(){
 			|| usersLogin eq '2E713E82D2166EF87B5E5EEC4C2D13F02E3D29DC3A0FC1F83B487DFF5552DBAB2A1C0F45F85B0DE8'
 			|| usersLogin eq '9C24FAB253F06322455A054B6AFB7CA823F5CE9BDCDF847AE8953C35ADD206CA2A1C0F45F85B0DE8'
 			}">
-			<!-- 资金数据概览 -->s
+			<!-- 资金数据概览 -->
 			<div class="data-item">
 				<h4 class="title-line">今日数据概览</h4>
 				<div class="overview fund-data">
