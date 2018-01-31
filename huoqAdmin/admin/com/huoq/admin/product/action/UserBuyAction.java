@@ -243,6 +243,7 @@ public class UserBuyAction extends BaseAction {
 	 * 导出购买情况统计表
 	 */
 	public String exportBuyProductInfo() {
+		FileOutputStream fout = null;
 		try {
 			PageUtil<BuyProductInfo> pageUtil = new PageUtil<BuyProductInfo>();
 			pageUtil.setCurrentPage(currentPage);
@@ -321,12 +322,17 @@ public class UserBuyAction extends BaseAction {
 			// String path = "D:/Develop/";
 			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
 			log.info("购买情况统计表地址：" + realPath);
-			FileOutputStream fout = new FileOutputStream(realPath);
+			fout = new FileOutputStream(realPath);
 			wb.write(fout);
-			fout.close();
 			response.getWriter().write("/report/" + pathname);
 		} catch (Exception e) {
 			log.error("操作异常: ", e);
+		}finally {
+			try{
+				fout.close();
+			}catch (Exception e){
+
+			}
 		}
 		return null;
 	}
@@ -335,6 +341,7 @@ public class UserBuyAction extends BaseAction {
 	 * 导出绑卡统计表
 	 */
 	public String exportTiedCardInfo() {
+		FileOutputStream fout = null;
 		try {
 			PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
 			pageUtil.setCurrentPage(currentPage);
@@ -445,12 +452,17 @@ public class UserBuyAction extends BaseAction {
 			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_tiedCard_info.xls";
 			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
 			log.info("绑卡信息统计表地址：" + realPath);
-			FileOutputStream fout = new FileOutputStream(realPath);
+			fout = new FileOutputStream(realPath);
 			wb.write(fout);
-			fout.close();
 			response.getWriter().write("/report/" + pathname);
 		} catch (Exception e) {
 			log.error("操作异常: ", e);
+		}finally {
+			try{
+				fout.close();
+			}catch (Exception e){
+
+			}
 		}
 		return null;
 	}
@@ -459,6 +471,7 @@ public class UserBuyAction extends BaseAction {
 	 * 导出总表
 	 */
 	public String exportSummarizeTableInfo() {
+		FileOutputStream fout = null;
 		try {
 			PageUtil<SummaryTable> pageUtil = new PageUtil<SummaryTable>();
 			pageUtil.setCurrentPage(currentPage);
@@ -614,12 +627,17 @@ public class UserBuyAction extends BaseAction {
 			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "exportSummarizeTable_nfo.xls";
 			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
 			log.info("总表地址：" + realPath);
-			FileOutputStream fout = new FileOutputStream(realPath);
+			fout = new FileOutputStream(realPath);
 			wb.write(fout);
-			fout.close();
 			response.getWriter().write("/report/" + pathname);
 		} catch (Exception e) {
 			log.error("操作异常: ", e);
+		}finally {
+			try{
+				fout.close();
+			}catch (Exception e){
+
+			}
 		}
 		return null;
 	}
@@ -628,6 +646,7 @@ public class UserBuyAction extends BaseAction {
 	 * 导出提现统计表
 	 */
 	public String exportOutCashTable() {
+		FileOutputStream fout = null;
 		try {
 			PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
 			pageUtil.setCurrentPage(currentPage);
@@ -690,12 +709,17 @@ public class UserBuyAction extends BaseAction {
 			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_outCash_info.xls";
 			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
 			log.info("提现信息统计表地址：" + realPath);
-			FileOutputStream fout = new FileOutputStream(realPath);
+			fout = new FileOutputStream(realPath);
 			wb.write(fout);
-			fout.close();
 			response.getWriter().write("/report/" + pathname);
 		} catch (Exception e) {
 			log.error("操作异常: ", e);
+		}finally {
+			try{
+				fout.close();
+			}catch (Exception e){
+
+			}
 		}
 		return null;
 	}
@@ -704,6 +728,7 @@ public class UserBuyAction extends BaseAction {
 	 * 导出运营统计表
 	 */
 	public String exportSumOperationInfo() {
+		FileOutputStream fout = null;
 		try {
 			PageUtil<SumOperation> pageUtil = new PageUtil<SumOperation>();
 			pageUtil.setCurrentPage(currentPage);
@@ -861,12 +886,17 @@ public class UserBuyAction extends BaseAction {
 			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "exportSummarizeTable_nfo.xls";
 			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
 			log.info("运营统计地址：" + realPath);
-			FileOutputStream fout = new FileOutputStream(realPath);
+			fout = new FileOutputStream(realPath);
 			wb.write(fout);
-			fout.close();
 			response.getWriter().write("/report/" + pathname);
 		} catch (Exception e) {
 			log.error("操作异常: ", e);
+		}finally {
+			try{
+				fout.close();
+			}catch (Exception e){
+
+			}
 		}
 		return null;
 	}
