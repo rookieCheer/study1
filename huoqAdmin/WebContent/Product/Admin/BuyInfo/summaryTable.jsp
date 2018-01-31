@@ -7,13 +7,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>运营汇总表</title>
-<link href="${pageContext.request.contextPath}/Product/Admin/css/public.css" rel="stylesheet" type="text/css" />
-<link href="${pageContext.request.contextPath}/Product/Admin/css/product_fabu_history.css" rel="stylesheet" type="text/css" />
-<script src="${pageContext.request.contextPath}/Product/Admin/js/jquery-1.9.1.min.js"></script>
-<script src="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.standalone.js"></script>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.css" type="text/css">
-<script src="${pageContext.request.contextPath}/js/artDialog4.1.7/jquery.artDialog.js?skin=blue"></script>
+<title>每日明细汇总表</title>
+<link
+	href="${pageContext.request.contextPath}/Product/Admin/css/public.css"
+	rel="stylesheet" type="text/css" />
+<link
+	href="${pageContext.request.contextPath}/Product/Admin/css/product_fabu_history.css"
+	rel="stylesheet" type="text/css" />
+<script
+	src="${pageContext.request.contextPath}/Product/Admin/js/jquery-1.9.1.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.standalone.js"></script>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.css"
+	type="text/css">
+<script
+	src="${pageContext.request.contextPath}/js/artDialog4.1.7/jquery.artDialog.js?skin=blue"></script>
 <style type="text/css">
 .sereach {
 	width: 200px;
@@ -46,17 +55,17 @@
 			var startDate = interval.split("-")[0];
 			var endDate = interval.split("-")[1];
 			var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-					.getTime();
+				.getTime();
 			var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-					.getTime();
+				.getTime();
 			var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
 			if (31 - dates <= 0) {
 				alert("请选择日期间隔为31天的数据导出！")
 				return false;
 			}
 		}
-		   var insertTime=$("#insertTime").val();
-		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!exportSummarizeTableInfo.action?insertTime="+insertTime;
+		var insertTime = $("#insertTime").val();
+		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!exportSummarizeTableInfo.action?insertTime=" + insertTime;
 		var list = "${list}";
 		if (list != null && list != "[]") {
 			var my = art.dialog({
@@ -67,32 +76,32 @@
 				cancel : false
 			});
 			$.post(
-					url,
-					$("#sereach").serialize(),
-					function(data) {
-						my.close();
-						data = '${pageContext.request.contextPath}'
-								+ data;
-						var ssss = "导出成功&nbsp;&nbsp;&nbsp;&nbsp;<a href='"+data+"' style='color:red;'>点击下载</a>";
-						art.dialog({
-							title : '提示',
-							content : ssss,
-							height : 60,
-							lock : true,
-							ok : function() {
-								//mysss.close();
-							}
-						});
+				url,
+				$("#sereach").serialize(),
+				function(data) {
+					my.close();
+					data = '${pageContext.request.contextPath}'
+						+ data;
+					var ssss = "导出成功&nbsp;&nbsp;&nbsp;&nbsp;<a href='" + data + "' style='color:red;'>点击下载</a>";
+					art.dialog({
+						title : '提示',
+						content : ssss,
+						height : 60,
+						lock : true,
+						ok : function() {
+							//mysss.close();
+						}
 					});
+				});
 		}
 	}
-	
-	function queryProduct(){
-		var insertTime=$("#insertTime").val();
+
+	function queryProduct() {
+		var insertTime = $("#insertTime").val();
 		//var phone=$("#phone").val();
 		//var realname=$("#realname").val();
-		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!summaryTable.action?insertTime="+insertTime;
-		window.location.href=url;
+		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!summaryTable.action?insertTime=" + insertTime;
+		window.location.href = url;
 	}
 </script>
 </head>
@@ -100,64 +109,65 @@
 	<div class="center">
 		<jsp:include page="/Product/Admin/common/head.jsp" />
 		<div class="main" align="center">
-			<h3>运营汇总表</h3>
-			<span>查询时间:</span> 
-			<input id="insertTime" name="insertTime" type="text" value="${insertTime}"> 
-			<a class="sereach"href="javascript:queryProduct();" id="sereach">查询</a> 
-			<input type="button" value="导出报表" onclick="ireportDo()">
+			<h3>每日明细汇总表</h3>
+			<span>查询时间:</span> <input id="insertTime" name="insertTime"
+				type="text" value="${insertTime}"> <a class="sereach"
+				href="javascript:queryProduct();" id="sereach">查询</a> <input
+				type="button" value="导出报表" onclick="ireportDo()">
 			<table border="1" width="80%">
 				<tr>
-					<tr>
 					<td>日期</td>
-					<td>新增注册用户A</td>
-					<td>IOS用户A</td>
-					<td>Android用户A</td>
-					<td>微信用户A</td>
-					<td>新增用户B</td>
-					<td>IOS用户B</td>
-					<td>Android用户B</td>
-					<td>微信用户B</td>
-					<td>累计注册用户</td>
-					<td>累计认证用户</td>
-					<td>当日购买交易笔数C</td>
-					<td>新用户部分C</td>
-					<td>老用户部分C</td>
+					<td>新增注册用户数A</td>
+					<td>新增绑卡客户B</td>
+					<td>今日首投人数</td>
+					<td>累计注册客户数</td>
+					<td>累计绑卡客户</td>
+					<td>资金存量E</td>
+					<td>当日提现金额E</td>
 					<td>当日资金流入</td>
 					<td>首投总额</td>
 					<td>复投总额D</td>
+					<td>新增注册IOS客户A</td>
+					<td>新增注册Android客户A</td>
+					<td>新增注册微信客户A</td>
+					<td>新增绑卡IOS客户B</td>
+					<td>新增绑卡Android客户B</td>
+					<td>新增绑卡微信客户B</td>
+					<td>当日购买交易笔数C</td>
+					<td>新客户部分C</td>
+					<td>老客户部分C</td>
 					<td>活期产品部分D</td>
 					<td>定期产品部分D</td>
 					<td>累计资金流入</td>
-					<td>当日提现金额E</td>
 					<td>当日可提现金额E</td>
-					<td width="60px">资金存量E</td>
+
 				</tr>
-					<tr>
-						
-						<td>${list.tadayDate}</td>
-						<td>${list.nEnrollUser}</td>
-						<td>${list.nEnrollIosUser}</td>
-						<td>${list.nEnrollAndroidUser}</td>
-						<td>${list.nEnrollWeChatUser}</td>
-						<td>${list.nAutUser}</td>
-						<td>${list.nAutIosUser}</td>
-						<td>${list.nAutAndroidUser}</td>
-						<td>${list.nAutWeChatUser}</td>
-						<td>${list.allEnUser}</td>
-						<td>${list.allAutUser}</td>
-						<td>${list.todayDeal}</td>
-						<td>${list.nUnserDeal}</td>
-						<td>${list.oUserDeal}</td>
-						<td>${list.todayincapital}</td>
-						<td>${list.nDealMoney}</td>
-						<td>${list.oDealMoney}</td>
-						<td>${list.currentProduct}</td>
-						<td>${list.regularProduct}</td>
-						<td>${list.allinMoney}</td>
-						<td>${list.todayoutMoney}</td>
-						<td>${list.todayCash}</td>
-						<td>${list.capitalStock}</td>
-					</tr>
+				<tr>
+					<td>${list.tadayDate}</td>
+					<td>${list.nEnrollUser}</td>
+					<td>${list.nAutUser}</td>
+					<td></td><!-- 今日首投人数 -->
+					<td>${list.allEnUser}</td>
+					<td>${list.allAutUser}</td>
+					<td>${list.capitalStock}</td>
+					<td>${list.todayoutMoney}</td>
+					<td>${list.todayincapital}</td>
+					<td>${list.nDealMoney}</td>
+					<td>${list.oDealMoney}</td>
+					<td>${list.nEnrollIosUser}</td>
+					<td>${list.nEnrollAndroidUser}</td>
+					<td>${list.nEnrollWeChatUser}</td>
+					<td>${list.nAutIosUser}</td>
+					<td>${list.nAutAndroidUser}</td>
+					<td>${list.nAutWeChatUser}</td>
+					<td>${list.todayDeal}<td>
+					<td>${list.nUnserDeal}</td>
+					<td>${list.oUserDeal}</td>
+					<td>${list.currentProduct}</td>
+					<td>${list.regularProduct}</td>
+					<td>${list.allinMoney}</td>
+					<td></td><!-- ${list.todayCash} 暂时不显示 -->
+			    </tr>
 			</table>
 			<c:choose>
 				<c:when
@@ -179,13 +189,13 @@
 	<script type="text/javascript">
 		var k4 = new Kalendae.Input("insertTime", {
 			attachTo : document.body,
-			months : 2,//多少个月显示出来,即看到多少个日历
+			months : 2, //多少个月显示出来,即看到多少个日历
 			mode : 'range'
 		/* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
 		});
 		$(function() {
 			$("#isbindbank option[value='${isbindbank}']").attr("selected",
-					true);
+				true);
 			$("#level option[value='${level}']").attr("selected", true);
 		});
 	</script>

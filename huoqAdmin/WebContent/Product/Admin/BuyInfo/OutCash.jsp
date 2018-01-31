@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>取现情况统计表</title>
+<title>提现情况统计表</title>
 <link href="${pageContext.request.contextPath}/Product/Admin/css/public.css" rel="stylesheet" type="text/css" />
 <link href="${pageContext.request.contextPath}/Product/Admin/css/product_fabu_history.css" rel="stylesheet" type="text/css" />
 <script src="${pageContext.request.contextPath}/Product/Admin/js/jquery-1.9.1.min.js"></script>
@@ -111,25 +111,25 @@
 			<input type="button" value="导出报表" onclick="ireportDo()">
 			<table border="1" width="80%">
 					<tr>
-						<td>提现审核日期</td>
+						<td>提现日期</td>
 						<td>提现金额(元)</td>
 						<td>客户姓名</td>
-						<td>性别</td>
 						<td>手机</td>
-						<td>类别</td>
+						<td>好友</td>
 						<td>所属省份</td>
 						<td>所属城市</td>
+						<td>性别</td>
 					</tr>
 					<c:forEach items="${list}" var="mylist">
 						<tr>
 							<td>${mylist.outCashTime}</td>
 							<td>${mylist.outMoney}</td>
 							<td>${mylist.realname}</td>
-							<td>${mylist.gender}</td>
 							<td>${mylist.phone}</td>
 							<td>${mylist.category}</td>
 							<td>${mylist.province}</td>
 							<td>${mylist.city}</td>
+							<td>${mylist.gender}</td>
 						</tr>
 					</c:forEach>
 				</table>
