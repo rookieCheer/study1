@@ -104,7 +104,7 @@ public class SummaryTableBean {
 		Object object = loadAllSql.get(0);
 		if (!QwyUtil.isNullAndEmpty(object)) {
 			String tieCard = object.toString();
-			summarizeTable.setnAutUser(tieCard);
+			summarizeTable.setNAutUser(tieCard);
 		}
 		StringBuffer sql1 = new StringBuffer();
 		// 新增注册用户
@@ -114,7 +114,7 @@ public class SummaryTableBean {
 		Object object1 = loadAllSql1.get(0);
 		if (!QwyUtil.isNullAndEmpty(object1)) {
 			String addregist = object1.toString().replaceAll(",", "");
-			summarizeTable.setnEnrollUser(addregist);
+			summarizeTable.setNEnrollUser(addregist);
 		}
 		StringBuffer sql2 = new StringBuffer();
 		// 新增安卓用户
@@ -124,7 +124,7 @@ public class SummaryTableBean {
 		Object object2 = loadAllSql2.get(0);
 		if (!QwyUtil.isNullAndEmpty(object2)) {
 			String addandroid = object2.toString().replaceAll(",", "");
-			summarizeTable.setnEnrollAndroidUser(addandroid);
+			summarizeTable.setNEnrollAndroidUser(addandroid);
 		}
 		StringBuffer sql3 = new StringBuffer();
 		// 新增ios用户
@@ -134,7 +134,7 @@ public class SummaryTableBean {
 		Object object3 = loadAllSql3.get(0);
 		if (!QwyUtil.isNullAndEmpty(object3)) {
 			String addios = object3.toString().replaceAll(",", "");
-			summarizeTable.setnEnrollIosUser(addios);
+			summarizeTable.setNEnrollIosUser(addios);
 		}
 		StringBuffer sql4 = new StringBuffer();
 		// 新增微信用户
@@ -144,7 +144,7 @@ public class SummaryTableBean {
 		Object object4 = loadAllSql4.get(0);
 		if (!QwyUtil.isNullAndEmpty(object4)) {
 			String addwechat = object4.toString().replaceAll(",", "");
-			summarizeTable.setnEnrollWeChatUser(addwechat);
+			summarizeTable.setNEnrollWeChatUser(addwechat);
 		}
 		StringBuffer sql5 = new StringBuffer();
 		// 新增安卓认证用户（绑卡）
@@ -154,7 +154,7 @@ public class SummaryTableBean {
 		Object object5 = loadAllSql5.get(0);
 		if (!QwyUtil.isNullAndEmpty(object5)) {
 			String android = object5.toString().replaceAll(",", "");
-			summarizeTable.setnAutAndroidUser(android);
+			summarizeTable.setNAutAndroidUser(android);
 		}
 		StringBuffer sql6 = new StringBuffer();
 		// 新增ios认证用户（绑卡）
@@ -164,7 +164,7 @@ public class SummaryTableBean {
 		Object object6 = loadAllSql6.get(0);
 		if (!QwyUtil.isNullAndEmpty(object6)) {
 			String ios = object6.toString().replaceAll(",", "");
-			summarizeTable.setnAutIosUser(ios);
+			summarizeTable.setNAutIosUser(ios);
 		}
 		// 新增微信认证用户（绑卡）
 		StringBuffer sql7 = new StringBuffer();
@@ -174,7 +174,7 @@ public class SummaryTableBean {
 		Object object7 = loadAllSql7.get(0);
 		if (!QwyUtil.isNullAndEmpty(object7)) {
 			String wechat = object7.toString().replaceAll(",", "");
-			summarizeTable.setnAutWeChatUser(wechat);
+			summarizeTable.setNAutWeChatUser(wechat);
 		}
 
 		// 当日购买新手标笔数(新用户)
@@ -185,7 +185,7 @@ public class SummaryTableBean {
 		Object object11 = loadAllSql11.get(0);
 		if (!QwyUtil.isNullAndEmpty(object11)) {
 			String newUserSpart = object11.toString().replaceAll(",", "");
-			summarizeTable.setnUnserDeal(newUserSpart);
+			summarizeTable.setNUnserDeal(newUserSpart);
 		}
 
 		// 当日资金流入
@@ -209,9 +209,9 @@ public class SummaryTableBean {
 		Object object14 = loadAllSql14.get(0);
 		if (!QwyUtil.isNullAndEmpty(object14)) {
 			Double firsttoutotalmoney = Double.valueOf(object14.toString().replaceAll(",", ""));
-			summarizeTable.setnDealMoney(firsttoutotalmoney);
+			summarizeTable.setNDealMoney(firsttoutotalmoney);
 		} else {
-			summarizeTable.setnDealMoney(0.0);
+			summarizeTable.setNDealMoney(0.0);
 		}
 
 		StringBuffer sql16 = new StringBuffer();
@@ -343,7 +343,7 @@ public class SummaryTableBean {
 		Object object12 = loadAllSql12.get(0);
 		if (!QwyUtil.isNullAndEmpty(object12)) {
 			String oldUserSpart = object12.toString().replaceAll(",", "");
-			summarizeTable.setoUserDeal(oldUserSpart);
+			summarizeTable.setOUserDeal(oldUserSpart);
 		}
 		
 		// 当日复投总额
@@ -358,9 +358,9 @@ public class SummaryTableBean {
 		Object object15 = loadAllSql15.get(0);
 		if (!QwyUtil.isNullAndEmpty(object15)) {
 			Double secondtoutotalmoney = Double.valueOf(object15.toString().replaceAll(",", ""));
-			summarizeTable.setoDealMoney(secondtoutotalmoney);
+			summarizeTable.setODealMoney(secondtoutotalmoney);
 		} else {
-			summarizeTable.setoDealMoney(0.0);
+			summarizeTable.setODealMoney(0.0);
 		}
 		return summarizeTable;
 	}

@@ -464,29 +464,29 @@ public class UserBuyAction extends BaseAction {
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
            
             fieldMap.put("日期", "tadayDate");
-            fieldMap.put("新增注册客户数A", ""); //
-            fieldMap.put("新增绑卡客户B", "");
-            fieldMap.put("今日首投人数", "");
-            fieldMap.put("累计注册客户数", "");
-            fieldMap.put("累计绑卡客户", "");
-            fieldMap.put("资金存量E", ""); 
-            fieldMap.put("当日提现金额E", "");
-            fieldMap.put("当日资金流入", "");
-            fieldMap.put("首投总额", ""); //
-            fieldMap.put("复投总额D", "");
-            fieldMap.put("新增注册iOS客户A", "");
-            fieldMap.put("新增注册Android客户A", "");
-            fieldMap.put("新增注册微信客户A", "");
-            fieldMap.put("新增绑卡iOS客户B", ""); 
-            fieldMap.put("新增绑卡Android客户B", "");
-            fieldMap.put("新增绑卡微信客户B", "");
-            fieldMap.put("当日购买交易笔数C", ""); //
-            fieldMap.put("新客户部分C", "");
-            fieldMap.put("老客户部分C", "");
-            fieldMap.put("活期产品部分D", "");
-            fieldMap.put("定期产品部分D", "");
-            fieldMap.put("累积资金流入", ""); 
-            fieldMap.put("当日可提现金额E", "");
+            fieldMap.put("新增注册客户数A", "nEnrollUser"); //
+            fieldMap.put("新增绑卡客户B", "nAutUser");
+            fieldMap.put("今日首投人数", "todayFirstInvestPeople");
+            fieldMap.put("累计注册客户数", "allEnUser");
+            fieldMap.put("累计绑卡客户", "allAutUser");
+            fieldMap.put("资金存量E", "capitalStock"); 
+            fieldMap.put("当日提现金额E", "todayoutMoney");
+            fieldMap.put("当日资金流入", "todayincapital");
+            fieldMap.put("首投总额", "nDealMoney"); //
+            fieldMap.put("复投总额D", "oDealMoney");
+            fieldMap.put("新增注册iOS客户A", "nEnrollIosUser");
+            fieldMap.put("新增注册Android客户A", "nEnrollAndroidUser");
+            fieldMap.put("新增注册微信客户A", "nEnrollWeChatUser");
+            fieldMap.put("新增绑卡iOS客户B", "nAutIosUser"); 
+            fieldMap.put("新增绑卡Android客户B", "nAutAndroidUser");
+            fieldMap.put("新增绑卡微信客户B", "nAutWeChatUser");
+            fieldMap.put("当日购买交易笔数C", "todayDeal"); //
+            fieldMap.put("新客户部分C", "nUnserDeal");
+            fieldMap.put("老客户部分C", "oUserDeal");
+            fieldMap.put("活期产品部分D", "currentProduct");
+            fieldMap.put("定期产品部分D", "regularProduct");
+            fieldMap.put("累积资金流入", "allinMoney"); 
+            fieldMap.put("当日可提现金额E", "todayCash");
            
             
             List<SummaryTable> list = new ArrayList<SummaryTable>(1);

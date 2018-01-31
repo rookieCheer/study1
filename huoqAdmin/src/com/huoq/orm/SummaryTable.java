@@ -25,58 +25,71 @@ public class SummaryTable {
 	private Double allHonourMoney;//累计兑付金额
 	private Double todayCash;//当日可提取现金
 	private Double capitalStock;//资金存量
-	public String getTadayDate() {
+	private Integer todayFirstInvestPeople;//今日首投人数
+	
+	
+	
+
+    
+    public Integer getTodayFirstInvestPeople() {
+        return todayFirstInvestPeople;
+    }
+    
+    public void setTodayFirstInvestPeople(Integer todayFirstInvestPeople) {
+        this.todayFirstInvestPeople = todayFirstInvestPeople;
+    }
+    public String getTadayDate() {
 		return tadayDate;
 	}
 	public void setTadayDate(String tadayDate) {
 		this.tadayDate = tadayDate;
 	}
-	public String getnEnrollUser() {
+	public String getNEnrollUser() {
 		return nEnrollUser;
 	}
-	public void setnEnrollUser(String nEnrollUser) {
+	public void setNEnrollUser(String nEnrollUser) {
 		this.nEnrollUser = nEnrollUser;
 	}
-	public String getnEnrollIosUser() {
+	public String getNEnrollIosUser() {
 		return nEnrollIosUser;
 	}
-	public void setnEnrollIosUser(String nEnrollIosUser) {
+	public void setNEnrollIosUser(String nEnrollIosUser) {
 		this.nEnrollIosUser = nEnrollIosUser;
 	}
-	public String getnEnrollAndroidUser() {
+	public String getNEnrollAndroidUser() {
 		return nEnrollAndroidUser;
 	}
-	public void setnEnrollAndroidUser(String nEnrollAndroidUser) {
+	public void setNEnrollAndroidUser(String nEnrollAndroidUser) {
 		this.nEnrollAndroidUser = nEnrollAndroidUser;
 	}
-	public String getnEnrollWeChatUser() {
+	public String getNEnrollWeChatUser() {
 		return nEnrollWeChatUser;
 	}
-	public void setnEnrollWeChatUser(String nEnrollWeChatUser) {
+	public void setNEnrollWeChatUser(String nEnrollWeChatUser) {
 		this.nEnrollWeChatUser = nEnrollWeChatUser;
 	}
-	public String getnAutUser() {
+	public String getNAutUser() {
 		return nAutUser;
 	}
-	public void setnAutUser(String nAutUser) {
+	public void setNAutUser(String nAutUser) {
 		this.nAutUser = nAutUser;
 	}
-	public String getnAutIosUser() {
+	public String getNAutIosUser() {
 		return nAutIosUser;
 	}
-	public void setnAutIosUser(String nAutIosUser) {
+	public void setNAutIosUser(String nAutIosUser) {
 		this.nAutIosUser = nAutIosUser;
 	}
-	public String getnAutAndroidUser() {
+	public String getNAutAndroidUser() {
 		return nAutAndroidUser;
 	}
-	public void setnAutAndroidUser(String nAutAndroidUser) {
+	public void setNAutAndroidUser(String nAutAndroidUser) {
 		this.nAutAndroidUser = nAutAndroidUser;
 	}
-	public String getnAutWeChatUser() {
+	public String getNAutWeChatUser() {
 		return nAutWeChatUser;
 	}
-	public void setnAutWeChatUser(String nAutWeChatUser) {
+	public void setNAutWeChatUser(String nAutWeChatUser) {
 		this.nAutWeChatUser = nAutWeChatUser;
 	}
 	public String getAllEnUser() {
@@ -97,16 +110,16 @@ public class SummaryTable {
 	public void setTodayDeal(String todayDeal) {
 		this.todayDeal = todayDeal;
 	}
-	public String getnUnserDeal() {
+	public String getNUnserDeal() {
 		return nUnserDeal;
 	}
-	public void setnUnserDeal(String nUnserDeal) {
+	public void setNUnserDeal(String nUnserDeal) {
 		this.nUnserDeal = nUnserDeal;
 	}
-	public String getoUserDeal() {
+	public String getOUserDeal() {
 		return oUserDeal;
 	}
-	public void setoUserDeal(String oUserDeal) {
+	public void setOUserDeal(String oUserDeal) {
 		this.oUserDeal = oUserDeal;
 	}
 	public Double getTodayincapital() {
@@ -115,16 +128,16 @@ public class SummaryTable {
 	public void setTodayincapital(Double todayincapital) {
 		this.todayincapital = todayincapital;
 	}
-	public Double getnDealMoney() {
+	public Double getNDealMoney() {
 		return nDealMoney;
 	}
-	public void setnDealMoney(Double nDealMoney) {
+	public void setNDealMoney(Double nDealMoney) {
 		this.nDealMoney = nDealMoney;
 	}
-	public Double getoDealMoney() {
+	public Double getODealMoney() {
 		return oDealMoney;
 	}
-	public void setoDealMoney(Double oDealMoney) {
+	public void setODealMoney(Double oDealMoney) {
 		this.oDealMoney = oDealMoney;
 	}
 	public Double getCurrentProduct() {

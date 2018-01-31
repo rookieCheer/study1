@@ -45,55 +45,29 @@
 }
 </style>
 <script type="text/javascript">
-	function ireportDo() {
-		var interval = $("#insertTime").val();
-		if (interval == null || interval == '' || interval.length == 0) {
-			alert("请选择要导出报表日期！");
-			return false;
-		}
-		if (interval.indexOf("-") != -1) {
-			var startDate = interval.split("-")[0];
-			var endDate = interval.split("-")[1];
-			var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-				.getTime();
-			var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-				.getTime();
-			var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-			if (31 - dates <= 0) {
-				alert("请选择日期间隔为31天的数据导出！")
-				return false;
-			}
-		}
+	function exportExcel() {
 		var insertTime = $("#insertTime").val();
-		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!exportSummarizeTableInfo.action?insertTime=" + insertTime;
-		var list = "${list}";
-		if (list != null && list != "[]") {
-			var my = art.dialog({
-				title : '提示',
-				content : document.getElementById("psi_load"),
-				height : 60,
-				lock : true,
-				cancel : false
-			});
-			$.post(
-				url,
-				$("#sereach").serialize(),
-				function(data) {
-					my.close();
-					data = '${pageContext.request.contextPath}'
-						+ data;
-					var ssss = "导出成功&nbsp;&nbsp;&nbsp;&nbsp;<a href='" + data + "' style='color:red;'>点击下载</a>";
-					art.dialog({
-						title : '提示',
-						content : ssss,
-						height : 60,
-						lock : true,
-						ok : function() {
-							//mysss.close();
-						}
-					});
-				});
-		}
+
+		var form = $("<form>");
+		form.attr('target', 'iframe');
+		form.attr('method', 'post');
+		form.attr('action', 'userBuy!exportExcelDayDetailList.action');
+		var input1 = $('<input>');
+		input1.attr('type', 'hidden');
+		input1.attr('name', 'insertTime');
+		input1.attr('value', insertTime);
+
+
+		var iframe = $("<iframe>")
+		iframe.attr('id', 'iframe');
+		iframe.attr('name', 'iframe');
+		iframe.attr('src', 'about:blank');
+		iframe.attr('style', 'display:none;');
+		$('body').append(iframe);
+		$('body').append(form);
+		form.append(input1);
+
+		form.submit();
 	}
 
 	function queryProduct() {
@@ -113,7 +87,7 @@
 			<span>查询时间:</span> <input id="insertTime" name="insertTime"
 				type="text" value="${insertTime}"> <a class="sereach"
 				href="javascript:queryProduct();" id="sereach">查询</a> <input
-				type="button" value="导出报表" onclick="ireportDo()">
+				type="button" value="导出报表" onclick="exportExcel()">
 			<table border="1" width="80%">
 				<tr>
 					<td>日期</td>
@@ -144,30 +118,35 @@
 				</tr>
 				<tr>
 					<td>${list.tadayDate}</td>
-					<td>${list.nEnrollUser}</td>
-					<td>${list.nAutUser}</td>
-					<td></td><!-- 今日首投人数 -->
+					<td>${list.NEnrollUser}</td>
+					<td>${list.NAutUser}</td>
+					<td>${list.todayFirstInvestPeople}</td>
+					<!-- 今日首投人数 -->
 					<td>${list.allEnUser}</td>
 					<td>${list.allAutUser}</td>
 					<td>${list.capitalStock}</td>
+
+
 					<td>${list.todayoutMoney}</td>
 					<td>${list.todayincapital}</td>
-					<td>${list.nDealMoney}</td>
-					<td>${list.oDealMoney}</td>
-					<td>${list.nEnrollIosUser}</td>
-					<td>${list.nEnrollAndroidUser}</td>
-					<td>${list.nEnrollWeChatUser}</td>
-					<td>${list.nAutIosUser}</td>
-					<td>${list.nAutAndroidUser}</td>
-					<td>${list.nAutWeChatUser}</td>
-					<td>${list.todayDeal}<td>
-					<td>${list.nUnserDeal}</td>
-					<td>${list.oUserDeal}</td>
+					<td>${list.NDealMoney}</td>
+					<td>${list.ODealMoney}</td>
+					<td>${list.NEnrollIosUser}</td>
+					<td>${list.NEnrollAndroidUser}</td>
+					<td>${list.NEnrollWeChatUser}</td>
+					<td>${list.NAutIosUser}</td>
+					<td>${list.NAutAndroidUser}</td>
+					<td>${list.NAutWeChatUser}</td>
+					<td>${list.todayDeal}
+					<td>
+					<td>${list.NUnserDeal}</td>
+					<td>${list.OUserDeal}</td>
 					<td>${list.currentProduct}</td>
 					<td>${list.regularProduct}</td>
 					<td>${list.allinMoney}</td>
-					<td></td><!-- ${list.todayCash} 暂时不显示 -->
-			    </tr>
+					<td></td>
+					<!-- ${list.todayCash} 暂时不显示 -->
+				</tr>
 			</table>
 			<c:choose>
 				<c:when
