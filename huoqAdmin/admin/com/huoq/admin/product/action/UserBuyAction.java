@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -225,7 +226,7 @@ public class UserBuyAction extends BaseAction {
     }
 
     /**
-     * 统计总表
+     * 每日明细表汇总
      * 
      * @return
      */
@@ -450,11 +451,50 @@ public class UserBuyAction extends BaseAction {
     }
 
     /**
-     * 导出总表
+     * 导出每日明细汇总表
      */
-    public void exportExcelTotalTableList() throws Exception{
+    public void exportExcelDayDetailList() throws Exception{
        
-        
+        SummaryTable findSummaryTable = stBean.findSummaryTable(insertTime);
+        if(findSummaryTable!=null){
+            String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+            response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+            ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+            LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+           
+            fieldMap.put("日期", "tadayDate");
+            fieldMap.put("新增注册客户数A", ""); //
+            fieldMap.put("新增绑卡客户B", "");
+            fieldMap.put("今日首投人数", "");
+            fieldMap.put("累计注册客户数", "");
+            fieldMap.put("累计绑卡客户", "");
+            fieldMap.put("资金存量E", ""); 
+            fieldMap.put("当日提现金额E", "");
+            fieldMap.put("当日资金流入", "");
+            fieldMap.put("首投总额", ""); //
+            fieldMap.put("复投总额D", "");
+            fieldMap.put("新增注册iOS客户A", "");
+            fieldMap.put("新增注册Android客户A", "");
+            fieldMap.put("新增注册微信客户A", "");
+            fieldMap.put("新增绑卡iOS客户B", ""); 
+            fieldMap.put("新增绑卡Android客户B", "");
+            fieldMap.put("新增绑卡微信客户B", "");
+            fieldMap.put("当日购买交易笔数C", ""); //
+            fieldMap.put("新客户部分C", "");
+            fieldMap.put("老客户部分C", "");
+            fieldMap.put("活期产品部分D", "");
+            fieldMap.put("定期产品部分D", "");
+            fieldMap.put("累积资金流入", ""); 
+            fieldMap.put("当日可提现金额E", "");
+           
+            
+            List<SummaryTable> list = new ArrayList<SummaryTable>(1);
+            list.add(findSummaryTable);
+           
+           
+           ExcelUtil.exportExcelNew(outputStream, "每日明细汇总表", fieldMap, list, null);
+        }
     }
 
     /**

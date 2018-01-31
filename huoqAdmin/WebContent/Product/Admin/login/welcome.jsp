@@ -28,12 +28,28 @@ $(function(){
 	    d = d < 10 ? ('0' + d) : d;  
 	    return m + '/' + d + '/' + y;  
 	}; 
+	function formatDateSecond() {  
+       var date=new Date();
+        var y = date.getFullYear();  
+        var m = date.getMonth() + 1;  
+        m = m < 10 ? '0' + m : m;  
+        var d = date.getDate();  
+        d = d < 10 ? ('0' + d) : d;  
+        
+        var myddy=date.getDay();//获取存储当前日期
+        var weekday=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+       // document.write("今天是：" + weekday[myddy]);
+        return y + '-' + m + '-' + d +" "+weekday[myddy];  
+    }; 
 	
 	var insertTime=formatDate(Date());
 	$.each($('.link'),function(){
 		var $href=$(this).attr('href');
 		$href=$(this).attr('href',$href+insertTime);
 	})
+	var t = formatDateSecond();
+	
+	$("#time").html("今日数据概览  "+ t);
 })
 </script>
 
@@ -50,7 +66,7 @@ $(function(){
 			}">
 			<!-- 资金数据概览 -->
 			<div class="data-item">
-				<h4 class="title-line">今日数据概览</h4>
+				<h4 class="title-line" id="time">今日数据概览  </h4>
 				<div class="overview fund-data">
 					<div class="accumulate-data clearfix">
 						<!-- p class="data-msg">累计</p-->
