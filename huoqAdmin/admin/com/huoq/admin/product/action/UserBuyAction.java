@@ -554,10 +554,53 @@ public class UserBuyAction extends BaseAction {
     }
 
     /**
-     * 导出运营统计表
+     * 导出运营总表
      */
     public void exportExcelOperationSumList() throws Exception{
-      
+        SumOperation findSumOperation = sOtBean.findSumOperation(insertTime);
+        if(findSumOperation!=null){
+            String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
+            response.setContentType(ExcelUtil.EXCEL_STYLE2007);
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+            ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
+            LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
+           
+            fieldMap.put("日期", "todayDate");
+            fieldMap.put("累计资金流入", "allMoneyinflowA"); 
+            //无
+            fieldMap.put("资金存量", "foundStock");
+            fieldMap.put("当日交易金额", "todayDealMoney");
+            fieldMap.put("资金流入", "foundFlowInto");
+          //无
+            fieldMap.put("提现金额", "txMoney");
+            //无
+            fieldMap.put("预留资金", "reservedFound"); 
+            fieldMap.put("定期预留资金", "constantReservedFound");
+            //无
+           fieldMap.put("宝付资金存量", "baofusaveMoney");
+            //无
+            fieldMap.put("宝付手续费", "baofuServiceCharge"); 
+            fieldMap.put("交易类别", "dealtype");
+            fieldMap.put("交易金额", "dealMoney");
+            fieldMap.put("交易后资金余额", "afterdealremainMoney"); 
+            fieldMap.put("累计划出", "alllayoff");
+            fieldMap.put("收益", "platearnings");
+            fieldMap.put("成本合计", "allcost");
+            fieldMap.put("盈亏", "proLoss");
+            fieldMap.put("零钱罐发息", "lingqianfaxi");
+            fieldMap.put("定期标发息", "regularbiaofaxi"); 
+            fieldMap.put("好友返利成本", "friendreturnMoney");
+            fieldMap.put("提现交易", "txDeal");
+            fieldMap.put("注册人数", "rigistpersonCount"); 
+            fieldMap.put("绑卡用户", "tieCard");
+            fieldMap.put("累计注册", "allRigist");
+            fieldMap.put("累计绑卡", "allallRigist"); 
+            fieldMap.put("购买交易", "buyDeal");
+            
+          List<SumOperation> list = new ArrayList<SumOperation>(1);
+           list.add(findSumOperation);
+           ExcelUtil.exportExcelNew(outputStream, "运营总表", fieldMap, list, null); 
+        }
     }
 
     public Integer getCurrentPage() {

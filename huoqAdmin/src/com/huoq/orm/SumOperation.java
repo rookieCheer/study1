@@ -26,11 +26,150 @@ public class SumOperation implements Serializable {
 	private Double allcost; // 成本合计
 	private Double alllayoff;// 累计划出
 	private Double platearnings;// 平台收益
+	/**
+	 * 宝丰手续费
+	 */
+	private Double baofuServiceCharge;
+	
+	/**
+	 * 
+	* 盈亏
+	 */
+	private Double proLoss; 
+	/**
+	 * 资金存量
+	 */
+	private Double foundStock;
+	/**
+	 * 当日交易金额
+	 */
+	private Double todayDealMoney;
+	/**
+	 * 资金流入
+	 */
+	private Double foundFlowInto;
+	/**
+	 * 预留资金
+	 */
+	private Double reservedFound;
+	/**
+	 * 定期预留资金
+	 */
+	private Double constantReservedFound;
+	
+	
+	
 
-	public SumOperation() {
+	
+   
+
+
+    
+    
+    public Double getBaofuServiceCharge() {
+        return baofuServiceCharge;
+    }
+
+
+
+
+    
+    public void setBaofuServiceCharge(Double baofuServiceCharge) {
+        this.baofuServiceCharge = baofuServiceCharge;
+    }
+
+
+
+
+    public Double getProLoss() {
+        return proLoss;
+    }
+
+
+
+    
+    public void setProLoss(Double proLoss) {
+        this.proLoss = proLoss;
+    }
+
+
+
+    
+    public Double getFoundStock() {
+        return foundStock;
+    }
+
+
+
+    
+    public void setFoundStock(Double foundStock) {
+        this.foundStock = foundStock;
+    }
+
+
+
+    
+    public Double getTodayDealMoney() {
+        return todayDealMoney;
+    }
+
+
+
+    
+    public void setTodayDealMoney(Double todayDealMoney) {
+        this.todayDealMoney = todayDealMoney;
+    }
+
+
+
+    
+    public Double getFoundFlowInto() {
+        return foundFlowInto;
+    }
+
+
+
+    
+    public void setFoundFlowInto(Double foundFlowInto) {
+        this.foundFlowInto = foundFlowInto;
+    }
+
+
+
+    
+    public Double getReservedFound() {
+        return reservedFound;
+    }
+
+
+
+    
+    public void setReservedFound(Double reservedFound) {
+        this.reservedFound = reservedFound;
+    }
+
+
+
+    
+    public Double getConstantReservedFound() {
+        return constantReservedFound;
+    }
+
+
+
+    
+    public void setConstantReservedFound(Double constantReservedFound) {
+        this.constantReservedFound = constantReservedFound;
+    }
+
+
+
+    public SumOperation() {
 		super();
 
 	}
+	
+	
 
 	public SumOperation(String todayDate, Double platformreserveMoney, Double baofusaveMoney, String dealtype,
 			Double dealMoney, Double afterdealremainMoney, String rigistpersonCount, String tieCard, String allRigist,

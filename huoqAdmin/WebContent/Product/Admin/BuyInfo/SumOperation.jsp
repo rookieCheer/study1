@@ -45,56 +45,29 @@
 }
 </style>
 <script type="text/javascript">
-	function ireportDo() {
-		var interval = $("#insertTime").val();
-		if (interval == null || interval == '' || interval.length == 0) {
-			alert("请选择要导出报表日期！");
-			return false;
-		}
-		if (interval.indexOf("-") != -1) {
-			var startDate = interval.split("-")[0];
-			var endDate = interval.split("-")[1];
-			var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-				.getTime();
-			var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-				.getTime();
-			var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-			if (31 - dates <= 0) {
-				alert("请选择日期间隔为31天的数据导出！")
-				return false;
-			}
-		}
-		var insertTime = $("#insertTime").val();
-		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!exportSumOperationInfo.action?insertTime=" + insertTime;
-		var list = "${list}";
-		if (list != null && list != "[]") {
-			var my = art.dialog({
-				title : '提示',
-				content : document.getElementById("psi_load"),
-				height : 60,
-				lock : true,
-				cancel : false
-			});
-			$.post(
-				url,
-				$("#sereach").serialize(),
-				function(data) {
-					my.close();
-					data = '${pageContext.request.contextPath}'
-						+ data;
-					var ssss = "导出成功&nbsp;&nbsp;&nbsp;&nbsp;<a href='" + data + "' style='color:red;'>点击下载</a>";
-					art.dialog({
-						title : '提示',
-						content : ssss,
-						height : 60,
-						lock : true,
-						ok : function() {
-							//mysss.close();
-						}
-					});
-				});
-		}
-	}
+   
+function exportExcel() {
+    
+    var insertTime=$("#insertTime").val();
+    
+    var form = $("<form>");
+ form.attr('target', 'iframe');
+ form.attr('method', 'post');
+ form.attr('action', 'userBuy!exportExcelOperationSumList.action');
+ var input1 = $('<input>');
+ input1.attr('type', 'hidden');
+ input1.attr('name', 'insertTime');
+ input1.attr('value', insertTime);
+ var iframe = $("<iframe>")
+ iframe.attr('id', 'iframe');
+ iframe.attr('name', 'iframe');
+ iframe.attr('src', 'about:blank');
+ iframe.attr('style', 'display:none;');
+ $('body').append(iframe);
+ $('body').append(form);
+ form.append(input1);
+ form.submit();
+}
 
 	function queryProduct() {
 		var insertTime = $("#insertTime").val();
@@ -111,7 +84,7 @@
 			<span>查询时间:</span> <input id="insertTime" name="insertTime"
 				type="text" value="${insertTime}"> <a class="sereach"
 				href="javascript:queryProduct();" id="sereach">查询</a> <input
-				type="button" value="导出报表" onclick="ireportDo()">
+				type="button" value="导出报表" onclick="exportExcel()">
 			<table border="1" width="80%">
 				<tr>
                     <td>日期</td>
@@ -144,21 +117,21 @@
 				<tr>
 					<td>${list.todayDate}</td>
 					<td>${list.allMoneyinflowA}</td>
-					<td></td><!-- 资金存量 无 -->
-					<td></td><!--当日交易金额 无 -->
-					<td></td><!--资金流入 无 -->
+					<td>${list.foundStock}</td><!-- 资金存量 无 -->
+					<td>${list.todayDealMoney}</td><!--当日交易金额 无 -->
+					<td>${list.foundFlowInto}</td><!--资金流入 无 -->
 					<td>${list.txMoney}</td>
-					<td></td><!-- 预留资金 无 -->
-					<td></td><!-- 定期预留资金 -->
+					<td>${list.reservedFound}</td><!-- 预留资金 无 -->
+					<td>${list.constantReservedFound}</td><!-- 定期预留资金 -->
 					<td>${list.baofusaveMoney}</td>
-					<td></td><!-- 宝付手续费 无-->
+					<td>${list.baofuServiceCharge}</td><!-- 宝付手续费 无-->
 					<td>${list.dealtype}</td>
 					<td>${list.dealMoney}</td>
 					<td>${list.afterdealremainMoney}</td>
 					<td>${list.alllayoff}</td>
 					<td>${list.platearnings}</td>
 					<td>${list.allcost}</td>
-					<td></td><!-- 盈亏 -->
+					<td>${list.proLoss}</td><!-- 盈亏 -->
 					<td>${list.lingqianfaxi}</td>
 					<td>${list.regularbiaofaxi}</td>
 					<td>${list.friendreturnMoney}</td>
