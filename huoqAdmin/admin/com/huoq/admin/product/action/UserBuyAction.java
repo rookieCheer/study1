@@ -41,6 +41,10 @@ public class UserBuyAction extends BaseAction {
     private OutCashBean                outCashBean;
     @Resource
     private SumOperationBean           sOtBean;
+    
+    @Resource
+    private PlatformBean  platformBean;//updateTodayfirstBuyNumber
+    
     @Resource
     private ToutiaoStatisticsTableBean toutiaoBean;
     private Integer                    currentPage = 1;
@@ -243,6 +247,10 @@ public class UserBuyAction extends BaseAction {
             }
             SummaryTable findSummaryTable = stBean.findSummaryTable(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSummaryTable)) {
+                Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
+                if(todayFirstInvestPeople!=null){
+                    findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
+                }
                 getRequest().setAttribute("list", findSummaryTable);
             }
             return "summaryTable";
@@ -463,6 +471,10 @@ public class UserBuyAction extends BaseAction {
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
            
+           Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
+           if(todayFirstInvestPeople!=null){
+               findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
+           }
             fieldMap.put("日期", "tadayDate");
             fieldMap.put("新增注册客户数A", "nEnrollUser"); //
             fieldMap.put("新增绑卡客户B", "nAutUser");

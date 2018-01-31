@@ -92,7 +92,7 @@ public class PlatformBean {
         // 今日购买人数
         Integer updateTodayBuyNumber = updateTodayBuyNumber(null);
         plat.setTodayBuyNumber(updateTodayBuyNumber);
-        // 今日提现人数
+        // 今日首投人数
         Integer updateTodayfirstBuyNumber = updateTodayfirstBuyNumber(null);
         plat.setTodayNewBuyNumber(updateTodayfirstBuyNumber);
         // 获取未审核提现金额
