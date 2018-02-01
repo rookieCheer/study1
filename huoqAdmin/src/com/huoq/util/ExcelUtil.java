@@ -224,7 +224,7 @@ public class ExcelUtil<T> {
 
                 HSSFCell cell = row.createCell(j); // 创建一个表格
                 j++;
-                cell.setCellStyle(style2); // 设置表格样式
+               // cell.setCellStyle(style2); // 设置表格样式
 
                 String fieldName = entry.getValue();
                 if (fieldName == null) {
@@ -315,9 +315,9 @@ public class ExcelUtil<T> {
                             cell.setCellValue(Double.parseDouble(textValue));
                         } else {
                             HSSFRichTextString richString = new HSSFRichTextString(textValue);
-                            HSSFFont font3 = workbook.createFont();
-                            font3.setColor(HSSFColor.BLUE.index);
-                            richString.applyFont(font3);
+                            //HSSFFont font3 = workbook.createFont();
+                            //font3.setColor(HSSFColor.BLUE.index);
+                           // richString.applyFont(font3);
                             cell.setCellValue(richString);
                         }
                     }

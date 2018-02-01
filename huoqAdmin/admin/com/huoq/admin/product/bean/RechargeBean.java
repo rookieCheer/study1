@@ -20,6 +20,7 @@ import com.huoq.common.util.DESEncrypt;
 import com.huoq.common.util.ObjectUtil;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
+import com.huoq.common.util.DateUtils;
 import com.huoq.orm.Account;
 import com.huoq.orm.BackStatsOperateDay;
 import com.huoq.orm.CapitalRecord;
@@ -1247,6 +1248,7 @@ public class RechargeBean {
 				sum = QwyUtil.calcNumber(weekLeftMoney.getDqfxje(), sum, "+") + "";
 				weekLeftMoney.setSum(sum);
 				weekLeftMoneys.add(weekLeftMoney);
+				//dqhbfxje
 			}
 		}
 		return weekLeftMoneys;
@@ -1861,5 +1863,105 @@ public class RechargeBean {
 		}
 		yunyingQueryListSql.append(" ORDER BY us.date DESC ");
 	}
+    /**
+     * 查询指定时间的预留资金
+    * @author：zhuhaojie  
+    * @time：2018年2月1日 上午9:51:55   
+    * @version    
+    * @param time 指定时间 时间格式 yyyy-MM-dd
+    * @return 如果参数为null，返回当天的时间 否则返回指定时间的数据
+     */
+    public Double findTodayReservedFound(String time) {
+        Date begin = null;
+        Date end = null;
+        Double result = 0.0;
+       
+        Object[] param = new Object[2];
+       
+        if(time == null){
+            
+             begin = new Date(DateUtils.getStartTime());
+             end = new Date(DateUtils.getEndTime());
+           
+         }else{
+            time = time.trim();
+            begin = DateUtils.strToDate(time+" 00:00:00", "yyyy-MM-dd HH:mm:ss");
+            end=DateUtils.strToDate(time+" 23:59:59", "yyyy-MM-dd HH:mm:ss");
+         }
+        param[0] = begin;
+        param[1] = end;
+        StringBuffer sql = new StringBuffer();
+        
+        sql.append("SELECT SUM(left_money) FROM users_info where insert_time>=? and insert_time<=?");
+       
+       List list = dao.LoadAllSql(sql.toString(), param);
+       if(list!=null && list.size()>0){
+          Object obj=list.get(0); 
+          if(obj instanceof Object[]){
+             Object[] objArray = (Object[])obj;
+             Double payMoney = (Double)objArray[0];
+             if(payMoney!=null){
+                 result=payMoney; 
+             }
+             
+          }
+       }
+        return result;
+    }
+    
+    public static void main(String[] args) throws ParseException{
+       Date date = QwyUtil.fmyyyyMMddHHmmss.parse("2018-02-01 23:59:59");
+        System.out.println(date);        
+        
+    }
+      
+    
+    /**
+     * 查询指定时间的定期预留资金
+    * @author：zhuhaojie  
+    * @time：2018年2月1日 上午9:56:08   
+    * @version    
+    * @param time 指定的时间
+    * @return 如果参数为null，返回当天的时间 否则返回指定时间的数据
+     */
+    public Double findTodayConstantReservedFound(String time) {
+      
+        Date begin = null;
+        Date end = null;
+        Double result = 0.0;
+       
+        Object[] param = new Object[2];
+       
+        if(time == null){
+            
+             begin = new Date(DateUtils.getStartTime());
+             end = new Date(DateUtils.getEndTime());
+           
+         }else{
+            time = time.trim();
+            begin = DateUtils.strToDate(time+" 00:00:00", "yyyy-MM-dd HH:mm:ss");
+            end=DateUtils.strToDate(time+" 23:59:59", "yyyy-MM-dd HH:mm:ss");
+         }
+        param[0] = begin;
+        param[1] = end;
+        StringBuffer sql = new StringBuffer();
+        
+        sql.append("select sum(ids.pay_money) pay_money FROM weeks w");
+        sql.append(" LEFT JOIN interest_details ids ON w.insert_time = ids.return_time ");
+        sql.append(" WHERE ids.return_time >=? AND ids.return_time <=?");
+       List list = dao.LoadAllSql(sql.toString(), param);
+       if(list!=null && list.size()>0){
+          Object obj=list.get(0); 
+          if(obj instanceof Object[]){
+             Object[] objArray = (Object[])obj;
+             Double payMoney = (Double)objArray[0];
+             if(payMoney!=null){
+                 result=payMoney; 
+             }
+             
+          }
+       }
+        return result;
+    }
 
 }

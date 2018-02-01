@@ -1,5 +1,6 @@
 package com.huoq.admin.product.action;
 
+import com.huoq.admin.product.bean.RechargeBean;
 import com.huoq.common.action.BaseAction;
 import com.huoq.common.bean.*;
 import com.huoq.common.util.DESEncrypt;
@@ -41,10 +42,13 @@ public class UserBuyAction extends BaseAction {
     private OutCashBean                outCashBean;
     @Resource
     private SumOperationBean           sOtBean;
-    
+
     @Resource
-    private PlatformBean  platformBean;//updateTodayfirstBuyNumber
-    
+    private PlatformBean               platformBean;      //
+
+    @Resource
+    private RechargeBean               rechargeBean;
+
     @Resource
     private ToutiaoStatisticsTableBean toutiaoBean;
     private Integer                    currentPage = 1;
@@ -167,7 +171,7 @@ public class UserBuyAction extends BaseAction {
                 size = list.size();
                 for (int i = 0; i < size; i++) {
                     TiedCard tiedCard = list.get(i);
-                    tiedCard.setNo(i+1);
+                    tiedCard.setNo(i + 1);
                     String age = tiedCard.getAge();
                     age = replaceNullStringToNull(age);
                     String bankAccount = tiedCard.getBankAccount();
@@ -248,7 +252,7 @@ public class UserBuyAction extends BaseAction {
             SummaryTable findSummaryTable = stBean.findSummaryTable(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSummaryTable)) {
                 Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
-                if(todayFirstInvestPeople!=null){
+                if (todayFirstInvestPeople != null) {
                     findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
                 }
                 getRequest().setAttribute("list", findSummaryTable);
@@ -321,6 +325,32 @@ public class UserBuyAction extends BaseAction {
             }
             SumOperation findSumOperation = sOtBean.findSumOperation(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSumOperation)) {
+                Double todayDealMoney = platformBean.updateTodayBuyMoney(null);
+                if (todayDealMoney != null) {
+                    findSumOperation.setTodayDealMoney(todayDealMoney);
+                }
+
+                Double foundFlowInto = platformBean.updateTodayrechargeMoney(null);
+                if (foundFlowInto != null) {
+                    findSumOperation.setFoundFlowInto(foundFlowInto);
+                }
+
+                Double reservedFound = rechargeBean.findTodayReservedFound(null);// 预留资金 sum
+                if (reservedFound != null) {
+                    reservedFound = QwyUtil.calcNumber(reservedFound, 100, "/", 2).doubleValue();
+                    findSumOperation.setReservedFound(reservedFound);
+                }
+                /**
+                 * /** QwyUtil.calcNumber(allLeftMoney, 100, "/", 2) 预留资金
+                 */
+
+                // 定期预留资金 也叫到期本金
+                Double constantReservedFound = rechargeBean.findTodayConstantReservedFound(null);// 到期本金 dqhbfxje
+                if (constantReservedFound != null) {
+                    constantReservedFound = QwyUtil.calcNumber(constantReservedFound, 100, "/", 2).doubleValue();
+                    findSumOperation.setConstantReservedFound(constantReservedFound);
+                }
+
                 getRequest().setAttribute("list", findSumOperation);
             }
             return "SumOperation";
@@ -408,8 +438,8 @@ public class UserBuyAction extends BaseAction {
     /**
      * 导出绑卡统计表
      */
-    public void exportExcelTiedCardInfoList() throws Exception{
-       
+    public void exportExcelTiedCardInfoList() throws Exception {
+
         PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
         pageUtil.setCurrentPage(currentPage);
         pageUtil.setPageSize(1000000);
@@ -442,17 +472,17 @@ public class UserBuyAction extends BaseAction {
                 fieldMap.put("银行卡号", "bankAccount");
                 fieldMap.put("注册平台", "registPlatform");
                 fieldMap.put("用户id", "id");
-                fieldMap.put("姓名", "realName"); 
+                fieldMap.put("姓名", "realName");
                 fieldMap.put("手机号", "phone");
                 fieldMap.put("电话类型", "cardType");
                 fieldMap.put("身份证号码", "idCard");
-                fieldMap.put("所属省份", "province"); 
+                fieldMap.put("所属省份", "province");
                 fieldMap.put("所属城市", "city");
                 fieldMap.put("性别", "gender");
                 fieldMap.put("年龄", "age");
-                fieldMap.put("生日", "birthday"); 
-               
-               ExcelUtil.exportExcelNew(outputStream, "绑卡情况统计表", fieldMap, list, null);
+                fieldMap.put("生日", "birthday");
+
+                ExcelUtil.exportExcelNew(outputStream, "绑卡情况统计表", fieldMap, list, null);
 
             }
         }
@@ -461,27 +491,27 @@ public class UserBuyAction extends BaseAction {
     /**
      * 导出每日明细汇总表
      */
-    public void exportExcelDayDetailList() throws Exception{
-       
+    public void exportExcelDayDetailList() throws Exception {
+
         SummaryTable findSummaryTable = stBean.findSummaryTable(insertTime);
-        if(findSummaryTable!=null){
+        if (findSummaryTable != null) {
             String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
             response.setContentType(ExcelUtil.EXCEL_STYLE2007);
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-           
-           Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
-           if(todayFirstInvestPeople!=null){
-               findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
-           }
+
+            Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
+            if (todayFirstInvestPeople != null) {
+                findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
+            }
             fieldMap.put("日期", "tadayDate");
             fieldMap.put("新增注册客户数A", "nEnrollUser"); //
             fieldMap.put("新增绑卡客户B", "nAutUser");
             fieldMap.put("今日首投人数", "todayFirstInvestPeople");
             fieldMap.put("累计注册客户数", "allEnUser");
             fieldMap.put("累计绑卡客户", "allAutUser");
-            fieldMap.put("资金存量E", "capitalStock"); 
+            fieldMap.put("资金存量E", "capitalStock");
             fieldMap.put("当日提现金额E", "todayoutMoney");
             fieldMap.put("当日资金流入", "todayincapital");
             fieldMap.put("首投总额", "nDealMoney"); //
@@ -489,7 +519,7 @@ public class UserBuyAction extends BaseAction {
             fieldMap.put("新增注册iOS客户A", "nEnrollIosUser");
             fieldMap.put("新增注册Android客户A", "nEnrollAndroidUser");
             fieldMap.put("新增注册微信客户A", "nEnrollWeChatUser");
-            fieldMap.put("新增绑卡iOS客户B", "nAutIosUser"); 
+            fieldMap.put("新增绑卡iOS客户B", "nAutIosUser");
             fieldMap.put("新增绑卡Android客户B", "nAutAndroidUser");
             fieldMap.put("新增绑卡微信客户B", "nAutWeChatUser");
             fieldMap.put("当日购买交易笔数C", "todayDeal"); //
@@ -497,22 +527,20 @@ public class UserBuyAction extends BaseAction {
             fieldMap.put("老客户部分C", "oUserDeal");
             fieldMap.put("活期产品部分D", "currentProduct");
             fieldMap.put("定期产品部分D", "regularProduct");
-            fieldMap.put("累积资金流入", "allinMoney"); 
+            fieldMap.put("累积资金流入", "allinMoney");
             fieldMap.put("当日可提现金额E", "todayCash");
-           
-            
+
             List<SummaryTable> list = new ArrayList<SummaryTable>(1);
             list.add(findSummaryTable);
-           
-           
-           ExcelUtil.exportExcelNew(outputStream, "每日明细汇总表", fieldMap, list, null);
+
+            ExcelUtil.exportExcelNew(outputStream, "每日明细汇总表", fieldMap, list, null);
         }
     }
 
     /**
      * 导出提现统计表
      */
-    public void exportExcelCashTableList() throws Exception{
+    public void exportExcelCashTableList() throws Exception {
         PageUtil<OutCash> pageUtil = new PageUtil<OutCash>();
         pageUtil.setCurrentPage(currentPage);
         pageUtil.setPageSize(1000000);
@@ -529,26 +557,25 @@ public class UserBuyAction extends BaseAction {
         }
         pageUtil.setPageUrl(url.toString());
         PageUtil<OutCash> outCashTable = outCashBean.outCashTable(pageUtil, insertTime, phone);
-        if(outCashTable!=null){
+        if (outCashTable != null) {
             List<OutCash> list = outCashTable.getList();
-            if(list != null && list.size()>0){
+            if (list != null && list.size() > 0) {
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);
                 ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
                 LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-               
+
                 fieldMap.put("提现日期", "outCashTime");
                 fieldMap.put("提现金额(元)", "outMoney"); //
                 fieldMap.put("客户姓名", "realname");
                 fieldMap.put("手机", "phone");
                 fieldMap.put("好友", "category");
                 fieldMap.put("所属省份", "province");
-                fieldMap.put("所属城市", "city"); 
+                fieldMap.put("所属城市", "city");
                 fieldMap.put("性别", "gender");
-               
-               
-               ExcelUtil.exportExcelNew(outputStream, "提现情况统计表", fieldMap, list, null);
+
+                ExcelUtil.exportExcelNew(outputStream, "提现情况统计表", fieldMap, list, null);
             }
         }
     }
@@ -556,50 +583,76 @@ public class UserBuyAction extends BaseAction {
     /**
      * 导出运营总表
      */
-    public void exportExcelOperationSumList() throws Exception{
+    public void exportExcelOperationSumList() throws Exception {
         SumOperation findSumOperation = sOtBean.findSumOperation(insertTime);
-        if(findSumOperation!=null){
+        if (findSumOperation != null) {
             String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
             response.setContentType(ExcelUtil.EXCEL_STYLE2007);
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-           
+
+            Double todayDealMoney = platformBean.updateTodayBuyMoney(null);
+            if (todayDealMoney != null) {
+                findSumOperation.setTodayDealMoney(todayDealMoney);
+            }
+            Double foundFlowInto = platformBean.updateTodayrechargeMoney(null);
+            if (foundFlowInto != null) {
+                findSumOperation.setFoundFlowInto(foundFlowInto);
+            }
+
+            Double reservedFound = rechargeBean.findTodayReservedFound(null);// 预留资金 sum
+            if (reservedFound != null) {
+                reservedFound = QwyUtil.calcNumber(reservedFound, 100, "/", 2).doubleValue();
+                findSumOperation.setReservedFound(reservedFound);
+            }
+            /**
+             * /** QwyUtil.calcNumber(allLeftMoney, 100, "/", 2) 预留资金
+             */
+
+            // 定期预留资金 也叫到期本金
+            Double constantReservedFound = rechargeBean.findTodayConstantReservedFound(null);// 到期本金 dqhbfxje
+            if (constantReservedFound != null) {
+                constantReservedFound = QwyUtil.calcNumber(constantReservedFound, 100, "/", 2).doubleValue();
+                findSumOperation.setConstantReservedFound(constantReservedFound);
+            }
+
             fieldMap.put("日期", "todayDate");
-            fieldMap.put("累计资金流入", "allMoneyinflowA"); 
-            //无
-            fieldMap.put("资金存量", "foundStock");
+            fieldMap.put("累计资金流入", "allMoneyinflowA");
+
+            fieldMap.put("资金存量", "foundStock");// 空
+
             fieldMap.put("当日交易金额", "todayDealMoney");
-            fieldMap.put("资金流入", "foundFlowInto");
-          //无
+            fieldMap.put("资金流入", "foundFlowInto");// 当日充值额度
+
             fieldMap.put("提现金额", "txMoney");
-            //无
-            fieldMap.put("预留资金", "reservedFound"); 
-            fieldMap.put("定期预留资金", "constantReservedFound");
-            //无
-           fieldMap.put("宝付资金存量", "baofusaveMoney");
-            //无
-            fieldMap.put("宝付手续费", "baofuServiceCharge"); 
-            fieldMap.put("交易类别", "dealtype");
-            fieldMap.put("交易金额", "dealMoney");
-            fieldMap.put("交易后资金余额", "afterdealremainMoney"); 
-            fieldMap.put("累计划出", "alllayoff");
-            fieldMap.put("收益", "platearnings");
-            fieldMap.put("成本合计", "allcost");
-            fieldMap.put("盈亏", "proLoss");
+
+            fieldMap.put("预留资金", "reservedFound"); // 无 资金管理-财务数据 ${item.sum}
+            fieldMap.put("定期预留资金", "constantReservedFound");// 无 到期本金 dqhbfxje
+
+            fieldMap.put("宝付资金存量", "baofusaveMoney");// 无 空
+
+            fieldMap.put("宝付手续费", "baofuServiceCharge"); // 无 空
+            fieldMap.put("交易类别", "dealtype"); // 空
+            fieldMap.put("交易金额", "dealMoney"); // 空
+            fieldMap.put("交易后资金余额", "afterdealremainMoney"); // 空
+            fieldMap.put("累计划出", "alllayoff");// 空
+            fieldMap.put("收益", "platearnings"); // 空
+            fieldMap.put("成本合计", "allcost");// 空
+            fieldMap.put("盈亏", "proLoss");// 空
             fieldMap.put("零钱罐发息", "lingqianfaxi");
-            fieldMap.put("定期标发息", "regularbiaofaxi"); 
+            fieldMap.put("定期标发息", "regularbiaofaxi");
             fieldMap.put("好友返利成本", "friendreturnMoney");
             fieldMap.put("提现交易", "txDeal");
-            fieldMap.put("注册人数", "rigistpersonCount"); 
+            fieldMap.put("注册人数", "rigistpersonCount");
             fieldMap.put("绑卡用户", "tieCard");
             fieldMap.put("累计注册", "allRigist");
-            fieldMap.put("累计绑卡", "allallRigist"); 
+            fieldMap.put("累计绑卡", "allallRigist");
             fieldMap.put("购买交易", "buyDeal");
-            
-          List<SumOperation> list = new ArrayList<SumOperation>(1);
-           list.add(findSumOperation);
-           ExcelUtil.exportExcelNew(outputStream, "运营总表", fieldMap, list, null); 
+
+            List<SumOperation> list = new ArrayList<SumOperation>(1);
+            list.add(findSumOperation);
+            ExcelUtil.exportExcelNew(outputStream, "运营总表", fieldMap, list, null);
         }
     }
 

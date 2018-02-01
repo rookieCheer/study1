@@ -121,13 +121,10 @@
 					<td>${list.NEnrollUser}</td>
 					<td>${list.NAutUser}</td>
 					<td>${list.todayFirstInvestPeople}</td>
-					<!-- 今日首投人数 -->
 					<td>${list.allEnUser}</td>
 					<td>${list.allAutUser}</td>
 					<td>${list.capitalStock}</td>
-
-
-					<td>${list.todayoutMoney}</td>
+                    <td>${list.todayoutMoney}</td>
 					<td>${list.todayincapital}</td>
 					<td>${list.NDealMoney}</td>
 					<td>${list.ODealMoney}</td>
@@ -137,8 +134,7 @@
 					<td>${list.NAutIosUser}</td>
 					<td>${list.NAutAndroidUser}</td>
 					<td>${list.NAutWeChatUser}</td>
-					<td>${list.todayDeal}
-					<td>
+					<td>${list.todayDeal}<td>
 					<td>${list.NUnserDeal}</td>
 					<td>${list.OUserDeal}</td>
 					<td>${list.currentProduct}</td>

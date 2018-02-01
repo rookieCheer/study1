@@ -1365,7 +1365,7 @@ public class DateUtils {
     }
 
 //    public static void main(String[] args) {
-//          Date date = new Date(getEndTime());
+//      Date  date = DateUtils.getNowDateShort("yyyy-MM-dd");
 //          System.out.println(date);
 //       // long getStartTime();
 //    }

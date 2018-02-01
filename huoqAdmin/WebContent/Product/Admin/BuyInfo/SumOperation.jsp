@@ -118,7 +118,7 @@ function exportExcel() {
 					<td>${list.todayDate}</td>
 					<td>${list.allMoneyinflowA}</td>
 					<td>${list.foundStock}</td><!-- 资金存量 无 -->
-					<td>${list.todayDealMoney}</td><!--当日交易金额 无 -->
+					<td>${list.todayDealMoney}</td>
 					<td>${list.foundFlowInto}</td><!--资金流入 无 -->
 					<td>${list.txMoney}</td>
 					<td>${list.reservedFound}</td><!-- 预留资金 无 -->
