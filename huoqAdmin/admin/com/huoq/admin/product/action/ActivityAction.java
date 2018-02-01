@@ -476,7 +476,7 @@ public class ActivityAction extends BaseAction {
                 } else {
                     sDate = QwyUtil.fmyyyyMMdd.format(QwyUtil.fmMMddyyyy.parse(time[0]));
                     eDate = QwyUtil.fmyyyyMMdd.format(QwyUtil.fmMMddyyyy.parse(time[0]));
-                } 
+                }
             List list = bean.loadQdtjMain(sDate, eDate, channelType);
             String name = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_qdtj_main";
             HSSFWorkbook wb = new HSSFWorkbook();
@@ -526,11 +526,11 @@ public class ActivityAction extends BaseAction {
                 row.createCell(3).setCellValue("");//点击量
                 row.createCell(4).setCellValue("");//下载量
                 row.createCell(5).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getActivityCount()), 0));//激活量
-                row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost()), 0));//渠道费用(元)
+                row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost()), 2));//渠道费用(元)
                 Double activityCount = Double.valueOf(!QwyUtil.isNullAndEmpty(tj.getActivityCount())?tj.getActivityCount():"0");
                 Double channelCost = Double.valueOf(!QwyUtil.isNullAndEmpty(tj.getChannelCost()) ? tj.getChannelCost():"0");
                 if(activityCount > 0 && channelCost > 0){
-                    row.createCell(7).setCellValue(QwyUtil.jieQuFa(channelCost/channelCost, 2));//激活成本
+                    row.createCell(7).setCellValue(QwyUtil.jieQuFa(channelCost/activityCount, 2));//激活成本
                 }else{
                     row.createCell(7).setCellValue(0);//激活成本
                 }
@@ -542,7 +542,7 @@ public class ActivityAction extends BaseAction {
                 }
                 row.createCell(9).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount()), 0));//总注册人数
                 if(regCount > 0 && channelCost > 0){
-                    row.createCell(10).setCellValue(QwyUtil.jieQuFa(regCount/channelCost, 2));//注册成本
+                    row.createCell(10).setCellValue(QwyUtil.jieQuFa(channelCost/regCount, 2));//注册成本
                 }else{
                     row.createCell(10).setCellValue(0);//注册成本
                 }
@@ -622,7 +622,7 @@ public class ActivityAction extends BaseAction {
                     row.createCell(3).setCellValue("");//点击量
                     row.createCell(4).setCellValue("");//下载量
                     row.createCell(5).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getActivityCount()), 0));//激活量
-                    row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getChannelCost()), 0));//渠道费用(元)
+                    row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getChannelCost()), 2));//渠道费用(元)
                     row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getActivityCost()), 0));//激活成本
                     row.createCell(8).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getQdzhl()), 2));//激活注册转化率(%)
                     row.createCell(9).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getRegCount()), 0));//总注册人数
@@ -730,11 +730,11 @@ public class ActivityAction extends BaseAction {
                 row.createCell(4).setCellValue("");//点击量
                 row.createCell(5).setCellValue("");//下载量
                 row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getActivityCount()), 0));//激活量
-                row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost()), 0));//渠道费用(元)
+                row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getChannelCost()), 2));//渠道费用(元)
                 Double activityCount = Double.valueOf(!QwyUtil.isNullAndEmpty(tj.getActivityCount())?tj.getActivityCount():"0");
                 Double channelCost = Double.valueOf(!QwyUtil.isNullAndEmpty(tj.getChannelCost())?tj.getChannelCost():"0");
                 if(activityCount > 0 && channelCost > 0){
-                    row.createCell(8).setCellValue(QwyUtil.jieQuFa(channelCost/channelCost, 2));//激活成本
+                    row.createCell(8).setCellValue(QwyUtil.jieQuFa(channelCost/activityCount, 2));//激活成本
                 }else{
                     row.createCell(8).setCellValue(0);//激活成本
                 }
@@ -746,7 +746,7 @@ public class ActivityAction extends BaseAction {
                 }
                 row.createCell(10).setCellValue(QwyUtil.jieQuFa(Double.valueOf(tj.getRegCount()), 0));//总注册人数
                 if(regCount > 0 && channelCost > 0){
-                    row.createCell(11).setCellValue(QwyUtil.jieQuFa(regCount/channelCost, 2));//注册成本
+                    row.createCell(11).setCellValue(QwyUtil.jieQuFa(channelCost/regCount, 2));//注册成本
                 }else{
                     row.createCell(11).setCellValue(0);//注册成本
                 }
@@ -827,7 +827,7 @@ public class ActivityAction extends BaseAction {
                 row.createCell(4).setCellValue("");//点击量
                 row.createCell(5).setCellValue("");//下载量
                 row.createCell(6).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getActivityCount()), 0));//激活量
-                row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getChannelCost()), 0));//渠道费用(元)
+                row.createCell(7).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getChannelCost()), 2));//渠道费用(元)
                 row.createCell(8).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getActivityCost()), 0));//激活成本
                 row.createCell(9).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getQdzhl()), 2));//激活注册转化率(%)
                 row.createCell(10).setCellValue(QwyUtil.jieQuFa(Double.valueOf(cellData.getRegCount()), 0));//总注册人数
