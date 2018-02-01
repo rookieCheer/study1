@@ -42,8 +42,15 @@
 
     <script type="text/javascript">
         function ireportDo() {
-            var interval = $("#insertTime").val();
-            var acinterval = $("#acinsertTime").val();
+            var insertTime = $("#insertTime").val();
+            var acinsertTime = $("#acinsertTime").val();
+            var name = $("#username").val();
+            var isbindbank = $("#isbindbank option:selected").val();
+            var islqg = $("#islqg option:selected").val();
+            var level = $("#level option:selected").val();
+            var inMoney1 = $("#inMoney1").val();
+            var inMoney2 = $("#inMoney2").val();
+            var channel = $("#channel").val();
             // if (interval == null || interval == '' || interval.length == 0) {
             //     if (acinterval == null || acinterval == '' || acinterval.length == 0) {
             //         alert("请选择要导出报表日期！");
@@ -67,12 +74,13 @@
             var name = document.getElementById("username").value;
             var channel = document.getElementById("channel").value;
             var insertTime = document.getElementById("insertTime").value;
+            var acinsertTime = document.getElementById("acinsertTime").value;
             var isbindbank = $("#isbindbank option:selected").val();
             var islqg = $("#islqg option:selected").val();
             var level = $("#level option:selected").val();
             var inMoney1 = document.getElementById("inMoney1").value;
             var inMoney2 = document.getElementById("inMoney2").value;
-            var url = '${pageContext.request.contextPath}/Product/Admin/userStat!iportUserInfo.action?currentPage=${currentPage}&name=' + name + '&insertTime=' + insertTime + '&acinsertTime=' + acinterval + '&channel=' + channel + '&isbindbank=' + isbindbank + '&level=' + level + '&inMoney1=' + inMoney1 + '&inMoney2=' + inMoney2 +"&islqg="+islqg;
+            var url = '${pageContext.request.contextPath}/Product/Admin/userStat!iportUserInfo.action?currentPage=${currentPage}&username=' + name + '&insertTime=' + insertTime + '&acinsertTime=' + acinsertTime + '&channel=' + channel + '&isbindbank=' + isbindbank + '&level=' + level + '&inMoney1=' + inMoney1 + '&inMoney2=' + inMoney2 +"&islqg="+islqg;
             var list = "${list}";
             if (list != null && list != "[]") {
                 var my = art.dialog({

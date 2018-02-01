@@ -263,11 +263,11 @@ public class UserInfoBean {
             buff.append(" a.city,a.card_type ,IFNULL(a.insert_time,'') , IFNULL(ac.insert_time,''), ");
             buff.append(" a.regist_platform ,b.real_name ,	b.sex ,");
             buff.append(" b.age ,b.birthday,b.level as level,");
-            buff.append(" b.is_bind_bank ,t.in_money,lqg.money/100 ,a.regist_channel,t.pay_time,t.title,t.in_money1 ");
+            buff.append(" b.is_bind_bank ,t.in_money,lqg.money/100 ,a.regist_channel,t.pay_time,t.title,t.in_money1/100 ");
             buff.append(" FROM users a JOIN users_info b ON a.id = b.users_id left join");
             buff.append(" (select SUM(i.in_money/100) as in_money , i.users_id as users_id,p.title AS title,i.pay_time AS pay_time,i.in_money AS in_money1  from investors i  "
                         + "LEFT JOIN product p ON i.product_id =p.id  ");
-            buff.append(" where 1=1 and i.investor_status in ('1','2','3')  GROUP BY i.pay_time Asc)t ");
+            buff.append(" where 1=1 and i.investor_status in ('1','2','3') GROUP BY i.users_id  ORDER BY i.insert_time ASC )t ");
             buff.append("  on t.users_id = b.users_id ");
             buff.append("  LEFT JOIN account ac ON ac.users_id = a.id  AND ac.STATUS = 1  ");
             buff.append(" LEFT JOIN ( ");
@@ -357,7 +357,8 @@ public class UserInfoBean {
                     buff.append("WHERE cpf.TYPE ='to' AND u.id IS NOT NULL GROUP BY u.id) AND t.in_money IS NOT NULL ");
                 }
             }
-            buff.append(" ORDER BY t.in_money DESC ");
+            buff.append(" GROUP BY a.id ");
+            buff.append(" ORDER BY t.in_money DESC,b.is_bind_bank DESC  ");
 
             StringBuffer bufferCount = new StringBuffer();
             bufferCount.append(" SELECT COUNT(*)  ");
