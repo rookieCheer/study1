@@ -523,22 +523,29 @@ public class UserBuyAction extends BaseAction {
                 if (foundFlowInto != null) {
                     findSumOperation.setFoundFlowInto(foundFlowInto);
                 }
-
-                Double reservedFound = rechargeBean.findTodayReservedFound(null);// 预留资金 sum
-                if (reservedFound != null) {
-                    reservedFound = QwyUtil.calcNumber(reservedFound, 100, "/", 2).doubleValue();
-                    findSumOperation.setReservedFound(reservedFound);
+                Double reservedFound =0.0;
+                Double constantReservedFound =0.0;
+                List<WeekLeftMoney> list = rechargeBean.findWeekRemainMoneys();
+                if(list!=null && list.size()>0){
+                    WeekLeftMoney weekLeftMoney = list.get(0);
+                    if(weekLeftMoney!=null){
+                       String sum = weekLeftMoney.getSum();
+                       String dqhbfxje = weekLeftMoney.getDqhbfxje();
+                      try{
+                          reservedFound =Double.valueOf(sum);
+                      }catch(NumberFormatException e){
+                          reservedFound = 0.0;
+                      }
+                      try{
+                         constantReservedFound = Double.valueOf(dqhbfxje);
+                      }catch(NumberFormatException e){
+                          constantReservedFound = 0.0;
+                      }
+                    }
                 }
-                /**
-                 * /** QwyUtil.calcNumber(allLeftMoney, 100, "/", 2) 预留资金
-                 */
-
-                // 定期预留资金 也叫到期本金
-                Double constantReservedFound = rechargeBean.findTodayConstantReservedFound(null);// 到期本金 dqhbfxje
-                if (constantReservedFound != null) {
-                    constantReservedFound = QwyUtil.calcNumber(constantReservedFound, 100, "/", 2).doubleValue();
-                    findSumOperation.setConstantReservedFound(constantReservedFound);
-                }
+                findSumOperation.setReservedFound(reservedFound);
+                findSumOperation.setConstantReservedFound(constantReservedFound);
+                
 
                 getRequest().setAttribute("list", findSumOperation);
             }
@@ -792,23 +799,29 @@ public class UserBuyAction extends BaseAction {
             if (foundFlowInto != null) {
                 findSumOperation.setFoundFlowInto(foundFlowInto);
             }
-
-            Double reservedFound = rechargeBean.findTodayReservedFound(null);// 预留资金 sum
-            if (reservedFound != null) {
-                reservedFound = QwyUtil.calcNumber(reservedFound, 100, "/", 2).doubleValue();
-                findSumOperation.setReservedFound(reservedFound);
+            
+            Double reservedFound =0.0;
+            Double constantReservedFound =0.0;
+            List<WeekLeftMoney> list = rechargeBean.findWeekRemainMoneys();
+            if(list!=null && list.size()>0){
+                WeekLeftMoney weekLeftMoney = list.get(0);
+                if(weekLeftMoney!=null){
+                   String sum = weekLeftMoney.getSum();
+                   String dqhbfxje = weekLeftMoney.getDqhbfxje();
+                  try{
+                      reservedFound =Double.valueOf(sum);
+                  }catch(NumberFormatException e){
+                      reservedFound = 0.0;
+                  }
+                  try{
+                     constantReservedFound = Double.valueOf(dqhbfxje);
+                  }catch(NumberFormatException e){
+                      constantReservedFound = 0.0;
+                  }
+                }
             }
-            /**
-             * /** QwyUtil.calcNumber(allLeftMoney, 100, "/", 2) 预留资金
-             */
-
-            // 定期预留资金 也叫到期本金
-            Double constantReservedFound = rechargeBean.findTodayConstantReservedFound(null);// 到期本金 dqhbfxje
-            if (constantReservedFound != null) {
-                constantReservedFound = QwyUtil.calcNumber(constantReservedFound, 100, "/", 2).doubleValue();
-                findSumOperation.setConstantReservedFound(constantReservedFound);
-            }
-
+            findSumOperation.setReservedFound(reservedFound);
+            findSumOperation.setConstantReservedFound(constantReservedFound);
             fieldMap.put("日期", "todayDate");
             fieldMap.put("累计资金流入", "allMoneyinflowA");
 
@@ -842,9 +855,9 @@ public class UserBuyAction extends BaseAction {
             fieldMap.put("累计绑卡", "allallRigist");
             fieldMap.put("购买交易", "buyDeal");
 
-            List<SumOperation> list = new ArrayList<SumOperation>(1);
-            list.add(findSumOperation);
-            ExcelUtil.exportExcelNew(outputStream, "运营总表", fieldMap, list, null);
+            List<SumOperation> listSum = new ArrayList<SumOperation>(1);
+            listSum.add(findSumOperation);
+            ExcelUtil.exportExcelNew(outputStream, "运营总表", fieldMap, listSum, null);
         }
     }
 
