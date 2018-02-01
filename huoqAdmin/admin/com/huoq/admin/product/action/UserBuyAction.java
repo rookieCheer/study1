@@ -703,6 +703,28 @@ public class UserBuyAction extends BaseAction {
             if (todayFirstInvestPeople != null) {
                 findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
             }
+            // 今日提现金额
+            Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
+            findSummaryTable.setTodayoutMoney(todayOutCashMoney);
+            
+            
+            String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -1).getTime());
+            
+            Double todayCapitalStock =platformBean.updateTodayCapitalStock(null);
+            // 获取昨日资金存量
+            Double allCapitalStock = platformBean.updateAllCapitalStock(yesterday);
+            if (!QwyUtil.isNullAndEmpty(allCapitalStock)) {
+                // 首页资金存量等于昨日资金存量加今日存量增量
+                allCapitalStock = todayCapitalStock + allCapitalStock;
+                
+            } else {
+                allCapitalStock = 0.0;
+                allCapitalStock = todayCapitalStock + allCapitalStock;
+               
+            }
+            findSummaryTable.setCapitalStock(allCapitalStock);
+            
+            
             fieldMap.put("日期", "tadayDate");
             fieldMap.put("新增注册客户数A", "nEnrollUser"); //
             fieldMap.put("新增绑卡客户B", "nAutUser");
@@ -832,7 +854,7 @@ public class UserBuyAction extends BaseAction {
 
             fieldMap.put("提现金额", "txMoney");
 
-            fieldMap.put("预留资金", "reservedFound"); // 无 资金管理-财务数据 ${item.sum}
+            fieldMap.put("预留资金", "reservedFound"); // 资金管理-财务数据 ${item.sum}
             fieldMap.put("定期预留资金", "constantReservedFound");// 无 到期本金 dqhbfxje
 
             fieldMap.put("宝付资金存量", "baofusaveMoney");// 无 空
