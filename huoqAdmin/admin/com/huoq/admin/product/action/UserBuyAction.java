@@ -46,7 +46,7 @@ public class UserBuyAction extends BaseAction {
     private SumOperationBean           sOtBean;
 
     @Resource
-    private PlatformBean               platformBean;      // uodateTodayOutCashMoney 今日提现金额
+    private PlatformBean               platformBean;      // allCapitalStock 平台资金存量
 
     @Resource
     private InviteBean                 invitBean;
@@ -314,7 +314,9 @@ public class UserBuyAction extends BaseAction {
                province =replaceNullStringToNull(province);
               String realName = outCash.getRealname();
               realName =replaceNullStringToNull(realName);
-              
+              if(cateGory == null){
+                  cateGory ="客户";
+              }
               outCash.setCategory(cateGory);
               outCash.setCity(city);
               outCash.setGender(gender);
@@ -423,6 +425,23 @@ public class UserBuyAction extends BaseAction {
                 // 今日提现金额
                 Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
                 findSummaryTable.setTodayoutMoney(todayOutCashMoney);
+                
+                
+                String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -1).getTime());
+                
+                Double todayCapitalStock =platformBean.updateTodayCapitalStock(null);
+                // 获取昨日资金存量
+                Double allCapitalStock = platformBean.updateAllCapitalStock(yesterday);
+                if (!QwyUtil.isNullAndEmpty(allCapitalStock)) {
+                    // 首页资金存量等于昨日资金存量加今日存量增量
+                    allCapitalStock = todayCapitalStock + allCapitalStock;
+                    
+                } else {
+                    allCapitalStock = 0.0;
+                    allCapitalStock = todayCapitalStock + allCapitalStock;
+                   
+                }
+                findSummaryTable.setCapitalStock(allCapitalStock);
                 getRequest().setAttribute("list", findSummaryTable);
             }
             return "summaryTable";
