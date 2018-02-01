@@ -128,7 +128,10 @@ public class BuyProductInfoBean {
 			for (Object[] object : list) {
 				BuyProductInfo buyProductInfo = new BuyProductInfo();
 				BigInteger id=(BigInteger)object[0];
-				buyProductInfo.setId(id.intValue());
+				if(id!=null){
+				    buyProductInfo.setId(id.intValue());
+				}
+				
 				buyProductInfo.setUsername(object[1] + "");
 				SimpleDateFormat sdf = new SimpleDateFormat( " yyyyMMdd " );
 				String format = sdf.format(object[2]);

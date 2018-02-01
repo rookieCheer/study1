@@ -4,6 +4,7 @@ import com.huoq.admin.product.bean.RechargeBean;
 import com.huoq.common.action.BaseAction;
 import com.huoq.common.bean.*;
 import com.huoq.common.util.DESEncrypt;
+import com.huoq.common.util.ListUtils;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.*;
@@ -45,7 +46,7 @@ public class UserBuyAction extends BaseAction {
     private SumOperationBean           sOtBean;
 
     @Resource
-    private PlatformBean               platformBean;      //
+    private PlatformBean               platformBean;      //uodateTodayOutCashMoney 今日提现金额
     
     @Resource
     private InviteBean invitBean;
@@ -181,19 +182,23 @@ public class UserBuyAction extends BaseAction {
             int size = list.size();
             if(size>0){
                 /**
-                 * select inv.be_invited_id,u.username from users u 
+                 * select inv.be_invited_id,ui.real_name from users u 
 join invite inv on inv.invite_id=u.id
-
-where inv.be_invited_id in('1','2')
+join users_info ui ON ui.users_id = inv.invite_id
+where inv.be_invited_id in('39')
                  */
                 List<Integer> ids = new ArrayList<Integer>(size);
                 for(int i =0;i<size;i++){
                     BuyProductInfo  info =  list.get(i);
                     ids.add(info.getId());
                 }
+              ids = (List<Integer>) ListUtils.removeNullValue(ids);
+             ids = ListUtils.removeRepeatElement(ids);
+             if(ids!=null && ids.size()>0){
                 StringBuffer sql = new StringBuffer("");
-                sql.append("select inv.be_invited_id,u.username from users u ");
-                sql.append(" join invite inv on inv.invite_id=u.id where inv.be_invited_id in(:usersIds)");
+                sql.append("select inv.be_invited_id,ui.real_name from users u  ");
+                sql.append(" join invite inv on inv.invite_id=u.id ");
+                sql.append(" join users_info ui ON ui.users_id = inv.invite_id  where inv.be_invited_id in(:usersIds)");
                 List result = invitBean.querySql(sql.toString(),null,ids,"usersIds");
                 if(result!=null){
                     int resultSize = result.size();
@@ -220,6 +225,11 @@ where inv.be_invited_id in('1','2')
                        }
                     }
                 }
+             }
+                
+                
+                
+                
             }
         }
     }
@@ -366,12 +376,16 @@ where inv.be_invited_id in('1','2')
                 // 管理员没有登录;
                 return "noLogin";
             }
+        
             SummaryTable findSummaryTable = stBean.findSummaryTable(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSummaryTable)) {
                 Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
                 if (todayFirstInvestPeople != null) {
                     findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
                 }
+                //今日提现金额
+                Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
+                findSummaryTable.setTodayoutMoney(todayOutCashMoney);
                 getRequest().setAttribute("list", findSummaryTable);
             }
             return "summaryTable";
