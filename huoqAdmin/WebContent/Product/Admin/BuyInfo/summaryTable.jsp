@@ -121,7 +121,6 @@
 					<td>定期产品部分D</td>
 					<td>累计资金流入</td>
 					<td>当日可提现金额E</td>
-
 				</tr>
 				<tr>
 					<td>${list.tadayDate}</td>
@@ -147,8 +146,8 @@
 					<td>${list.currentProduct}</td>
 					<td>${list.regularProduct}</td>
 					<td>${list.allinMoney}</td>
-					<td></td>
-					<!-- ${list.todayCash} 暂时不显示 -->
+					<td>空</td>
+					<!-- todayCash 暂时不显示 -->
 				</tr>
 			</table>
 			<c:choose>

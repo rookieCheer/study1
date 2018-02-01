@@ -138,7 +138,7 @@ public class UserBuyAction extends BaseAction {
 
                     String productName = info.getProductName();
                     productName = replaceNullStringToNull(productName);
-
+                    
                     String username = info.getUsername();
                     username = replaceNullStringToNull(username);
 
@@ -156,11 +156,18 @@ public class UserBuyAction extends BaseAction {
 
                     String province = info.getProvince();
                     province = replaceNullStringToNull(province);
-
+                    if(productName!=null){
+                        productName =productName.trim();
+                        if(productName.endsWith("零钱罐")){
+                            info.setEndTime("-");
+                            info.setFinishTime("-");
+                        }else{
+                            info.setEndTime(endTime);
+                            info.setFinishTime(finishTime);
+                        }
+                    }
                     info.setCategory(category);
                     info.setCity(city);
-                    info.setEndTime(endTime);
-                    info.setFinishTime(finishTime);
                     info.setPhone(phone);
                     info.setProductName(productName);
                     info.setProvince(province);
@@ -177,10 +184,7 @@ public class UserBuyAction extends BaseAction {
         if (list != null) {
             int size = list.size();
             if (size > 0) {
-                /**
-                 * select inv.be_invited_id,ui.real_name from users u join invite inv on inv.invite_id=u.id join
-                 * users_info ui ON ui.users_id = inv.invite_id where inv.be_invited_id in('39')
-                 */
+            
                 List<Integer> ids = new ArrayList<Integer>(size);
                 for (int i = 0; i < size; i++) {
                     BuyProductInfo info = list.get(i);
@@ -211,6 +215,8 @@ public class UserBuyAction extends BaseAction {
                                         if (infoId != null) {
                                             if (userIdd == infoId.intValue()) {
                                                 info.setFriend(friendName);
+                                            }else{
+                                                info.setFriend("客户");
                                             }
                                         }
                                     }
@@ -530,7 +536,7 @@ public class UserBuyAction extends BaseAction {
     public void exportExcelBuyProductInfoList() throws Exception {
 
         PageUtil<BuyProductInfo> pageUtil = new PageUtil<BuyProductInfo>();
-        pageUtil.setCurrentPage(currentPage);
+        pageUtil.setCurrentPage(1);
         pageUtil.setPageSize(1000000);
         StringBuffer url = new StringBuffer();
         url.append(getRequest().getServletContext().getContextPath());
@@ -607,8 +613,8 @@ public class UserBuyAction extends BaseAction {
     public void exportExcelTiedCardInfoList() throws Exception {
 
         PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
-        pageUtil.setCurrentPage(currentPage);
-        pageUtil.setPageSize(50);
+        pageUtil.setCurrentPage(1);
+        pageUtil.setPageSize(1000000);
         StringBuffer url = new StringBuffer();
         url.append(getRequest().getServletContext().getContextPath());
         url.append("/Product/buyInfo/userBuy!tiedCardInfo.action?");
@@ -708,7 +714,7 @@ public class UserBuyAction extends BaseAction {
      */
     public void exportExcelCashTableList() throws Exception {
         PageUtil<OutCash> pageUtil = new PageUtil<OutCash>();
-        pageUtil.setCurrentPage(currentPage);
+        pageUtil.setCurrentPage(1);
         pageUtil.setPageSize(1000000);
         StringBuffer url = new StringBuffer();
         url.append(getRequest().getServletContext().getContextPath());

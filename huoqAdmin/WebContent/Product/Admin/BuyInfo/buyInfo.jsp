@@ -129,14 +129,7 @@
 					<tr>
 						<td>${status.index + 1}</td>
 						<td>${mylist.productName}</td>
-						<c:choose>
-                            <c:when test="${mylist.productName =='零钱罐'}">
-                            <td></td>
-                            </c:when>
-                            <c:otherwise>
-                            <td>${mylist.endTime}</td>
-                            </c:otherwise>
-                        </c:choose>
+						<td>${mylist.endTime}</td>
 						<td>${mylist.inMoney/100}</td>
 						<td>${mylist.realName}</td>
 						<td>${mylist.friend}</td>
@@ -144,15 +137,7 @@
                         <td>${mylist.city}</td>
 						<td>${myel:jieMiUsername(mylist.phone)}</td>
 						<td>${mylist.insterTime}</td>
-                        <c:choose>
-                            <c:when test="${mylist.productName =='零钱罐'}">
-                            <td></td>
-                            </c:when>
-                            <c:otherwise>
-                             <!-- fmt:formatDate value="${mylist.finishTime}" pattern="yyyy-MM-dd HH:mm:ss" -->
-                            <td>${mylist.finishTime}</td>
-                            </c:otherwise>
-                        </c:choose>
+                        <td>${mylist.finishTime}</td>
 						<td>${mylist.gender}</td>
 					</tr>
 				</c:forEach>

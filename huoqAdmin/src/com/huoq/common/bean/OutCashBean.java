@@ -69,9 +69,15 @@ public class OutCashBean {
 		if (!QwyUtil.isNullAndEmpty(list)) {
 			for (Object[] object : list) {
 				OutCash outCash = new OutCash();
-				SimpleDateFormat sdf = new SimpleDateFormat( " yyyyMMdd " );
-				String format = sdf.format(object[0]);
-				outCash.setOutCashTime(format);
+				try{
+				    SimpleDateFormat sdf = new SimpleDateFormat( " yyyyMMdd " );
+	                String format = sdf.format(object[0]);
+	                outCash.setOutCashTime(format);
+				}catch(IllegalArgumentException e){
+				    outCash.setOutCashTime(object[0]+"");
+				}
+				
+				
 				outCash.setOutMoney(object[1]+"");
 				outCash.setRealname(object[2]+"");
 				outCash.setGender(object[3]+"");
