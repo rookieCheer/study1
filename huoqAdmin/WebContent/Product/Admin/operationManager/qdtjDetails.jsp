@@ -273,7 +273,7 @@
                         <td>0</td>
                     </c:when>
                     <c:otherwise>
-                        <td><fmt:formatNumber value="${tj.regCount/tj.channelCost}" pattern="#,##0.##"/></td>
+                        <td><fmt:formatNumber value="${tj.channelCost/tj.regCount}" pattern="#,##0.##"/></td>
                     </c:otherwise>
                 </c:choose>
                 <td><fmt:formatNumber value="${tj.bindCount}" pattern="#,##0.##"/></td>
