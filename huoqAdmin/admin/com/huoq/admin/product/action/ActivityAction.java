@@ -476,7 +476,7 @@ public class ActivityAction extends BaseAction {
                 } else {
                     sDate = QwyUtil.fmyyyyMMdd.format(QwyUtil.fmMMddyyyy.parse(time[0]));
                     eDate = QwyUtil.fmyyyyMMdd.format(QwyUtil.fmMMddyyyy.parse(time[0]));
-                }
+                } 
             List list = bean.loadQdtjMain(sDate, eDate, channelType);
             String name = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_qdtj_main";
             HSSFWorkbook wb = new HSSFWorkbook();
