@@ -124,30 +124,30 @@
 				</tr>
 				<tr>
 					<td>${list.tadayDate}</td>
-					<td>${list.NEnrollUser}</td>
-					<td>${list.NAutUser}</td>
-					<td>${list.todayFirstInvestPeople}</td>
-					<td>${list.allEnUser}</td>
-					<td>${list.allAutUser}</td>
-					<td>${list.capitalStock}</td>
+                    <td>${list.NEnrollUser}</td>
+                    <td>${list.NAutUser}</td>
+                    <td>${list.todayFirstInvestPeople}</td>
+                    <td>${list.allEnUser}</td>
+                    <td>${list.allAutUser}</td>
+                    <td>${list.capitalStock}</td>
                     <td>${list.todayoutMoney}</td>
-					<td>${list.todayincapital}</td>
-					<td>${list.NDealMoney}</td>
-					<td>${list.ODealMoney}</td>
-					<td>${list.NEnrollIosUser}</td>
-					<td>${list.NEnrollAndroidUser}</td>
-					<td>${list.NEnrollWeChatUser}</td>
-					<td>${list.NAutIosUser}</td>
-					<td>${list.NAutAndroidUser}</td>
-					<td>${list.NAutWeChatUser}</td>
-					<td>${list.todayDeal}<td>
-					<td>${list.NUnserDeal}</td>
-					<td>${list.OUserDeal}</td>
-					<td>${list.currentProduct}</td>
-					<td>${list.regularProduct}</td>
-					<td>${list.allinMoney}</td>
-					<td>空</td>
-					<!-- todayCash 暂时不显示 -->
+                    <td>${list.todayincapital}</td>
+                    <td>${list.NDealMoney}</td>
+                    <td>${list.ODealMoney}</td>
+                    <td>${list.NEnrollIosUser}</td>
+                    <td>${list.NEnrollAndroidUser}</td>
+                    <td>${list.NEnrollWeChatUser}</td>
+                    <td>${list.NAutIosUser}</td>
+                    <td>${list.NAutAndroidUser}</td>
+                    <td>${list.NAutWeChatUser}</td>
+                    <td>${list.todayDeal}</td>
+                    <td>${list.NUnserDeal}</td>
+                    <td>${list.OUserDeal}</td>
+                    <td>${list.currentProduct}</td>
+                    <td>${list.regularProduct}</td>
+                    <td>${list.allinMoney}</td>
+                    <td></td>
+                    <!-- todayCash 暂时不显示 -->
 				</tr>
 			</table>
 			<c:choose>

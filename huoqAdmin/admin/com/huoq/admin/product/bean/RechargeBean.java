@@ -1882,7 +1882,8 @@ public class RechargeBean {
             
              begin = new Date(DateUtils.getStartTime());
              end = new Date(DateUtils.getEndTime());
-           
+          begin = DateUtils.getAddDay(begin, 1);
+          end = DateUtils.getAddDay(end, 1);
          }else{
             time = time.trim();
             begin = DateUtils.strToDate(time+" 00:00:00", "yyyy-MM-dd HH:mm:ss");
@@ -1936,7 +1937,8 @@ public class RechargeBean {
             
              begin = new Date(DateUtils.getStartTime());
              end = new Date(DateUtils.getEndTime());
-           
+             begin = DateUtils.getAddDay(begin, 1);
+             end = DateUtils.getAddDay(end, 1);
          }else{
             time = time.trim();
             begin = DateUtils.strToDate(time+" 00:00:00", "yyyy-MM-dd HH:mm:ss");

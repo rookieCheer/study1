@@ -183,14 +183,14 @@ public class ExcelUtil<T> {
         style.setFont(font);
         // 生成并设置另一个样式
         HSSFCellStyle style2 = workbook.createCellStyle();
-        style2.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
-        style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        style2.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-        style2.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-        style2.setBorderRight(HSSFCellStyle.BORDER_THIN);
-        style2.setBorderTop(HSSFCellStyle.BORDER_THIN);
+//        style2.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+//        style2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+//        style2.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+//        style2.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+//        style2.setBorderRight(HSSFCellStyle.BORDER_THIN);
+//        style2.setBorderTop(HSSFCellStyle.BORDER_THIN);
         style2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        //style2.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
         // 生成另一个字体
         HSSFFont font2 = workbook.createFont();
         font2.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
@@ -224,7 +224,7 @@ public class ExcelUtil<T> {
 
                 HSSFCell cell = row.createCell(j); // 创建一个表格
                 j++;
-               // cell.setCellStyle(style2); // 设置表格样式
+               cell.setCellStyle(style2); // 设置表格样式
 
                 String fieldName = entry.getValue();
                 if (fieldName == null) {
