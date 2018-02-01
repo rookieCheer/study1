@@ -270,5 +270,10 @@ public class InviteBean {
 		List<Invite> inviteList = dao.LoadAll(hql.toString(), new Object[] { uid });
 		return inviteList;
 	}
+
+    public List querySql(String sql, Object[] params, List listParam, String inName) {
+     return   dao.LoadAllSql(sql, params,listParam , inName);
+        
+    }
 	
 }

@@ -15,6 +15,7 @@ import org.apache.struts2.config.Results;
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +46,9 @@ public class UserBuyAction extends BaseAction {
 
     @Resource
     private PlatformBean               platformBean;      //
+    
+    @Resource
+    private InviteBean invitBean;
 
     @Resource
     private RechargeBean               rechargeBean;
@@ -96,8 +100,11 @@ public class UserBuyAction extends BaseAction {
             // 查询统计
             PageUtil<BuyProductInfo> page = BuyProductInfoBean.productInfo(pageUtil, insertTime, phone, isnew);
             if (!QwyUtil.isNullAndEmpty(page)) {
+                List<BuyProductInfo> list = page.getList();
+                delNull(list);
+                setFriend(list);
                 request.setAttribute("pageUtil", page);
-                request.setAttribute("list", page.getList());
+                request.setAttribute("list", list);
                 if (!QwyUtil.isNullAndEmpty(isnew) && isnew.equals("1")) {
                     request.setAttribute("isnew", isnew);
                 }
@@ -109,6 +116,116 @@ public class UserBuyAction extends BaseAction {
         return null;
     }
 
+    
+    private void delNull(List<BuyProductInfo> list){
+        if(list!=null){
+           int size = list.size();
+           if(size>0){
+               for(int i=0;i<size;i++){
+                   
+                   BuyProductInfo info = list.get(i);
+                   String category =info.getCategory();
+                   category = replaceNullStringToNull(category);
+                   
+                  String city = info.getCity();
+                  city = replaceNullStringToNull(city);
+                  
+                 String gender = info.getGender();
+                 gender = replaceNullStringToNull(gender);
+                 
+                 String phone =info.getPhone();
+                 phone =replaceNullStringToNull(phone);
+                 
+                 String productName=info.getProductName();
+                 productName=replaceNullStringToNull(productName);
+                 
+                 String username = info.getUsername();
+                 username =replaceNullStringToNull(username);
+                 
+                 String insertTime = info.getInsterTime();
+                 insertTime=replaceNullStringToNull(insertTime);
+                 
+                 String finishTime=info.getFinishTime();
+                 finishTime=replaceNullStringToNull(finishTime);
+                 
+                 String endTime=info.getEndTime();
+                 endTime=replaceNullStringToNull(endTime);
+                 
+                 String realName=info.getRealName();
+                 realName=replaceNullStringToNull(realName);
+                 
+                 
+                 
+                 String province=info.getProvince();
+                 province=replaceNullStringToNull(province);
+                 
+                 
+                 
+                 info.setCategory(category);
+                 info.setCity(city);
+                 info.setEndTime(endTime);
+                 info.setFinishTime(finishTime);
+                 info.setPhone(phone);
+                 info.setProductName(productName);
+                 info.setProvince(province);
+                 info.setRealName(realName);
+                 info.setGender(gender);
+                 info.setUsername(username);
+                 list.set(i, info);
+               }
+           }
+        }
+    }
+    private void setFriend(List<BuyProductInfo> list){
+        if(list!=null){
+            int size = list.size();
+            if(size>0){
+                /**
+                 * select inv.be_invited_id,u.username from users u 
+join invite inv on inv.invite_id=u.id
+
+where inv.be_invited_id in('1','2')
+                 */
+                List<Integer> ids = new ArrayList<Integer>(size);
+                for(int i =0;i<size;i++){
+                    BuyProductInfo  info =  list.get(i);
+                    ids.add(info.getId());
+                }
+                StringBuffer sql = new StringBuffer("");
+                sql.append("select inv.be_invited_id,u.username from users u ");
+                sql.append(" join invite inv on inv.invite_id=u.id where inv.be_invited_id in(:usersIds)");
+                List result = invitBean.querySql(sql.toString(),null,ids,"usersIds");
+                if(result!=null){
+                    int resultSize = result.size();
+                    for(int j=0;j<resultSize;j++){
+                       Object obj = result.get(j);
+                       if(obj instanceof Object[]){
+                          Object[] objArray = (Object[])obj;
+                          BigInteger userId = (BigInteger)objArray[0];
+                        
+                          if(userId!=null){
+                            int   userIdd = userId.intValue();
+                              String friendName =(String)objArray[1];
+                              for(int k=0;k<size;k++){
+                                  BuyProductInfo info = list.get(k);
+                                  Integer infoId = info.getId();
+                                  if(infoId!=null){
+                                      if(userIdd == infoId.intValue()){
+                                         info.setFriend(friendName); 
+                                      }
+                                  }
+                              }
+                          }
+                         
+                       }
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    
     /**
      * 绑卡统计
      * 
@@ -390,6 +507,8 @@ public class UserBuyAction extends BaseAction {
             List<BuyProductInfo> list = pageUtil.getList();
             if (list != null && list.size() > 0) {
                 deal(list);
+                delNull(list);
+                setFriend(list);
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);

@@ -1,9 +1,9 @@
 package com.huoq.common.bean;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,7 +16,6 @@ import com.huoq.common.util.DESEncrypt;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.BuyProductInfo;
-import com.huoq.orm.TiedCard;
 
 @Service
 public class BuyProductInfoBean {
@@ -50,9 +49,11 @@ public class BuyProductInfoBean {
 					String[] time = QwyUtil.splitTime(insertTime);
 					if (time.length > 1) {
 						sql.append(" AND t.insterTime >= ? ");
-						list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+						
+						list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
 						sql.append(" AND t.insterTime <= ? ");
-						list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+						
+						list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
 					} else {
 						sql.append(" AND t.insterTime >= ? ");
 						list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
@@ -82,9 +83,10 @@ public class BuyProductInfoBean {
 			String[] time = QwyUtil.splitTime(insertTime);
 			if (time.length > 1) {
 				sql.append(" AND a.insterTime >= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+			
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
 				sql.append(" AND a.insterTime <= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
 			} else {
 				sql.append(" AND a.insterTime >= ? ");
 				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
@@ -125,6 +127,8 @@ public class BuyProductInfoBean {
 		if (!QwyUtil.isNullAndEmpty(list)) {
 			for (Object[] object : list) {
 				BuyProductInfo buyProductInfo = new BuyProductInfo();
+				BigInteger id=(BigInteger)object[0];
+				buyProductInfo.setId(id.intValue());
 				buyProductInfo.setUsername(object[1] + "");
 				SimpleDateFormat sdf = new SimpleDateFormat( " yyyyMMdd " );
 				String format = sdf.format(object[2]);

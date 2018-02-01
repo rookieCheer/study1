@@ -60,7 +60,7 @@ public class InvestorsGuestBean {
 			String[] time = QwyUtil.splitTime(insertTime);
 			if (time.length > 1) {
 				hql.append(" AND ins.insertTime >= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[0] + " 00:00:00"));
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
 				hql.append(" AND ins.insertTime <= ? ");
 				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
 			} else {
@@ -114,9 +114,11 @@ public class InvestorsGuestBean {
 			String[] time = QwyUtil.splitTime(insertTime);
 			if (time.length > 1) {
 				buffer.append(" AND us.date >= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+				
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
 				buffer.append(" AND us.date <= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+				
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
 			} else {
 				buffer.append(" AND us.date >= ? ");
 				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
@@ -163,9 +165,10 @@ public class InvestorsGuestBean {
 			String[] time = QwyUtil.splitTime(insertTime);
 			if (time.length > 1) {
 				buffer.append(" AND pay_time >= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+				
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
 				buffer.append(" AND pay_time <= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
 			} else {
 				buffer.append(" AND pay_time >= ? ");
 				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
@@ -263,9 +266,11 @@ public class InvestorsGuestBean {
 			String[] time = QwyUtil.splitTime(insertTime);
 			if (time.length > 1) {
 				buffer.append(" AND dd.insert_time >= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+				
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
 				buffer.append(" AND dd.insert_time <= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+				
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
 			} else {
 				buffer.append(" AND dd.insert_time >= ? ");
 				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));

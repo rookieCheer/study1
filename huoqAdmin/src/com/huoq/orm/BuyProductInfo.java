@@ -9,7 +9,7 @@ public class BuyProductInfo implements Serializable{
      * 
      */
     private static final long serialVersionUID = 1L;
-    //private Integer id; //id
+    private Integer id; //id用户 id
 	private String username; //用户名
 	private String insterTime; //购买时间
 	private Double inMoney; //购买金额
@@ -26,6 +26,16 @@ public class BuyProductInfo implements Serializable{
 	
 	
 	
+    
+    public Integer getId() {
+        return id;
+    }
+
+    
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getFriend() {
         return friend;
     }

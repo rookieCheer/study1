@@ -46,8 +46,8 @@ public class UpdateDailyStatementThreadBean {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
                     sql.append(" AND insert_time  BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
                     sql.append(" AND insert_time  BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
