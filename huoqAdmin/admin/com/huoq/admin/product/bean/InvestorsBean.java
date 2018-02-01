@@ -410,7 +410,7 @@ public class InvestorsBean {
         return pageUtil;
     }
 
-    private List<PlatInvestors> toMoney(List<Object[]> list) throws ParseException {
+    private List<PlatInvestors> toMoney(List<Object[]> list) throws Exception {
         List<PlatInvestors> platInverstors = new ArrayList<PlatInvestors>();
         if (!QwyUtil.isNullAndEmpty(list)) {
             for (Object[] object : list) {
@@ -435,13 +435,13 @@ public class InvestorsBean {
                 plat.setBandCardTime(!QwyUtil.isNullAndEmpty(bandCardTime) ? bandCardTime : null);// 绑卡时间
                 plat.setFristBuyTime(!QwyUtil.isNullAndEmpty(fristBuyTime) ? fristBuyTime : null);// 首投时间
                 plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? object[6] + "" : "0");// 投资总额
-                plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ? object[7] + "" : "0");// 现存资金
-                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? object[8] + "" : "0");// 在贷金额
-                plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? object[9] + "" : "0");// 零钱罐金额
-                plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? object[10] + "" : "0");// 账户余额
+                plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ? Double.valueOf(object[7]+"")/100 + "" : "0");// 现存资金
+                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? Double.valueOf(object[8]+"") + "" : "0");// 在贷金额
+                plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? Double.valueOf(object[9]+"") + "" : "0");// 零钱罐金额
+                plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? Double.valueOf(object[10]+"") + "" : "0");// 账户余额
                 plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");// 投资券金额
                 plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : "0");// 邀请好友人数
-                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? object[13] + "" : "0");// 邀请好友人数
+                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? QwyUtil.jieQuFa(Double.valueOf(object[13] + ""),2)+"" : "0");// 邀请好友人数
                 platInverstors.add(plat);
             }
         }
@@ -462,7 +462,7 @@ public class InvestorsBean {
             buff.append("LEFT JOIN (SELECT MIN(i.insert_time) insert_time,i.users_id ");
             buff.append("FROM investors i  GROUP BY i.`users_id` )zc ON zc.users_id = u.id ");
             buff.append("LEFT JOIN (SELECT i.users_id,SUM(i.in_money)/100 all_money ");
-            buff.append("FROM investors i WHERE investor_status IN('1','2')  GROUP BY i.`users_id` )c ON c.users_id = u.id ");
+            buff.append("FROM investors i WHERE investor_status ='1' GROUP BY i.`users_id` )c ON c.users_id = u.id ");
             buff.append("LEFT JOIN (SELECT in_money,users_id FROM coin_purse cp )lqg ON lqg.users_id = u.id ");
             buff.append("LEFT JOIN (SELECT COUNT(be_invited_id) num,invite_id,SUM(ui.total_money)/100 money FROM invite inv ");
             buff.append("LEFT JOIN users_info ui ON ui.`users_id` = inv.be_invited_id ");
@@ -491,7 +491,7 @@ public class InvestorsBean {
 
             }
             buff.append(" GROUP BY ins.users_id ");
-            buff.append(" ORDER BY in_money DESC");
+            buff.append(" ORDER BY i.total_money DESC");
             StringBuffer bufferCount = new StringBuffer();
             bufferCount.append(" SELECT COUNT(t.username)  ");
             bufferCount.append(" FROM (");
