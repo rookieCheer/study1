@@ -508,10 +508,10 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
@@ -577,8 +577,9 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                   
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
@@ -616,8 +617,8 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                     sql.append("AND ac.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
@@ -652,8 +653,8 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
@@ -691,7 +692,8 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                     list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
                     sql.append(" BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
                 } else {
@@ -727,8 +729,8 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
@@ -768,8 +770,8 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                     sql.append("AND cz.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
@@ -806,7 +808,8 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                     list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
                     sql.append("WHERE u.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
                 } else {
@@ -842,10 +845,10 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
-                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));

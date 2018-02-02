@@ -81,9 +81,14 @@ public class BuyProductInfo implements Serializable{
 	}
 	public String getEndTime() {
 		if (!QwyUtil.isNullAndEmpty(endTime)) {
-			if (Integer.parseInt(endTime) < 0 ) {
-				return "已兑付";
-			}
+		    try{
+		        if (Integer.parseInt(endTime) < 0 ) {
+	                return "已兑付";
+	            }
+		    }catch(NumberFormatException e){
+		        return endTime;
+		    }
+			
 		}
 		return endTime;
 	}

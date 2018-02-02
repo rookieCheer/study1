@@ -30,9 +30,9 @@ public class OutCashBean {
 			String[] time = QwyUtil.splitTime(insertTime);
 			if (time.length > 1) {
 				sql.append(" AND tr.check_time >= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
 				sql.append(" AND tr.check_time <= ? ");
-				list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
 			} else {
 				sql.append(" AND tr.check_time >= ? ");
 				list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));

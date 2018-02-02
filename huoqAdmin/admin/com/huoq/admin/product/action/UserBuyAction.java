@@ -46,10 +46,10 @@ public class UserBuyAction extends BaseAction {
     private SumOperationBean           sOtBean;
 
     @Resource
-    private PlatformBean               platformBean;      //uodateTodayOutCashMoney 今日提现金额
-    
+    private PlatformBean               platformBean;      // uodateTodayOutCashMoney 今日提现金额
+
     @Resource
-    private InviteBean invitBean;
+    private InviteBean                 invitBean;
 
     @Resource
     private RechargeBean               rechargeBean;
@@ -117,125 +117,114 @@ public class UserBuyAction extends BaseAction {
         return null;
     }
 
-    
-    private void delNull(List<BuyProductInfo> list){
-        if(list!=null){
-           int size = list.size();
-           if(size>0){
-               for(int i=0;i<size;i++){
-                   
-                   BuyProductInfo info = list.get(i);
-                   String category =info.getCategory();
-                   category = replaceNullStringToNull(category);
-                   
-                  String city = info.getCity();
-                  city = replaceNullStringToNull(city);
-                  
-                 String gender = info.getGender();
-                 gender = replaceNullStringToNull(gender);
-                 
-                 String phone =info.getPhone();
-                 phone =replaceNullStringToNull(phone);
-                 
-                 String productName=info.getProductName();
-                 productName=replaceNullStringToNull(productName);
-                 
-                 String username = info.getUsername();
-                 username =replaceNullStringToNull(username);
-                 
-                 String insertTime = info.getInsterTime();
-                 insertTime=replaceNullStringToNull(insertTime);
-                 
-                 String finishTime=info.getFinishTime();
-                 finishTime=replaceNullStringToNull(finishTime);
-                 
-                 String endTime=info.getEndTime();
-                 endTime=replaceNullStringToNull(endTime);
-                 
-                 String realName=info.getRealName();
-                 realName=replaceNullStringToNull(realName);
-                 
-                 
-                 
-                 String province=info.getProvince();
-                 province=replaceNullStringToNull(province);
-                 
-                 
-                 
-                 info.setCategory(category);
-                 info.setCity(city);
-                 info.setEndTime(endTime);
-                 info.setFinishTime(finishTime);
-                 info.setPhone(phone);
-                 info.setProductName(productName);
-                 info.setProvince(province);
-                 info.setRealName(realName);
-                 info.setGender(gender);
-                 info.setUsername(username);
-                 list.set(i, info);
-               }
-           }
-        }
-    }
-    private void setFriend(List<BuyProductInfo> list){
-        if(list!=null){
+    private void delNull(List<BuyProductInfo> list) {
+        if (list != null) {
             int size = list.size();
-            if(size>0){
-                /**
-                 * select inv.be_invited_id,ui.real_name from users u 
-join invite inv on inv.invite_id=u.id
-join users_info ui ON ui.users_id = inv.invite_id
-where inv.be_invited_id in('39')
-                 */
-                List<Integer> ids = new ArrayList<Integer>(size);
-                for(int i =0;i<size;i++){
-                    BuyProductInfo  info =  list.get(i);
-                    ids.add(info.getId());
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+
+                    BuyProductInfo info = list.get(i);
+                    String category = info.getCategory();
+                    category = replaceNullStringToNull(category);
+
+                    String city = info.getCity();
+                    city = replaceNullStringToNull(city);
+
+                    String gender = info.getGender();
+                    gender = replaceNullStringToNull(gender);
+
+                    String phone = info.getPhone();
+                    phone = replaceNullStringToNull(phone);
+
+                    String productName = info.getProductName();
+                    productName = replaceNullStringToNull(productName);
+
+                    String username = info.getUsername();
+                    username = replaceNullStringToNull(username);
+
+                    String insertTime = info.getInsterTime();
+                    insertTime = replaceNullStringToNull(insertTime);
+
+                    String finishTime = info.getFinishTime();
+                    finishTime = replaceNullStringToNull(finishTime);
+
+                    String endTime = info.getEndTime();
+                    endTime = replaceNullStringToNull(endTime);
+
+                    String realName = info.getRealName();
+                    realName = replaceNullStringToNull(realName);
+
+                    String province = info.getProvince();
+                    province = replaceNullStringToNull(province);
+
+                    info.setCategory(category);
+                    info.setCity(city);
+                    info.setEndTime(endTime);
+                    info.setFinishTime(finishTime);
+                    info.setPhone(phone);
+                    info.setProductName(productName);
+                    info.setProvince(province);
+                    info.setRealName(realName);
+                    info.setGender(gender);
+                    info.setUsername(username);
+                    list.set(i, info);
                 }
-              ids = (List<Integer>) ListUtils.removeNullValue(ids);
-             ids = ListUtils.removeRepeatElement(ids);
-             if(ids!=null && ids.size()>0){
-                StringBuffer sql = new StringBuffer("");
-                sql.append("select inv.be_invited_id,ui.real_name from users u  ");
-                sql.append(" join invite inv on inv.invite_id=u.id ");
-                sql.append(" join users_info ui ON ui.users_id = inv.invite_id  where inv.be_invited_id in(:usersIds)");
-                List result = invitBean.querySql(sql.toString(),null,ids,"usersIds");
-                if(result!=null){
-                    int resultSize = result.size();
-                    for(int j=0;j<resultSize;j++){
-                       Object obj = result.get(j);
-                       if(obj instanceof Object[]){
-                          Object[] objArray = (Object[])obj;
-                          BigInteger userId = (BigInteger)objArray[0];
-                        
-                          if(userId!=null){
-                            int   userIdd = userId.intValue();
-                              String friendName =(String)objArray[1];
-                              for(int k=0;k<size;k++){
-                                  BuyProductInfo info = list.get(k);
-                                  Integer infoId = info.getId();
-                                  if(infoId!=null){
-                                      if(userIdd == infoId.intValue()){
-                                         info.setFriend(friendName); 
-                                      }
-                                  }
-                              }
-                          }
-                         
-                       }
-                    }
-                }
-             }
-                
-                
-                
-                
             }
         }
     }
-    
-    
-    
+
+    private void setFriend(List<BuyProductInfo> list) {
+        if (list != null) {
+            int size = list.size();
+            if (size > 0) {
+                /**
+                 * select inv.be_invited_id,ui.real_name from users u join invite inv on inv.invite_id=u.id join
+                 * users_info ui ON ui.users_id = inv.invite_id where inv.be_invited_id in('39')
+                 */
+                List<Integer> ids = new ArrayList<Integer>(size);
+                for (int i = 0; i < size; i++) {
+                    BuyProductInfo info = list.get(i);
+                    ids.add(info.getId());
+                }
+                ids = (List<Integer>) ListUtils.removeNullValue(ids);
+                ids = ListUtils.removeRepeatElement(ids);
+                if (ids != null && ids.size() > 0) {
+                    StringBuffer sql = new StringBuffer("");
+                    sql.append("select inv.be_invited_id,ui.real_name from users u  ");
+                    sql.append(" join invite inv on inv.invite_id=u.id ");
+                    sql.append(" join users_info ui ON ui.users_id = inv.invite_id  where inv.be_invited_id in(:usersIds)");
+                    List result = invitBean.querySql(sql.toString(), null, ids, "usersIds");
+                    if (result != null) {
+                        int resultSize = result.size();
+                        for (int j = 0; j < resultSize; j++) {
+                            Object obj = result.get(j);
+                            if (obj instanceof Object[]) {
+                                Object[] objArray = (Object[]) obj;
+                                BigInteger userId = (BigInteger) objArray[0];
+
+                                if (userId != null) {
+                                    int userIdd = userId.intValue();
+                                    String friendName = (String) objArray[1];
+                                    for (int k = 0; k < size; k++) {
+                                        BuyProductInfo info = list.get(k);
+                                        Integer infoId = info.getId();
+                                        if (infoId != null) {
+                                            if (userIdd == infoId.intValue()) {
+                                                info.setFriend(friendName);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     /**
      * 绑卡统计
      * 
@@ -290,13 +279,55 @@ where inv.be_invited_id in('39')
         return value;
 
     }
+    
+    private void deleteNullOutCash(List<OutCash> list){
+        if(list!=null){
+            int size = list.size();
+            if(size>0){
+                for (int i = 0; i < size; i++) {
+                    OutCash outCash = list.get(i);
+                   String cateGory = outCash.getCategory();
+                   
+                   cateGory = replaceNullStringToNull(cateGory);
+                  String city = outCash.getCity();
+                  
+                  city = replaceNullStringToNull(city);
+                  String gender = outCash.getGender();
+                  
+                  gender =replaceNullStringToNull(gender);
+                 String outCashTime = outCash.getOutCashTime();
+                 
+                 outCashTime =replaceNullStringToNull(outCashTime);
+                 String outMoney=outCash.getOutMoney();
+                 
+                 outMoney =replaceNullStringToNull(outMoney);
+                String phone = outCash.getPhone();
+                
+                phone =replaceNullStringToNull(phone);
+               String province = outCash.getProvince();
+               province =replaceNullStringToNull(province);
+              String realName = outCash.getRealname();
+              realName =replaceNullStringToNull(realName);
+              
+              outCash.setCategory(cateGory);
+              outCash.setCity(city);
+              outCash.setGender(gender);
+              outCash.setOutCashTime(outCashTime);
+              outCash.setOutMoney(outMoney);
+              outCash.setPhone(phone);
+              outCash.setProvince(province);
+              outCash.setRealname(realName);
+              list.set(i, outCash);
+                }
+            }
+        }
+    }
 
     private List<TiedCard> deleteNull(List<TiedCard> list) {
         if (list != null) {
             int size = list.size();
             if (size > 0) {
-                size = list.size();
-                for (int i = 0; i < size; i++) {
+                 for (int i = 0; i < size; i++) {
                     TiedCard tiedCard = list.get(i);
                     tiedCard.setNo(i + 1);
                     String age = tiedCard.getAge();
@@ -376,14 +407,14 @@ where inv.be_invited_id in('39')
                 // 管理员没有登录;
                 return "noLogin";
             }
-        
+
             SummaryTable findSummaryTable = stBean.findSummaryTable(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSummaryTable)) {
                 Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
                 if (todayFirstInvestPeople != null) {
                     findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
                 }
-                //今日提现金额
+                // 今日提现金额
                 Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
                 findSummaryTable.setTodayoutMoney(todayOutCashMoney);
                 getRequest().setAttribute("list", findSummaryTable);
@@ -429,7 +460,9 @@ where inv.be_invited_id in('39')
             PageUtil<OutCash> outCashTable = outCashBean.outCashTable(pageUtil, insertTime, phone);
             if (!QwyUtil.isNullAndEmpty(outCashTable)) {
                 request.setAttribute("pageUtil", outCashTable);
-                request.setAttribute("list", outCashTable.getList());
+                List<OutCash> list = outCashTable.getList();
+                deleteNullOutCash(list);
+                request.setAttribute("list", list);
                 return "outCash";
             }
         } catch (Exception e) {
@@ -575,7 +608,7 @@ where inv.be_invited_id in('39')
 
         PageUtil<TiedCard> pageUtil = new PageUtil<TiedCard>();
         pageUtil.setCurrentPage(currentPage);
-        pageUtil.setPageSize(1000000);
+        pageUtil.setPageSize(50);
         StringBuffer url = new StringBuffer();
         url.append(getRequest().getServletContext().getContextPath());
         url.append("/Product/buyInfo/userBuy!tiedCardInfo.action?");
@@ -693,6 +726,7 @@ where inv.be_invited_id in('39')
         if (outCashTable != null) {
             List<OutCash> list = outCashTable.getList();
             if (list != null && list.size() > 0) {
+                deleteNullOutCash(list);
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);

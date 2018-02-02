@@ -125,7 +125,7 @@ public class ExcelUtil<T> {
                                           Map<String, String> dataStyle) throws NullPointerException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException,
                                                                          IOException {
         if (out == null) {
-            throw new NullPointerException("指定的输出流为");
+            throw new NullPointerException("指定的输出流为null");
         }
         HSSFWorkbook book = exportExcel(title, fieldMap, dataset, dataStyle);
         if (book != null) {
