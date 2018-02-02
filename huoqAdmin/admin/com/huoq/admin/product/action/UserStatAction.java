@@ -621,6 +621,11 @@ public class UserStatAction extends BaseAction {
                 url.append("&insertTime=");
                 url.append(insertTime);
             }
+            if (!QwyUtil.isNullAndEmpty(registPlatform)) {
+                url.append("&registPlatform=");
+                url.append(registPlatform);
+            }
+
 
             List<Age> ageList = bean.loadAge(registPlatform, insertTime);
             request.setAttribute("list", ageList);
@@ -665,7 +670,7 @@ public class UserStatAction extends BaseAction {
             cell.setCellValue("投资次数");
             cell.setCellStyle(style);
             cell = row.createCell(3);
-            cell.setCellValue("投资总额");
+            cell.setCellValue("投资总额(元)");
             cell.setCellStyle(style);
             cell = row.createCell(4);
             List<Age> list = bean.loadAge(registPlatform, insertTime);
@@ -677,7 +682,11 @@ public class UserStatAction extends BaseAction {
                 row.createCell(0).setCellValue(!QwyUtil.isNullAndEmpty(age.getAgeCeng()) ? age.getAgeCeng() : "");
                 row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(age.getRsCount()) ? age.getRsCount() : "");
                 row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getCsCount()) ? age.getCsCount() : "");
-                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getJeCount()) ? age.getJeCount() : "");
+                String price = age.getJeCount();
+                double priceValue = Double.parseDouble(price);
+                int cents = (int)(priceValue * 0.01);
+                String newPrice = Integer.toString(cents);
+                row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getJeCount()) ? newPrice : "");
 
             }
             String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_age.xls";

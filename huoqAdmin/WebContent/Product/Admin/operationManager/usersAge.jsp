@@ -39,26 +39,9 @@
     </style>
     <script type="text/javascript">
         function ireportDo() {
-            // var interval = $("#insertTime").val();
-            // if (interval == null || interval == '' || interval.length == 0) {
-            //     alert("请选择要导出报表日期！");
-            //     return false;
-            // }
-            // if (interval.indexOf("-") != -1) {
-            //     var startDate = interval.split("-")[0];
-            //     var endDate = interval.split("-")[1];
-            //     var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-            //         .getTime();
-            //     var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-            //         .getTime();
-            //     var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-            //     if (31 - dates <= 0) {
-            //         alert("请选择日期间隔为31天的数据导出！")
-            //         return false;
-            //     }
-            // }
             var insertTime = $("#insertTime").val();
-            var url = "${pageContext.request.contextPath}/Product/Admin/userStat!exportAge.action?insertTime=" + insertTime;
+            var registPlatform = $('input[name="registPlatform"]:checked').val();
+            var url = "${pageContext.request.contextPath}/Product/Admin/userStat!exportAge.action?insertTime=" + insertTime+ "&registPlatform=" + registPlatform;
             var list = "${list}";
             if (list != null && list != "[]") {
                 var my = art.dialog({
@@ -90,7 +73,8 @@
         }
         function queryProduct() {
             var insertTime = $("#insertTime").val();
-            var url = "${pageContext.request.contextPath}/Product/Admin/userStat!loadAge.action?insertTime=" + insertTime;
+            var registPlatform = $('input[name="registPlatform"]:checked').val();
+            var url = "${pageContext.request.contextPath}/Product/Admin/userStat!loadAge.action?insertTime=" + insertTime + "&registPlatform=" + registPlatform ;
             window.location.href = url;
         }
     </script>
@@ -127,7 +111,7 @@
                 <td width="200px;">年龄段</td>
                 <td width="200px;">人数</td>
                 <td width="200px;">投资次数</td>
-                <td width="200px;">投资总额</td>
+                <td width="200px;">投资总额(元)</td>
             </tr>
             <c:forEach items="${list}" var="item">
                 <tr>

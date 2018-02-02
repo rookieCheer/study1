@@ -1,5 +1,6 @@
 package com.huoq.account.bean;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1285,7 +1286,10 @@ public class UserInfoBean {
                     if (QwyUtil.isNullAndEmpty(objects[1])) {
                         objects[1] = 0;
                     }
-                    age.setJeCount(objects[1] + "");
+
+                    BigDecimal db = new BigDecimal(objects[1]+"");
+                    age.setJeCount(db.toPlainString());
+
                     age.setCsCount(objects[2] + "");
                     ageList.add(age);
                 }
