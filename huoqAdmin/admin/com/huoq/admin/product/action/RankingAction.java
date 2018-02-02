@@ -174,8 +174,12 @@ public class RankingAction extends BaseAction{
 			StringBuffer url = new StringBuffer();
 			url.append(getRequest().getServletContext().getContextPath());
 			url.append("/Product/Admin/ranking!showCZRecordRank.action?");
+			if (!QwyUtil.isNullAndEmpty(insertTime)) {
+				url.append("&insertTime=");
+				url.append(insertTime);
+			}
 			pageUtil.setPageUrl(url.toString());
-			pageUtil = bean.loadCZRecordRank(pageUtil);
+			pageUtil = bean.loadCZRecordRank(pageUtil,insertTime);
 
 			if(!QwyUtil.isNullAndEmpty(pageUtil)){
 				getRequest().setAttribute("pageUtil", pageUtil);
@@ -188,6 +192,72 @@ public class RankingAction extends BaseAction{
 		}
 		return null;
 	}
+
+
+	/**
+	 * 导出充值总金额排行榜
+	 * @return
+	 */
+	public String exportCZRecordRank() {
+		if (!QwyUtil.isNullAndEmpty(insertTime)) {
+
+		} else {
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = new Date();
+			String time = sd.format(date);
+		}
+		try {
+			PageUtil pageUtil = new PageUtil();
+			pageUtil.setCurrentPage(currentPage);
+			pageUtil.setPageSize(999999);
+			HSSFWorkbook wb = new HSSFWorkbook();
+			HSSFSheet sheet = wb.createSheet("充值总金额排行榜");
+			HSSFRow row = sheet.createRow((int) 0);
+			HSSFCellStyle style = wb.createCellStyle();
+			style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+			HSSFCell cell = row.createCell(0);
+			cell = row.createCell(0);
+			cell.setCellValue("序号");
+			cell.setCellStyle(style);
+			cell = row.createCell(1);
+			cell.setCellValue("用户id");
+			cell.setCellStyle(style);
+			cell = row.createCell(2);
+			cell.setCellValue("用户名");
+			cell.setCellStyle(style);
+			cell = row.createCell(3);
+			cell.setCellValue("姓名");
+			cell.setCellStyle(style);
+			cell = row.createCell(4);
+			cell.setCellValue("充值总金额（元）");
+			cell.setCellStyle(style);
+			cell = row.createCell(5);
+			List<Rank> list = bean.loadCZRecordRank(pageUtil,insertTime).getList();
+
+			Rank  rank = null;
+			for (int i = 0; i < list.size(); i++) {
+				row = sheet.createRow((int) i + 1);
+				rank = (Rank) list.get(i);
+				row.createCell(0).setCellValue((int) i + 1);//序号
+				row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersId()) ?  rank.getUsersId():"");
+				row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersname())? DESEncrypt.jieMiUsername(rank.getUsersname()):"");
+				row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(rank.getRealname()) ? rank.getRealname():"");
+				row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(rank.getMoney()) ?  (Double.valueOf(rank.getMoney())*0.01)+"":"");
+
+			}
+			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_CzRecord_rank.xls";
+			String realPath = request.getServletContext().getRealPath("/report/" + pathname);
+			log.info("充值总金额排行榜地址：" + realPath);
+			FileOutputStream fout = new FileOutputStream(realPath);
+			wb.write(fout);
+			fout.close();
+			response.getWriter().write("/report/" + pathname);
+		} catch (Exception e) {
+			log.error("操作异常: ", e);
+		}
+		return null;
+	}
+
 	public Integer getCurrentPage() {
 		return currentPage;
 	}
