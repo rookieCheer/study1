@@ -404,6 +404,7 @@ public class InvestorsBean {
                 plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");// 投资券金额
                 plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : "0");// 邀请好友人数
                 plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? QwyUtil.jieQuFa(Double.valueOf(object[13] + ""),2)+"" : "0");// 邀请好友人数
+                plat.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? QwyUtil.jieQuFa(Double.valueOf(object[14] + ""),2)+"" : "0");// 红包金额
                 platInverstors.add(plat);
             }
         }
@@ -416,7 +417,7 @@ public class InvestorsBean {
             ArrayList<Object> ob = new ArrayList<Object>();
             StringBuffer buff = new StringBuffer();
             buff.append("SELECT u.id,u.username  AS username, i.real_name AS real_name,IFNULL(u.insert_time,null) ,IFNULL(ac.insert_time,null),IFNULL(zc.insert_time,null),SUM(ins.copies)  AS copies ,");
-            buff.append("i.total_money,c.all_money,lqg.in_money,i.left_money,SUM(ins.coupon)  AS coupon ,inv.num,inv.money ");
+            buff.append("i.total_money,c.all_money,lqg.in_money,i.left_money,SUM(ins.coupon)  AS coupon ,inv.num,inv.money,SUM(ins.hongbao) ");
             buff.append("FROM investors ins ");
             buff.append("LEFT JOIN users u ON ins.users_id = u.id  ");
             buff.append("LEFT JOIN users_info i ON i.users_id = u.id  ");

@@ -17,7 +17,7 @@ public class Coupon {
 	private Date updateTime;//更新时间;
 	private Date useTime;//使用时间;
 	private Date overTime;// 过期时间
-	private String type;// 类别 如:0:理财券;1:投资券（投资券）  3:红包
+	private String type;// 类别 如:0:理财券;1:投资券（投资券）3:红包
 	private String status;// 状态 0未使用,1未用完,2已用完,3已过期
 	private String isAlways;//是否永久有效; 0:否; 1:永久有效;
 	private String productId; // 产品id

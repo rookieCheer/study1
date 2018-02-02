@@ -26,7 +26,7 @@
 <div class="center">			
 	<jsp:include page="/Product/Admin/common/head.jsp"/>
 	<div class="main" align="center">
-		<h3 style="text-align: center;">用户投资统计(根据投资本金从高到低显示)</h3><br/>
+		<h3 style="text-align: center;">用户投资统计</h3><br/>
 		<div id="div_condition" style="text-align: center;" >
 		<label>用户名:<input type="text" name="name" id="name" value="${name}" maxlength="11"  onkeypress="if(event.keyCode==13) {frm.click();}">
 		真实姓名:<input type="text" name="realname" id="realname" value="${realname}" maxlength="6"  onkeypress="if(event.keyCode==13) {frm.click();}">
@@ -50,6 +50,7 @@
 			<td>零钱罐金额</td>
 			<td>账户余额</td>
 			<td>投资券金额(元)</td>
+			<td>红包金额(元)</td>
 			<td>邀请好友人数</td>
 			<td>好友总资金</td>
 		</tr>
@@ -68,6 +69,7 @@
 			<td><fmt:formatNumber value="${item.coinPurseMoney}" pattern="#,##0.##"/></td>
 			<td><fmt:formatNumber value="${item.leftMoney}" pattern="#,##0.##"/></td>
 			<td><fmt:formatNumber value="${item.coupon * 0.01}" pattern="#,##0.##"/></td>
+			<td><fmt:formatNumber value="${item.hongbao * 0.01}" pattern="#,##0.##"/></td>
 			<td>${item.friendNumber}</td>
 			<td>${item.friendMoney}</td>
 		</tr>

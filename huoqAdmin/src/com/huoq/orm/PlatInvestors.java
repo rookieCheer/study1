@@ -15,6 +15,7 @@ public class PlatInvestors {
     private String coinPurseMoney;//零钱罐金额
     private String leftMoney;//账户余额
     private String coupon;//投资券的金额
+    private String hongbao;//红包金额
     private String friendNumber;//邀请好友人数
     private String friendMoney;//好友总金额
     private String insMoney;//好友投资的金额
@@ -133,5 +134,13 @@ public class PlatInvestors {
 
     public void setFriendMoney(String friendMoney) {
         this.friendMoney = friendMoney;
+    }
+
+    public String getHongbao() {
+        return hongbao;
+    }
+
+    public void setHongbao(String hongbao) {
+        this.hongbao = hongbao;
     }
 }
