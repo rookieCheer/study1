@@ -132,24 +132,6 @@ public class InvestorsAction extends BaseAction {
      */
     public String exoprtUserInvertors() {
         try {
-            // 判断时间是否为一个月
-            if (QwyUtil.isNullAndEmpty(insertTime)) {
-                String json = QwyUtil.getJSONString("err", "导出日期为空");
-                QwyUtil.printJSON(response, json);
-                return null;
-            }
-            String[] time = QwyUtil.splitTime(insertTime);
-            if (time.length > 1) {
-                Date date1 = QwyUtil.fmMMddyyyy.parse(time[0]);
-                Date date2 = QwyUtil.fmMMddyyyy.parse(time[1]);
-                int date3 = QwyUtil.getDifferDays(date1, date2);
-                if (date3 > 31) {
-                    String json = QwyUtil.getJSONString("err", "大于一个月不可以导出");
-                    QwyUtil.printJSON(response, json);
-                    return null;
-                }
-            }
-
             PageUtil<PlatInvestors> pageUtil = new PageUtil<PlatInvestors>();
             pageUtil.setCurrentPage(currentPage);
             pageUtil.setPageSize(9999999);
@@ -160,19 +142,15 @@ public class InvestorsAction extends BaseAction {
                 url.append("&insertTime=");
                 url.append(insertTime);
             }
-
             if (!QwyUtil.isNullAndEmpty(name)) {
                 url.append("&name=");
                 url.append(name);
             }
-
             if (!QwyUtil.isNullAndEmpty(realname)) {
                 url.append("&realname=");
                 url.append(realname);
             }
-
             pageUtil.setPageUrl(url.toString());
-
             HSSFWorkbook wb = new HSSFWorkbook();
             HSSFSheet sheet = wb.createSheet("用户投资统计(根据投资本金从高到低显示)");
             HSSFRow row = sheet.createRow((int) 1);
@@ -192,8 +170,9 @@ public class InvestorsAction extends BaseAction {
             row.createCell(10).setCellValue("零钱罐金额");
             row.createCell(11).setCellValue("账户余额");
             row.createCell(12).setCellValue("投资券金额（元）");
-            row.createCell(13).setCellValue("邀请好友人数");
-            row.createCell(14).setCellValue("好友总金额");
+            row.createCell(13).setCellValue("红包金额（元）");
+            row.createCell(14).setCellValue("邀请好友人数");
+            row.createCell(15).setCellValue("好友总金额");
             pageUtil = investorsBean.loadInvestors(name, realname, insertTime, pageUtil);
             List list = pageUtil.getList();
             PlatInvestors pla = null;
@@ -226,10 +205,10 @@ public class InvestorsAction extends BaseAction {
                 row.createCell(10).setCellValue(pla.getCoinPurseMoney());
                 row.createCell(11).setCellValue(pla.getLeftMoney());
                 row.createCell(12).setCellValue(pla.getCoupon());
-                row.createCell(13).setCellValue(pla.getFriendNumber());
-                row.createCell(14).setCellValue(pla.getFriendMoney());
+                row.createCell(13).setCellValue(pla.getHongbao());
+                row.createCell(14).setCellValue(pla.getFriendNumber());
+                row.createCell(15).setCellValue(pla.getFriendMoney());
             }
-
             String realPath = request.getServletContext().getRealPath("/report/userInvertors.xls");
             FileOutputStream fout = new FileOutputStream(realPath);
             wb.write(fout);

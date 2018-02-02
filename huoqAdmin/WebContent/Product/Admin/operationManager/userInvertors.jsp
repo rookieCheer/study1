@@ -95,18 +95,16 @@ function ireportDo(){
 		alert("无数据");
 		return false;
 	}
-	var insertTime=$("#insertTime").val();
-	var registPlatform=$("#registPlatform option:selected").val();
-		var url='${pageContext.request.contextPath}/Product/Admin/investors!exoprtUserInvertors.action?name='+$("#name").val()+'&insertTime='+$('#insertTime').val()+'&realname='+$('#realname').val();  
-		//name="+$("#name").val()+"&insertTime="+$('#insertTime').val()+"&realname="+realname;
+
+	var url='${pageContext.request.contextPath}/Product/Admin/investors!exoprtUserInvertors.action?name='+$("#name").val()+'&insertTime='+$('#insertTime').val()+'&realname='+$('#realname').val();
 	var my= art.dialog({
 	    title: '提示',
 	    content:document.getElementById("psi_load"),
 	    height: 60,
 	    lock: true,
 	    cancel: false
-	});  
-	$.post(url,$("#frm").serialize(),function(data){			
+	});
+	$.post(url,$("#frm").serialize(),function(data){
 		my.close();
 		if("ok"==data.status){
 			var mydata = '${pageContext.request.contextPath}'+data.json;
@@ -117,7 +115,6 @@ function ireportDo(){
 	   		    height: 60,
 	   		    lock: true,
 	   		    ok:function(){
-	   		    	//mysss.close();
 	   		    }
 	   		});   
 		}else{
