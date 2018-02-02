@@ -256,7 +256,7 @@ public class InvestorsAction extends BaseAction {
                     status = "3";
                 }
             }
-            pageUtil = investorsBean.findInvertorses(pageUtil, productTitle, status, name, insertTime, type, productId);
+            pageUtil = investorsBean.findInvertorses(pageUtil, productTitle, status, name, insertTime);
             StringBuffer url = new StringBuffer();
             url.append(getRequest().getServletContext().getContextPath());
             url.append("/Product/Admin/investors!findInvertors.action?status=" + status);
@@ -264,17 +264,9 @@ public class InvestorsAction extends BaseAction {
                 url.append("&name=");
                 url.append(name);
             }
-            if (!QwyUtil.isNullAndEmpty(type)) {
-                url.append("&type=");
-                url.append(type);
-            }
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 url.append("&insertTime=");
                 url.append(insertTime);
-            }
-            if (!QwyUtil.isNullAndEmpty(productId)) {
-                url.append("&productId=");
-                url.append(productId);
             }
             if (!QwyUtil.isNullAndEmpty(productTitle)) {
                 url.append("&productTitle=");
@@ -282,7 +274,7 @@ public class InvestorsAction extends BaseAction {
             }
             pageUtil.setPageUrl(url.toString());
             getRequest().setAttribute("productTitle", productTitle);
-            getRequest().setAttribute("pageUtil", pageUtil);
+            getRequest().setAttribute("pageUtil", pageUtil.getList());
             if (!QwyUtil.isNullAndEmpty(pageUtil)) {
                 getRequest().setAttribute("pageUtil", pageUtil);
                 return "invertorsRecord";
@@ -303,15 +295,7 @@ public class InvestorsAction extends BaseAction {
             PageUtil<Investors> pageUtil = new PageUtil<Investors>();
             pageUtil.setCurrentPage(currentPage);
             pageUtil.setPageSize(999999999);
-            if (!QwyUtil.isNullAndEmpty(productStatus)) {
-                if (productStatus.equals("0") || productStatus.equals("1")) {
-                    status = "1";
-                }
-                if (productStatus.equals("3")) {
-                    status = "3";
-                }
-            }
-            pageUtil = investorsBean.findInvertorses(pageUtil, productTitle, status, name, insertTime, type, productId);
+            pageUtil = investorsBean.findInvertorses(pageUtil, productTitle, status, name, insertTime);
             HSSFWorkbook wb = new HSSFWorkbook();
             HSSFSheet sheet = wb.createSheet("投资记录");
             HSSFRow row = sheet.createRow((int) 0);
@@ -320,71 +304,99 @@ public class InvestorsAction extends BaseAction {
             HSSFCell cell = row.createCell(0);
             cell.setCellValue("序号");
             cell.setCellStyle(style);
-            cell = row.createCell(1);
 
+            cell = row.createCell(1);
             cell.setCellValue("用户名");
             cell.setCellStyle(style);
+
             cell = row.createCell(2);
-
-            cell.setCellValue("投资人姓名");
+            cell.setCellValue("姓名");
             cell.setCellStyle(style);
-            cell = row.createCell(3);
 
+            cell = row.createCell(3);
+            cell.setCellValue("渠道");
+            cell.setCellStyle(style);
+
+            cell = row.createCell(4);
+            cell.setCellValue("是否首投");
+            cell.setCellStyle(style);
+
+            cell = row.createCell(5);
             cell.setCellValue("产品名称");
             cell.setCellStyle(style);
-            cell = row.createCell(4);
 
+            cell = row.createCell(6);
             cell.setCellValue("投资天数");
             cell.setCellStyle(style);
-            cell = row.createCell(5);
 
+            cell = row.createCell(7);
             cell.setCellValue("理财期限");
             cell.setCellStyle(style);
-            cell = row.createCell(6);
 
+            cell = row.createCell(8);
             cell.setCellValue("剩余天数");
             cell.setCellStyle(style);
-            cell = row.createCell(7);
 
+            cell = row.createCell(9);
             cell.setCellValue("购买状态");
             cell.setCellStyle(style);
-            cell = row.createCell(8);
 
+            cell = row.createCell(10);
             cell.setCellValue("购买份数");
             cell.setCellStyle(style);
-            cell = row.createCell(9);
 
-            cell.setCellValue("投入金额");
+            cell = row.createCell(11);
+            cell.setCellValue("投入本金");
             cell.setCellStyle(style);
-            cell = row.createCell(10);
 
+            cell = row.createCell(12);
+            cell.setCellValue("本金收益");
+            cell.setCellStyle(style);
+
+            cell = row.createCell(13);
             cell.setCellValue("投资券");
             cell.setCellStyle(style);
-            cell = row.createCell(11);
 
+            cell = row.createCell(14);
+            cell.setCellValue("投资券来源");
+            cell.setCellStyle(style);
+
+            cell = row.createCell(15);
+            cell.setCellValue("投资券收益");
+            cell.setCellStyle(style);
+
+            cell = row.createCell(16);
+            cell.setCellValue("红包金额");
+            cell.setCellStyle(style);
+
+            cell = row.createCell(17);
+            cell.setCellValue("红包来源");
+            cell.setCellStyle(style);
+
+            cell = row.createCell(18);
             cell.setCellValue("最终年化收益");
             cell.setCellStyle(style);
-            cell = row.createCell(12);
 
-            cell.setCellValue("到期收益");
+            cell = row.createCell(19);
+            cell.setCellValue("到期总收益");
             cell.setCellStyle(style);
-            cell = row.createCell(13);
 
-            cell.setCellValue("支付时间");
+            cell = row.createCell(20);
+            cell.setCellValue("投资时间");
             cell.setCellStyle(style);
-            cell = row.createCell(14);
 
+            cell = row.createCell(21);
             cell.setCellValue("起息时间");
             cell.setCellStyle(style);
-            cell = row.createCell(15);
 
+            cell = row.createCell(22);
             cell.setCellValue("结算时间");
             cell.setCellStyle(style);
-            cell = row.createCell(16);
 
+            cell = row.createCell(23);
             cell.setCellValue("项目到期时间");
             cell.setCellStyle(style);
-            cell.setCellStyle(style);
+
             Investors report = null;
             List list = pageUtil.getList();
             for (int i = 0; i < list.size(); i++) {
@@ -392,27 +404,29 @@ public class InvestorsAction extends BaseAction {
                 report = (Investors) list.get(i);
                 row = sheet.createRow((int) i + 1);
                 row.createCell(0).setCellValue((int) i + 1);
-                row.createCell(1).setCellValue(report.getUsers() == null ? "" : DESEncrypt.jieMiUsername(report.getUsers().getUsername()));
-                row.createCell(2).setCellValue(report.getUsers().getUsersInfo().getRealName() == null ? "" : report.getUsers().getUsersInfo().getRealName());
-                row.createCell(3).setCellValue(report.getProduct() == null ? "" : report.getProduct().getTitle());
-                row.createCell(4).setCellValue(report.getTzts());
-                if (QwyUtil.isNullAndEmpty(report.getProduct())) {
-                    row.createCell(5).setCellValue("");
-                    row.createCell(6).setCellValue("");
-                } else {
-                    row.createCell(5).setCellValue(report.getProduct().getLcqx());
-                    row.createCell(6).setCellValue(report.getProduct().getTzqx());
-                }
-                row.createCell(7).setCellValue(report.getTzzt());
-                row.createCell(8).setCellValue(report.getCopies());
-                row.createCell(9).setCellValue(report.getInMoney() * 0.01);
-                row.createCell(10).setCellValue(report.getCoupon() * 0.01);
-                row.createCell(11).setCellValue(report.getAnnualEarnings());
-                row.createCell(12).setCellValue(report.getExpectEarnings() == null ? 0 : (report.getExpectEarnings() * 0.01));
-                row.createCell(13).setCellValue(report.getPayTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getPayTime())));
-                row.createCell(14).setCellValue(report.getStartTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getStartTime())));
-                row.createCell(15).setCellValue(report.getClearTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getClearTime())));
-                row.createCell(16).setCellValue(report.getFinishTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getFinishTime())));
+                row.createCell(1).setCellValue(report.getUsername()== null ? "" : DESEncrypt.jieMiUsername(report.getUsername()));
+                row.createCell(2).setCellValue(report.getRealname() == null ? "" : report.getRealname());
+                row.createCell(3).setCellValue(report.getRegistChannel() == null ? "" : report.getRegistChannel());
+                row.createCell(4).setCellValue(report.getIsFirstInvt() == null ? "" : report.getIsFirstInvt());
+                row.createCell(5).setCellValue(report.getTitle() == null ? "" : report.getTitle());
+                row.createCell(6).setCellValue(report.getTits() != null ? Integer.valueOf(report.getTits()+""):0 );
+                row.createCell(7).setCellValue(report.getLcqx()!=null? Integer.valueOf(report.getLcqx()+""):0 );
+                row.createCell(8).setCellValue(report.getTzqx()!=null? Integer.valueOf(report.getTzqx()+""):0 );
+                row.createCell(9).setCellValue(report.getTzzt()==null?"":report.getTzzt());
+                row.createCell(10).setCellValue(report.getCopies()!=null ? Long.valueOf(report.getLcqx()+""):0 );
+                row.createCell(11).setCellValue(report.getInMoney()!=null ?Double.valueOf(report.getInMoney()+""):0 );
+                row.createCell(12).setCellValue(report.getExpectEarnings() == null ? 0 : (QwyUtil.jieQuFa(report.getExpectEarnings(),2)));
+                row.createCell(13).setCellValue(report.getCoupon());
+                row.createCell(14).setCellValue(report.getInvestSource()== null ? "" :report.getInvestSource());
+                row.createCell(15).setCellValue(report.getCouponShouyi()!= null ? Double.valueOf(report.getCouponShouyi()+""):0.0);
+                row.createCell(16).setCellValue(report.getHongbao()!= null ? Double.valueOf(report.getHongbao()+""):0);
+                row.createCell(17).setCellValue(report.getRedPackageSource()== null ? "" :report.getRedPackageSource());
+                row.createCell(18).setCellValue(report.getAnnualEarnings() == null ? 0.0 :report.getAnnualEarnings());
+                row.createCell(19).setCellValue(report.getFinalEarnings() == null ? 0.00: (QwyUtil.jieQuFa (report.getFinalEarnings(),2)));
+                row.createCell(20).setCellValue(report.getPayTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getPayTime())));
+                row.createCell(21).setCellValue(report.getStartTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getStartTime())));
+                row.createCell(22).setCellValue(report.getClearTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getClearTime())));
+                row.createCell(23).setCellValue(report.getFinishTime() == null ? "" : (QwyUtil.fmyyyyMMddHHmmss.format(report.getFinishTime())));
             }
             String realPath = request.getServletContext().getRealPath("/report/findInvertors.xls");
             FileOutputStream fout = new FileOutputStream(realPath);

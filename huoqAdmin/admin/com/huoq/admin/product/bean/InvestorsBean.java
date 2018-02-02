@@ -33,23 +33,21 @@ public class InvestorsBean {
      * 分页获取结算记录
      * 
      * @param pageUtil 分页工具类
-     * @param investorStatus 投资状态
+     * @param status 投资状态
      * @param name 用户名
      * @param insertTime 投资时间
-     * @param type
-     * @param productId 产品ID
      * @return
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public PageUtil<Investors> findInvertorses(PageUtil pageUtil, String productTitle, String investorStatus, String name, String insertTime, String type,
-                                               String productId) throws Exception {
+    public PageUtil<Investors> findInvertorses(PageUtil pageUtil, String productTitle, String status, String name, String insertTime) throws Exception {
         List<Object> list = new ArrayList<Object>();
         StringBuffer buffer = new StringBuffer();
-        buffer.append(" SELECT u.username,us.real_name,u.regist_channel,MIN( t.pay_time),i.pay_time, p.title,p.lcqx,p.lcqx, ");
-        buffer.append(" i.finish_time,i.investor_status,i.copies,i.in_money*0.01,i.expect_earnings/100,i.coupon*0.01,c.note, ");
+        buffer.append(" SELECT * FROM ( ");
+        buffer.append(" SELECT u.username,us.real_name,u.regist_channel,MIN( t.pay_time),i.pay_time, p.title,p.lcqx tzts,p.lcqx , ");
+        buffer.append(" i.finish_time syts,i.investor_status,i.copies,i.in_money*0.01,i.expect_earnings/100,i.coupon*0.01,c.note,  ");
         buffer.append(" i.coupon_shouyi/100,i.hongbao,c.type,i.annual_earnings,(i.expect_earnings/100+i.coupon_shouyi/100), ");
-        buffer.append(" i.pay_time,i.start_time,i.clear_time,i.finish_time  ");
+        buffer.append(" i.pay_time zfsj,i.start_time,i.clear_time,i.finish_time  ");
         buffer.append(" FROM  investors i  ");
         buffer.append(" LEFT JOIN product p ON i.product_id=p.id ");
         buffer.append(" LEFT JOIN users_info us  ON i.users_id=us.users_id  ");
@@ -57,16 +55,17 @@ public class InvestorsBean {
         buffer.append(" LEFT JOIN  coupon c ON p.id=c.product_id  ");
         buffer.append(" LEFT JOIN (SELECT v.pay_time ,v.users_id FROM investors v GROUP BY v.users_id ORDER BY v.pay_time ASC) t  ");
         buffer.append(" ON t.users_id = i.users_id  ");
-
-        if (!"all".equals(investorStatus)) {
-            buffer.append(" AND i.investor_status = ?");
-            list.add(investorStatus);
+        buffer.append(" GROUP BY i.users_id,i.pay_time  ORDER BY i.pay_time DESC  ");
+        buffer.append(" )a WHERE 1=1 ");
+        if (!"all".equals(status)) {
+            buffer.append(" AND a.investor_status = ?");
+            list.add(status);
         } else {
-            buffer.append(" AND i.investor_status != 5 ");
+            buffer.append(" AND a.investor_status != 5 ");
 
         }
         if (!QwyUtil.isNullAndEmpty(name)) {
-            buffer.append(" AND u.username = ? ");
+            buffer.append(" AND a.username = ? ");
 
             list.add(DESEncrypt.jiaMiUsername(name));
         }
@@ -74,41 +73,26 @@ public class InvestorsBean {
         if (!QwyUtil.isNullAndEmpty(insertTime)) {
             String[] time = QwyUtil.splitTime(insertTime);
             if (time.length > 1) {
-                buffer.append(" AND i.pay_time >= ? ");
+                buffer.append(" AND a.pay_time >= ? ");
 
                 list.add(QwyUtil.fmMMddyyyy.parse(time[0] + " 00:00:00"));
-                buffer.append(" AND i.pay_time <= ? ");
+                buffer.append(" AND a.pay_time <= ? ");
 
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
             } else {
-                buffer.append(" AND i.pay_time >= ? ");
+                buffer.append(" AND a.pay_time >= ? ");
 
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                buffer.append(" AND i.pay_time <= ? ");
+                buffer.append(" AND a.pay_time <= ? ");
 
                 list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
             }
-        }
-        if (!QwyUtil.isNullAndEmpty(type) && type.equals("1")) {
-            String[] time = QwyUtil.splitTime(insertTime);
-            buffer.append(" AND u.insert_time >= ? ");
-
-            list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-            buffer.append(" AND u.insert_time <= ? ");
-
-            list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
-        }
-
-        if (!QwyUtil.isNullAndEmpty(productId)) {
-            buffer.append(" AND p.id = ? ");
-
-            list.add(productId);
         }
         if (!QwyUtil.isNullAndEmpty(productTitle)) {
             buffer.append(" AND p.title like '%" + productTitle + "%' ");
         }
 
-        buffer.append("GROUP BY i.users_id,i.pay_time  ORDER BY i.pay_time DESC  ");
+
         StringBuffer bufferCount = new StringBuffer();
         bufferCount.append(" SELECT COUNT(*)  ");
         bufferCount.append(" FROM (");
@@ -131,11 +115,14 @@ public class InvestorsBean {
                     investors.setUsername(DESEncrypt.jieMiUsername(object[0]+""));
                     investors.setRealname(object[1]+"");
                     investors.setRegistChannel(object[2]+"");
-                     if(object[3].toString().equals(object[4].toString())){
-                         investors.setIsFirstInvt("是");
-                     }else {
-                         investors.setIsFirstInvt("否");
-                     }
+                    if(!QwyUtil.isNullAndEmpty(object[3]) && !QwyUtil.isNullAndEmpty(object[3])){
+                        if(object[3].toString().equals(object[4].toString())){
+                            investors.setIsFirstInvt("是");
+                        }else {
+                            investors.setIsFirstInvt("否");
+                        }
+                    }
+
                      investors.setTitle(object[5]+"");
                      investors.setTits(!QwyUtil.isNullAndEmpty(object[6])? Integer.valueOf(object[6] + "") : 0);
                      investors.setLcqx(!QwyUtil.isNullAndEmpty(object[7])? Integer.valueOf(object[7] + "") : 0);
@@ -160,11 +147,23 @@ public class InvestorsBean {
                     investors.setInMoney(!QwyUtil.isNullAndEmpty(object[11]) ? Double.valueOf(object[11] + "") : 0.0);
                     investors.setExpectEarnings(!QwyUtil.isNullAndEmpty(object[12]) ? Double.valueOf(object[12] + "") : 0.0);
                     investors.setCoupon(!QwyUtil.isNullAndEmpty(object[13]) ?  Double.valueOf(object[13] + "") : 0.0);
-                    if("1".equals(object[17]) || "0".equals(object[17]) ){
-                        investors.setInvestSource(!QwyUtil.isNullAndEmpty(object[14])? object[14].toString() : null);
-                    }else if ("3".equals(object[17])) {
-                        investors.setRedPackageSource(!QwyUtil.isNullAndEmpty(object[14])? object[14].toString() : null);
+                    if (!QwyUtil.isNullAndEmpty(object[13])) {
+                        Double coupon= Double.valueOf(object[13] + "");
+                        if(coupon>0){
+                            if("1".equals(object[17]) || "0".equals(object[17]) ){
+                                investors.setInvestSource(!QwyUtil.isNullAndEmpty(object[14])? object[14].toString() : null);
+                            }
+                        }
                     }
+                    if(!QwyUtil.isNullAndEmpty(object[16])){
+                        Double hongbao= Double.valueOf(object[13] + "");
+                        if(hongbao>0){
+                            if("3".equals(object[17])) {
+                                investors.setRedPackageSource(!QwyUtil.isNullAndEmpty(object[14])? object[14].toString() : null);
+                            }
+                        }
+                    }
+
                     investors.setCouponShouyi(!QwyUtil.isNullAndEmpty(object[15]) ? Double.valueOf(object[15] + "") : 0.0);
                     investors.setHongbao(!QwyUtil.isNullAndEmpty(object[16]) ? Double.valueOf(object[16] + "") : 0.0);
                     investors.setAnnualEarnings(!QwyUtil.isNullAndEmpty(object[18]) ? Double.valueOf(object[18] + "") : 0.0);

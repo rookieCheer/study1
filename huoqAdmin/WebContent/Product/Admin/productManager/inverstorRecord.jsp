@@ -43,19 +43,18 @@
     <div class="main" align="center">
         <h1 style="text-align: center;">投资记录</h1>
         <div id="div_condition" style="text-align: center;">
-            <label>用户名:<input type="text" name="name" id="name"
-                              value="${name}" maxlength="11"> <label>产品名称:<input
-                    type="text" name="productTitle" id="productTitle"
-                    value="${productTitle}"> <span>投资时间:</span> <input
-                    id="insertTime" name="insertTime" type="text"
-                    value="${insertTime}">
-                <input type="button" value="search" id="frm" onclick="Byname()"></label>&nbsp;&nbsp;
-                <input type="button" value="导出报表" onclick="ireportDo()"> <label>
-                    <input type="radio" value="all" name="status" checked="checked">全部</label>&nbsp;&nbsp;
-                <label><input type="radio" value="0" name="status">待付款</label>&nbsp;&nbsp;
-                <label><input type="radio" value="1" name="status">已付款</label>&nbsp;&nbsp;
-                <label><input type="radio" value="2" name="status">结算中</label>&nbsp;&nbsp;
-                <label><input type="radio" value="3" name="status">已结算</label>&nbsp;&nbsp;
+            <label>用户名:<input type="text" name="name" id="name" value="${name}" maxlength="11"></label>
+            <label>产品名称:<input type="text" name="productTitle" id="productTitle" value="${productTitle}"></label>
+            <label>
+                <span>投资时间:</span>
+                <input id="insertTime" name="insertTime" type="text" value="${insertTime}"></label>
+            <label><input type="button" value="search" id="frm" onclick="Byname()"></label>
+            <label><input type="button" value="导出报表" onclick="ireportDo()">
+                <label><input type="radio" value="all" name="status" checked="checked">全部</label>
+                <label><input type="radio" value="0" name="status">待付款</label>
+                <label><input type="radio" value="1" name="status">已付款</label>
+                <label><input type="radio" value="2" name="status">结算中</label>
+                <label><input type="radio" value="3" name="status">已结算</label>
                 <input type="hidden" name="productId" id="productId" value="${productId}">
         </div>
 
@@ -141,24 +140,11 @@
 </div>
 <script type="text/javascript">
     function ireportDo() {
-        var interval = $("#insertTime").val();
-        if (interval == null || interval == '' || interval.length == 0) {
-            alert("请选择要导出报表日期！");
-            return false;
+        var url = '${pageContext.request.contextPath}/Product/Admin/investors!iportTable.action?name=' + $("#name").val() + "&status=" + $('input[name="status"]:checked').val() + "&insertTime=" + $('#insertTime').val();
+        var productTitle = $("#productTitle").val();
+        if (productTitle != '' && productTitle != null) {
+            url += "&productTitle=" + productTitle;
         }
-        if (interval.indexOf("-") != -1) {
-            var startDate = interval.split("-")[0];
-            var endDate = interval.split("-")[1];
-            var startTime = new Date(Date.parse(startDate.replace(/-/g, "/"))).getTime();
-            var endTime = new Date(Date.parse(endDate.replace(/-/g, "/"))).getTime();
-            var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-            if (31 - dates <= 0) {
-                alert("请选择日期间隔为31天的数据导出！")
-                return false;
-            }
-            //alert(dates);
-        }
-        var url = '${pageContext.request.contextPath}/Product/Admin/investors!iportTable.action?name=' + $("#name").val() + "&status=" + $('input[name="status"]:checked').val() + "&insertTime=" + $('#insertTime').val() + "&productTitle=" + $('#productTitle').val();
         var my = art.dialog({
             title: '提示',
             content: document.getElementById("psi_load"),
@@ -184,7 +170,7 @@
     }
 
     $("#div_condition input[name='status']").click(function () {
-        window.location.href = "${pageContext.request.contextPath}/Product/Admin/investors!findInvertors.action?name=" + $("#name").val() + "&status=" + $('input[name="status"]:checked').val() + "&insertTime=" + $('#insertTime').val() + "&productId=" + $('#productId').val();
+        window.location.href = "${pageContext.request.contextPath}/Product/Admin/investors!findInvertors.action?name=" + $("#name").val() + "&status=" + $('input[name="status"]:checked').val() + "&insertTime=" + $('#insertTime').val();
     });
 
     $("#div_condition input[name='status']").each(function () {
