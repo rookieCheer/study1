@@ -581,9 +581,10 @@ public class RegisterUserBean {
 			sql.append(" WHERE province is  null ");
 			sql.append(" OR province = '' ");
 			sql.append(" OR province = 'null' ");
-//			sql.append(" OR city is  null ");
-//			sql.append(" OR city = '' ");
-//			sql.append(" OR city = 'null' ");
+			sql.append(" OR province = '未知' ");
+			sql.append(" OR city is  null ");
+			sql.append(" OR city = '' ");
+			sql.append(" OR city = '未知' ");
 //			sql.append(" OR cardType is  null ");
 //			sql.append(" OR cardType = '' ");
 //			sql.append(" OR cardType = 'null' ");
@@ -612,14 +613,26 @@ public class RegisterUserBean {
 						if(map.get("province").equals("北京")){
 							users.setCity("北京");
 						}
+						if(map.get("city").equals("北京")){
+							users.setProvince("北京");
+						}
 						if(map.get("province").equals("天津")){
 							users.setCity("天津");
+						}
+						if(map.get("city").equals("天津")){
+							users.setProvince("天津");
 						}
 						if(map.get("province").equals("上海")){
 							users.setCity("上海");
 						}
+						if(map.get("city").equals("上海")){
+							users.setProvince("上海");
+						}
 						if(map.get("province").equals("重庆")){
 							users.setCity("重庆");
+						}
+						if(map.get("city").equals("重庆")){
+							users.setProvince("重庆");
 						}
 					}
 				} else {
