@@ -545,15 +545,36 @@ public class UserInfoBean {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public PageUtil<Region> loadCity(String province, PageUtil pageUtil) throws Exception {
+    public PageUtil<Region> loadCity(String province, PageUtil pageUtil,String insertTime) throws Exception {
         try {
             List<Region> regionList = new ArrayList<Region>();
-            String hql = "select city,COUNT(city) from users where province = '" + province + "' GROUP BY city HAVING city IS NOT NULL ORDER BY COUNT(city) DESC ";
+            List<Object> list = new ArrayList<>();
+            StringBuffer hql = new StringBuffer();
+            hql.append("select city,COUNT(city) from users where 1 = 1 ");
+            if(!QwyUtil.isNullAndEmpty(province)){
+                hql.append(" and province = ? ");
+                list.add(province);
+            }
+            if (!QwyUtil.isNullAndEmpty(insertTime)) {
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    hql.append(" AND insert_time >= ? ");
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    hql.append(" AND insert_time <= ? ");
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+                } else {
+                    hql.append(" AND insert_time >= ? ");
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                    hql.append(" AND insert_time <= ? ");
+                    list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+                }
+            }
+            hql.append(" GROUP BY city HAVING city IS NOT NULL ORDER BY COUNT(city) DESC");
             StringBuffer buffer = new StringBuffer();
             buffer.append("  SELECT COUNT(t.city) FROM (");
             buffer.append(hql);
             buffer.append(") t ");
-            PageUtil<Object[]> page = dao.getBySqlAndSqlCount(pageUtil, hql, buffer.toString(), null);
+            PageUtil<Object[]> page = dao.getBySqlAndSqlCount(pageUtil, hql.toString(), buffer.toString(), list.toArray());
             for (int i = 0; i < page.getList().size(); i++) {
                 Object[] objects = page.getList().get(i);
                 Region region = new Region();
