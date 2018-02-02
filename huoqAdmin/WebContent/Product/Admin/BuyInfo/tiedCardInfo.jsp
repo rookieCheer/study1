@@ -56,37 +56,7 @@
 		window.location.href = url;
 	}
 
-	function exportExcel() {
-		var insertTime = $("#insertTime").val();
-		var phone = $("#phone").val();
-
-		var form = $("<form>");
-		form.attr('target', 'iframe');
-		form.attr('method', 'post');
-		form.attr('action', 'userBuy!exportExcelTiedCardInfoList.action');
-		var input1 = $('<input>');
-		input1.attr('type', 'hidden');
-		input1.attr('name', 'insertTime');
-		input1.attr('value', insertTime);
-
-		var input2 = $('<input>');
-		input2.attr('type', 'hidden');
-		input2.attr('name', 'phone');
-		input2.attr('value', phone);
-
-
-		var iframe = $("<iframe>")
-		iframe.attr('id', 'iframe');
-		iframe.attr('name', 'iframe');
-		iframe.attr('src', 'about:blank');
-		iframe.attr('style', 'display:none;');
-		$('body').append(iframe);
-		$('body').append(form);
-		form.append(input1);
-		form.append(input2);
-
-		form.submit();
-	}
+	
 	function isInteger(obj) {
 		if (!/^\d+$/.test(obj)) {
 			return false;
@@ -106,6 +76,7 @@
 				id="phone" name="phone" type="text" value="${phone}"> <a
 				class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
 			<input type="button" value="导出报表" onclick="exportExcel()">
+			<input type="hidden" id="currentPage" value="${pageUtil.currentPage}">
 			<table border="1" width="80%">
 				<tr>
 					<td>编号</td>
@@ -175,7 +146,42 @@
 				true);
 			$("#level option[value='${level}']").attr("selected", true);
 		});
-	
+		function exportExcel() {
+	        var insertTime = $("#insertTime").val();
+	        var phone = $("#phone").val();
+            var currentPage=$("#currentPage").val();
+	        var form = $("<form>");
+	        form.attr('target', 'iframe');
+	        form.attr('method', 'post');
+	        form.attr('action', 'userBuy!exportExcelTiedCardInfoList.action');
+	        var input1 = $('<input>');
+	        input1.attr('type', 'hidden');
+	        input1.attr('name', 'insertTime');
+	        input1.attr('value', insertTime);
+
+	        var input2 = $('<input>');
+	        input2.attr('type', 'hidden');
+	        input2.attr('name', 'phone');
+	        input2.attr('value', phone);
+	        
+	        var input3 = $('<input>');
+            input3.attr('type', 'hidden');
+            input3.attr('name', 'currentPage');
+            input3.attr('value', currentPage);
+
+
+	        var iframe = $("<iframe>")
+	        iframe.attr('id', 'iframe');
+	        iframe.attr('name', 'iframe');
+	        iframe.attr('src', 'about:blank');
+	        iframe.attr('style', 'display:none;');
+	        $('body').append(iframe);
+	        $('body').append(form);
+	        form.append(input1);
+	        form.append(input2);
+	        form.append(input3);
+	        form.submit();
+	    }
 	
 		function goqueryProduct() {
 			var pageNum = $("#goPage").val();
