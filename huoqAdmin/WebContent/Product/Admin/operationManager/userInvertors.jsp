@@ -68,10 +68,10 @@
 			<td><fmt:formatNumber value="${item.buyInMoney}" pattern="#,##0.##"/></td>
 			<td><fmt:formatNumber value="${item.coinPurseMoney}" pattern="#,##0.##"/></td>
 			<td><fmt:formatNumber value="${item.leftMoney}" pattern="#,##0.##"/></td>
-			<td><fmt:formatNumber value="${item.coupon * 0.01}" pattern="#,##0.##"/></td>
-			<td><fmt:formatNumber value="${item.hongbao * 0.01}" pattern="#,##0.##"/></td>
+			<td><fmt:formatNumber value="${item.coupon}" pattern="#,##0.##"/></td>
+			<td><fmt:formatNumber value="${item.hongbao}" pattern="#,##0.##"/></td>
 			<td>${item.friendNumber}</td>
-			<td>${item.friendMoney}</td>
+			<td><fmt:formatNumber value="${item.friendMoney}" pattern="#,##0.##"/></td>
 		</tr>
 		</c:forEach>
 		</table>

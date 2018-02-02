@@ -396,15 +396,15 @@ public class InvestorsBean {
                 plat.setInsertTime(!QwyUtil.isNullAndEmpty(insertTime) ? insertTime : null);// 注册时间
                 plat.setBandCardTime(!QwyUtil.isNullAndEmpty(bandCardTime) ? bandCardTime : null);// 绑卡时间
                 plat.setFristBuyTime(!QwyUtil.isNullAndEmpty(fristBuyTime) ? fristBuyTime : null);// 首投时间
-                plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? object[6] + "" : "0");// 投资总额
-                plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ? Double.valueOf(object[7]+"")/100 + "" : "0");// 现存资金
-                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? Double.valueOf(object[8]+"") + "" : "0");// 在贷金额
-                plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? Double.valueOf(object[9]+"") + "" : "0");// 零钱罐金额
-                plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? Double.valueOf(object[10]+"") + "" : "0");// 账户余额
-                plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");// 投资券金额
+                plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? QwyUtil.jieQuFa(Double.valueOf(object[6]+""),2) + "" : "0");// 投资总额
+                plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ?  QwyUtil.jieQuFa(Double.valueOf(object[7]+"")/100,2)  + "" : "0");// 现存资金
+                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? QwyUtil.jieQuFa(Double.valueOf(object[8]+"")/100,2) + "" : "0");// 在贷金额
+                plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? QwyUtil.jieQuFa(Double.valueOf(object[9]+"")/100,2) + "" : "0");// 零钱罐金额
+                plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? QwyUtil.jieQuFa( Double.valueOf(object[10]+"")/100,2) + "" : "0");// 账户余额
+                plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ?  QwyUtil.jieQuFa(Double.valueOf(object[11] + "")/100,2)+"" : "0");// 投资券金额
                 plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : "0");// 邀请好友人数
-                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? QwyUtil.jieQuFa(Double.valueOf(object[13] + ""),2)+"" : "0");// 邀请好友人数
-                plat.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? QwyUtil.jieQuFa(Double.valueOf(object[14] + ""),2)+"" : "0");// 红包金额
+                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? QwyUtil.jieQuFa(Double.valueOf(object[13] + "")/100,2)+"" : "0");// 邀请好友人数
+                plat.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? QwyUtil.jieQuFa(Double.valueOf(object[14] + "")/100,2)+"" : "0");// 红包金额
                 platInverstors.add(plat);
             }
         }
@@ -424,10 +424,10 @@ public class InvestorsBean {
             buff.append("LEFT JOIN account ac ON ac.users_id = u.id ");
             buff.append("LEFT JOIN (SELECT MIN(i.insert_time) insert_time,i.users_id ");
             buff.append("FROM investors i  GROUP BY i.`users_id` )zc ON zc.users_id = u.id ");
-            buff.append("LEFT JOIN (SELECT i.users_id,SUM(i.in_money)/100 all_money ");
+            buff.append("LEFT JOIN (SELECT i.users_id,SUM(i.in_money) all_money ");
             buff.append("FROM investors i WHERE investor_status ='1' GROUP BY i.`users_id` )c ON c.users_id = u.id ");
             buff.append("LEFT JOIN (SELECT in_money,users_id FROM coin_purse cp )lqg ON lqg.users_id = u.id ");
-            buff.append("LEFT JOIN (SELECT COUNT(be_invited_id) num,invite_id,SUM(ui.total_money)/100 money FROM invite inv ");
+            buff.append("LEFT JOIN (SELECT COUNT(be_invited_id) num,invite_id,SUM(ui.total_money) money FROM invite inv ");
             buff.append("LEFT JOIN users_info ui ON ui.`users_id` = inv.be_invited_id ");
             buff.append("GROUP BY invite_id)inv ON inv.invite_id = u.id ");
             buff.append("WHERE investor_status IN ('1', '2', '3') ");
