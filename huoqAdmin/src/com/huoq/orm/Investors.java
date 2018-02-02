@@ -67,6 +67,13 @@ public class Investors implements java.io.Serializable {
 	private Date sysj;// 收益时间;
 	private Double tzdiff;//投资偏差
 	private String counpId;//理财券id
+	private String title;
+	private String realname;// 姓名;
+	private String registChannel;//渠道
+	private Integer lcqx;
+	private Long  tzqx;
+	private Double finalEarnings;//最终年化收益
+	private Integer tits;// 投资天数
 	/**
 	 * 红包来源
 	 */
@@ -79,14 +86,65 @@ public class Investors implements java.io.Serializable {
 	 * 是否首投
 	 * 
 	 */
-	private boolean isFirstInvt;
+	private String isFirstInvt;
 
-	
-	
-	
-	
-    
-    public String getRedPackageSource() {
+	public Integer getTits() {
+		return tits;
+	}
+
+	public void setTits(Integer tits) {
+		this.tits = tits;
+	}
+
+	public Double getFinalEarnings() {
+		return finalEarnings;
+	}
+
+	public void setFinalEarnings(Double finalEarnings) {
+		this.finalEarnings = finalEarnings;
+	}
+
+	public void setLcqx(Integer lcqx) {
+		this.lcqx = lcqx;
+	}
+
+	public Long  getTzqx() {
+		return tzqx;
+	}
+
+	public void setTzqx(Long tzqx) {
+		this.tzqx = tzqx;
+	}
+
+	public String getRegistChannel() {
+		return registChannel;
+	}
+
+	public void setRegistChannel(String registChannel) {
+		this.registChannel = registChannel;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setTzts(Integer tzts) {
+		this.tzts = tzts;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	public String getRedPackageSource() {
         return redPackageSource;
     }
 
@@ -109,16 +167,15 @@ public class Investors implements java.io.Serializable {
     }
 
 
-    public boolean getIsFirstInvt() {
-        return isFirstInvt;
-    }
+	public String getIsFirstInvt() {
+		return isFirstInvt;
+	}
 
-    
-    public void setIsFirstInvt(boolean isFirstInvt) {
-        this.isFirstInvt = isFirstInvt;
-    }
+	public void setIsFirstInvt(String isFirstInvt) {
+		this.isFirstInvt = isFirstInvt;
+	}
 
-    public Date getSysj() {
+	public Date getSysj() {
 		return sysj;
 	}
 
@@ -229,6 +286,8 @@ public class Investors implements java.io.Serializable {
 	public void setUsers(Users users) {
 		this.users = users;
 	}
+
+
 
 	/** default constructor */
 	public Investors() {
@@ -423,6 +482,7 @@ public class Investors implements java.io.Serializable {
 		return tzzt;
 	}
 
+
 	public Date getFinishTime() {
 		return finishTime;
 	}
@@ -527,4 +587,11 @@ public class Investors implements java.io.Serializable {
 		this.apiVersion = apiVersion;
 	}
 
+	public void setTzzt(String tzzt) {
+		this.tzzt = tzzt;
+	}
+
+	public Integer getLcqx() {
+		return lcqx;
+	}
 }
