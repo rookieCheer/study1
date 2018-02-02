@@ -8,12 +8,21 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>提现情况统计表</title>
-<link href="${pageContext.request.contextPath}/Product/Admin/css/public.css" rel="stylesheet" type="text/css" />
-<link href="${pageContext.request.contextPath}/Product/Admin/css/product_fabu_history.css" rel="stylesheet" type="text/css" />
-<script src="${pageContext.request.contextPath}/Product/Admin/js/jquery-1.9.1.min.js"></script>
-<script src="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.standalone.js"></script>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.css" type="text/css">
-<script src="${pageContext.request.contextPath}/js/artDialog4.1.7/jquery.artDialog.js?skin=blue"></script>
+<link
+	href="${pageContext.request.contextPath}/Product/Admin/css/public.css"
+	rel="stylesheet" type="text/css" />
+<link
+	href="${pageContext.request.contextPath}/Product/Admin/css/product_fabu_history.css"
+	rel="stylesheet" type="text/css" />
+<script
+	src="${pageContext.request.contextPath}/Product/Admin/js/jquery-1.9.1.min.js"></script>
+<script
+	src="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.standalone.js"></script>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/Product/Admin/plugins\kalendae\build\kalendae.css"
+	type="text/css">
+<script
+	src="${pageContext.request.contextPath}/js/artDialog4.1.7/jquery.artDialog.js?skin=blue"></script>
 <style type="text/css">
 .sereach {
 	width: 200px;
@@ -36,49 +45,56 @@
 }
 </style>
 <script type="text/javascript">
-	
-	
+
+
 	/**
 	excel导出
 	*/
 	function exportExcel() {
-        
-        var insertTime=$("#insertTime").val();
-        var phone=$("#phone").val();
-        
-        var form = $("<form>");
-     form.attr('target', 'iframe');
-     form.attr('method', 'post');
-     form.attr('action', 'userBuy!exportExcelCashTableList.action');
-     var input1 = $('<input>');
-     input1.attr('type', 'hidden');
-     input1.attr('name', 'insertTime');
-     input1.attr('value', insertTime);
+		var insertTime = $("#insertTime").val();
+		var phone = $("#phone").val();
 
-     var input2 = $('<input>');
-     input2.attr('type', 'hidden');
-     input2.attr('name', 'phone');
-     input2.attr('value', phone);
-    
+		var form = $("<form>");
+		form.attr('target', 'iframe');
+		form.attr('method', 'post');
+		form.attr('action', 'userBuy!exportExcelCashTableList.action');
+		var input1 = $('<input>');
+		input1.attr('type', 'hidden');
+		input1.attr('name', 'insertTime');
+		input1.attr('value', insertTime);
 
-     var iframe = $("<iframe>")
-     iframe.attr('id', 'iframe');
-     iframe.attr('name', 'iframe');
-     iframe.attr('src', 'about:blank');
-     iframe.attr('style', 'display:none;');
-     $('body').append(iframe);
-     $('body').append(form);
-     form.append(input1);
-     form.append(input2);
-    
-     form.submit();
- }
-	
-	function queryProduct(){
-		var insertTime=$("#insertTime").val();
-		var phone=$("#phone").val();
-		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!outCashTable.action?insertTime="+insertTime+"&phone="+phone;
-		window.location.href=url;
+		var input2 = $('<input>');
+		input2.attr('type', 'hidden');
+		input2.attr('name', 'phone');
+		input2.attr('value', phone);
+
+
+		var iframe = $("<iframe>")
+		iframe.attr('id', 'iframe');
+		iframe.attr('name', 'iframe');
+		iframe.attr('src', 'about:blank');
+		iframe.attr('style', 'display:none;');
+		$('body').append(iframe);
+		$('body').append(form);
+		form.append(input1);
+		form.append(input2);
+
+		form.submit();
+	}
+
+	function queryProduct() {
+		var insertTime = $("#insertTime").val();
+		var phone = $("#phone").val();
+		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!outCashTable.action?insertTime=" + insertTime + "&phone=" + phone;
+		window.location.href = url;
+	}
+
+	function isInteger(obj) {
+		if (!/^\d+$/.test(obj)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 </script>
 </head>
@@ -87,36 +103,35 @@
 		<jsp:include page="/Product/Admin/common/head.jsp" />
 		<div class="main" align="center">
 			<h3>提现情况统计表</h3>
-			<span>提现审核时间:</span> 
-			<input id="insertTime" name="insertTime"type="text" value="${insertTime}">
-			<span>手机号:</span>
-			<input id="phone" name="phone" type="text" value="${phone}">
-			<a class="sereach" href="javascript:queryProduct();" id="sereach">查询</a> 
+			<span>提现审核时间:</span> <input id="insertTime" name="insertTime"
+				type="text" value="${insertTime}"> <span>手机号:</span> <input
+				id="phone" name="phone" type="text" value="${phone}"> <a
+				class="sereach" href="javascript:queryProduct();" id="sereach">查询</a>
 			<input type="button" value="导出报表" onclick="exportExcel()">
 			<table border="1" width="80%">
+				<tr>
+					<td>提现日期</td>
+					<td>提现金额(元)</td>
+					<td>客户姓名</td>
+					<td>手机</td>
+					<td>好友</td>
+					<td>所属省份</td>
+					<td>所属城市</td>
+					<td>性别</td>
+				</tr>
+				<c:forEach items="${list}" var="mylist">
 					<tr>
-						<td>提现日期</td>
-						<td>提现金额(元)</td>
-						<td>客户姓名</td>
-						<td>手机</td>
-						<td>好友</td>
-						<td>所属省份</td>
-						<td>所属城市</td>
-						<td>性别</td>
+						<td>${mylist.outCashTime}</td>
+						<td>${mylist.outMoney}</td>
+						<td>${mylist.realname}</td>
+						<td>${mylist.phone}</td>
+						<td>${mylist.category}</td>
+						<td>${mylist.province}</td>
+						<td>${mylist.city}</td>
+						<td>${mylist.gender}</td>
 					</tr>
-					<c:forEach items="${list}" var="mylist">
-						<tr>
-							<td>${mylist.outCashTime}</td>
-							<td>${mylist.outMoney}</td>
-							<td>${mylist.realname}</td>
-							<td>${mylist.phone}</td>
-							<td>${mylist.category}</td>
-							<td>${mylist.province}</td>
-							<td>${mylist.city}</td>
-							<td>${mylist.gender}</td>
-						</tr>
-					</c:forEach>
-				</table>
+				</c:forEach>
+			</table>
 			<c:choose>
 				<c:when
 					test="${pageUtil.list ne '[]' &&  pageUtil.list ne '' && pageUtil.list ne null}"><jsp:include
@@ -137,15 +152,43 @@
 	<script type="text/javascript">
 		var k4 = new Kalendae.Input("insertTime", {
 			attachTo : document.body,
-			months : 2,//多少个月显示出来,即看到多少个日历
+			months : 2, //多少个月显示出来,即看到多少个日历
 			mode : 'range'
 		/* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
 		});
 		$(function() {
 			$("#isbindbank option[value='${isbindbank}']").attr("selected",
-					true);
+				true);
 			$("#level option[value='${level}']").attr("selected", true);
 		});
+		function goqueryProduct() {
+			var pageNum = $("#goPage").val();
+			if (isInteger(pageNum)) {
+				pageNum = parseInt(pageNum);
+				var allNum = $("#allNum").html();
+				allNum = allNum.substr(0, allNum.length - 1); //去除最后一个
+				allNum = allNum.substr(1, allNum.length); //去除第一个字符
+	
+				debugger;
+				allNum = parseInt(allNum);
+				debugger
+				if (pageNum < 0) {
+					alert("请输入1-" + allNum + "之间的整数");
+					return false;
+				} else if (pageNum > allNum) {
+					alert("请输入1-" + allNum + "之间的整数");
+					return false;
+				}
+				var insertTime = $("#insertTime").val();
+				var phone = $("#phone").val();
+				var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!outCashTable.action?insertTime=" + insertTime + "&phone=" + phone + "&currentPage=" + pageNum;
+				window.location.href = url;
+			} else {
+				alert("页码不是整数,pageNum:" + pageNum);
+				return false;
+			}
+	
+		}
 	</script>
 </body>
 </html>

@@ -74,6 +74,13 @@ function exportExcel() {
 		var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!sumOperation.action?insertTime=" + insertTime;
 		window.location.href = url;
 	}
+	function isInteger(obj) {
+        if(!/^\d+$/.test(obj)){  
+               return false; 
+            }else{
+                return true;
+        }
+    }
 </script>
 </head>
 <body>
@@ -157,6 +164,34 @@ function exportExcel() {
 				true);
 			$("#level option[value='${level}']").attr("selected", true);
 		});
+		
+		
+		function goqueryProduct(){
+            var pageNum =$("#goPage").val();
+            if(isInteger(pageNum)){
+                pageNum =parseInt(pageNum);
+                var allNum =$("#allNum").html();
+                allNum = allNum.substr(0,allNum.length-1);//去除最后一个
+                allNum = allNum.substr(1,allNum.length);//去除第一个字符
+                allNum=parseInt(allNum);
+               
+                if(pageNum<0  ){
+                    alert("请输入1-"+allNum+"之间的整数");
+                    return false;
+                }else if(pageNum>allNum){
+                    alert("请输入1-"+allNum+"之间的整数");
+                    return false;
+                }
+                var insertTime = $("#insertTime").val();
+	
+				var url = "${pageContext.request.contextPath}/Product/buyInfo/userBuy!sumOperation.action?insertTime=" + insertTime + "&currentPage=" + pageNum;
+				window.location.href = url;
+            }else{
+                alert("页码不是整数,pageNum:"+pageNum);
+                return false;
+            }
+            
+        }
 	</script>
 </body>
 </html>

@@ -2,9 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
-<script type="text/javascript">
-	
-</script>
+
 <c:if test="${pageUtil.list ne null && pageUtil.list ne '' &&  pageUtil.list ne '[]'}">
 <c:if test="${fn:contains(pageUtil.pageUrl,'?') }">
 <div class="pageindex2">
@@ -26,7 +24,7 @@
 			<a href="${pageUtil.pageUrl}&currentPage=${pageUtil.currentPage+1}&pageSize=${pageUtil.pageSize}${anchor}">下一页</a>
 		</c:if>
 		<a href="${pageUtil.pageUrl}&currentPage=${pageUtil.pageCount}&pageSize=${pageUtil.pageSize}${anchor}">末页</a>&nbsp;&nbsp;&nbsp;&nbsp;
-		<span>共${pageUtil.pageCount}页</span>
+		<span id="allNum">共${pageUtil.pageCount}页</span>
 </div>
 </c:if>
 
@@ -56,3 +54,7 @@
 </c:if>
 
 </c:if>
+
+<script type="text/javascript">
+    
+</script>
