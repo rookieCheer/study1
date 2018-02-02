@@ -1,36 +1,31 @@
 package com.huoq.admin.product.action;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-
-import com.huoq.admin.product.bean.InvestorsBean;
-import com.huoq.orm.*;
-import com.huoq.util.ExcelUtil;
-
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.struts2.config.Namespace;
-import org.apache.struts2.config.ParentPackage;
-import org.apache.struts2.config.Result;
-import org.apache.struts2.config.Results;
-
 import com.huoq.account.bean.UserInfoBean;
+import com.huoq.admin.product.bean.InvestorsBean;
 import com.huoq.admin.product.bean.UsersAdminBean;
 import com.huoq.common.action.BaseAction;
 import com.huoq.common.util.DESEncrypt;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.login.bean.RegisterUserBean;
+import com.huoq.orm.*;
+import com.huoq.util.ExcelUtil;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.struts2.config.Namespace;
+import org.apache.struts2.config.ParentPackage;
+import org.apache.struts2.config.Result;
+import org.apache.struts2.config.Results;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * 后台管理--注册人数;
@@ -819,7 +814,7 @@ public class UserStatAction extends BaseAction {
             HttpServletRequest request = getRequest();
             String begin = request.getParameter("begin");
             String end = request.getParameter("end");
-            List<Age> bankList = bean.loadbank(begin, end);
+            List<Age> bankList = bean.loadbank(insertTime);
             request.setAttribute("list", bankList);
             request.setAttribute("begin", begin);
             request.setAttribute("end", end);
@@ -844,9 +839,8 @@ public class UserStatAction extends BaseAction {
 
         HttpServletRequest request = getRequest();
 
-        String begin = request.getParameter("begin");
-        String end = request.getParameter("end");
-        List<Age> bankList = bean.loadbank(begin, end);
+        String insertTime = request.getParameter("insertTime");
+        List<Age> bankList = bean.loadbank(insertTime);
         if (bankList != null && bankList.size() > 0) {
 
             String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
