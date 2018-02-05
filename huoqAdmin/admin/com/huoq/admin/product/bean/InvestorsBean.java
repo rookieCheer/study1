@@ -48,11 +48,11 @@ public class InvestorsBean {
         buffer.append(" c.type,c.note,i.coupon_shouyi,i.hongbao,i.annual_earnings,  ");
         buffer.append(" i.pay_time,i.start_time,i.clear_time,i.finish_time ");
         buffer.append(" FROM investors i ");
-        buffer.append(" LEFT JOIN product p ON i.product_id=p.id ");
-        buffer.append(" LEFT JOIN users_info us  ON i.users_id=us.users_id  ");
-        buffer.append(" LEFT JOIN users u  ON i.users_id=u.id  ");
-        buffer.append(" LEFT JOIN coupon c ON c.users_id=i.users_id  ");
-        buffer.append(" LEFT JOIN (SELECT v.pay_time ,v.users_id FROM investors v GROUP BY v.users_id ORDER BY v.pay_time ASC) t  ");
+        buffer.append(" JOIN product p ON i.product_id=p.id ");
+        buffer.append(" JOIN users_info us  ON i.users_id=us.users_id  ");
+        buffer.append(" JOIN users u  ON i.users_id=u.id  ");
+        buffer.append(" JOIN coupon c ON c.users_id=u.id  ");
+        buffer.append(" JOIN (SELECT v.pay_time ,v.users_id FROM investors v GROUP BY v.users_id ORDER BY v.pay_time ASC) t  ");
         buffer.append(" ON t.users_id = i.users_id  ");
         buffer.append(" GROUP BY i.users_id,i.pay_time  HAVING 1=1 ");
         if (!"all".equals(status)) {
@@ -152,7 +152,8 @@ public class InvestorsBean {
                         Double coupon = Double.valueOf(object[10] + "")*0.01;
                         if (coupon > 0) {
                             if ("1".equals(object[11]) || "0".equals(object[11])) {
-                                investors.setInvestSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12].toString() : null);
+
+                                investors.setInvestSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12]+"" : null);
                             }
                         }
                     }
@@ -160,12 +161,12 @@ public class InvestorsBean {
                             Double hongbao = Double.valueOf(object[14] + "");
                             if (hongbao > 0) {
                                 if ("3".equals(object[11])) {
-                                    investors.setRedPackageSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12].toString() : null);
+                                    investors.setRedPackageSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12]+"" : null);
                                 }
                             }
                         }
                     investors.setCouponShouyi(!QwyUtil.isNullAndEmpty(object[13]) ? Double.valueOf(object[13] + "")*0.01 : 0.0);
-                    investors.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? Double.valueOf(object[14] + "") : 0.0);
+                    investors.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? Double.valueOf(object[14] + "")*0.01 : 0.0);
                     investors.setAnnualEarnings(!QwyUtil.isNullAndEmpty(object[15]) ? Double.valueOf(object[15] + "") : 0.0);
                     if(!QwyUtil.isNullAndEmpty(object[9]) && !QwyUtil.isNullAndEmpty(object[13]) ){
                         Double expectEarnings= Double.valueOf(object[9]+"")*0.01;
