@@ -49,8 +49,6 @@ public class UpdateDateInfoAction extends BankAction {
                 // 管理员没有登录;
                 return "noLogin";
             }
-            // 加密所有为加密头条数据
-            //toutiaoBean.encryptUsername();
             // 查询所有user和头条数据去做对比如果为头条数据就修改数据类型为头条
             List<Users> user = dateInfoBean.findIOSUsers();// 查询出的用户都为头条IOS用户
             // 遍历查询出的user用户
@@ -63,14 +61,12 @@ public class UpdateDateInfoAction extends BankAction {
                     Long id = u.getId();
                     Users usersBuId = dateInfoBean.findUsersBuId(id);
                     // 获取改user的渠道信息改为头条
-                    String registChannel1 = usersBuId.getRegistChannel();
                     usersBuId.setRegistChannel("ttIOS");
                     // 修改渠道状态为噶广告渠道
                     usersBuId.setChannelType("2");
                     dateInfoBean.updateUsersBuyId(usersBuId);
                 }
             }
-
             //将所有的idfa码为空的用户设置为1267250937
             List<Long> users1 = dateInfoBean.findUsers();
             for(Long id:users1){
@@ -125,8 +121,6 @@ public class UpdateDateInfoAction extends BankAction {
                     dateInfoBean.updateUsersBuyId(usersBuId);
                 }
             }
-
-
             // 查询所有user和头条数据去做对比如果为头条数据就修改数据类型为头条(本来是修改custom的问题但是custom可能不是头条客户)
             List<Users> aduser = dateInfoBean.findAndroidUsers();// 查询出的用户都为头条IOS用户
             // 遍历查询出的user用户
@@ -177,20 +171,6 @@ public class UpdateDateInfoAction extends BankAction {
                     }
                 }
             }
-   /*         List<Activity> android = dateInfoBean.findAndroid();
-            for (Activity act :android) {
-                String id = act.getId();
-                Activity acc = dateInfoBean.findActivityBuId(id);
-                // String channel = acc.getChannel();
-                if (!QwyUtil.isNullAndEmpty(acc)) {
-                    if (!QwyUtil.isNullAndEmpty(acc.getChannel()) && acc.getChannel().contains("tt")) {
-                        acc.setChannel("oss");
-                        acc.setChannelType("1");
-                        dateInfoBean.updateActivityBuyId(acc);
-                    }
-                }
-            }
-*/
             List<Activity> havaChannelActivity = dateInfoBean.findHavaChannelActivity();
             // 遍历所有激活用户
             for (Activity ac : havaChannelActivity) {
@@ -206,8 +186,7 @@ public class UpdateDateInfoAction extends BankAction {
                     }
                 }
             }
-
-            List<Date> insertTime = dateInfoBean.findInsertTime();// 此方法暂时没用
+            List<Date> insertTime = dateInfoBean.findInsertTime();
             for (Date time : insertTime) {
                 updateQdtjThreadBean.updateQdtjByDate(time);
             }
@@ -215,8 +194,6 @@ public class UpdateDateInfoAction extends BankAction {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
-
 }

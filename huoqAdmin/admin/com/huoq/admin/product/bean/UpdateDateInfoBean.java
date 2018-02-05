@@ -60,7 +60,6 @@ public class UpdateDateInfoBean {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT t.id FROM `third_toutiao_userinfo_callback` ttuc LEFT JOIN");
         sql.append("(SELECT id,username FROM users WHERE regist_channel LIKE 'ttIOS%' ");
-        //sql.append("insert_time BETWEEN DATE_FORMAT('2017-12-27','%Y-%m-%d 00:00:00') AND DATE_FORMAT('2017-12-27','%Y-%m-%d 23:59:59') ");
         sql.append("GROUP BY `username`)t ON t.username = ttuc.username WHERE t.username = ttuc.username AND  ttuc.idfa = '00000000-0000-0000-0000-000000000000' ");
         List<BigInteger> users = indexDateInfoDao.LoadAllSql(sql.toString(), null);
         List<Long> list = new ArrayList<>();
@@ -135,7 +134,7 @@ public class UpdateDateInfoBean {
         sql.append("LEFT JOIN ( ");
         sql.append("SELECT ttuc.idfa idfa FROM third_toutiao_userinfo ttu ");
         sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON  ttu.idfa = ttuc.idfa WHERE ttu.os = 1  AND ttu.idfa = ttuc.idfa ");
-        sql.append("AND  ttuc.idfa != '00000000-0000-0000-0000-000000000000'  ");
+        sql.append("AND  ttuc.idfa != '00000000-0000-0000-0000-000000000000' ");
         sql.append("GROUP BY ttu.idfa )t ");
         sql.append("ON t.idfa = ac.imei WHERE t.idfa = ac.imei ");
         List<String> ac = indexDateInfoDao.LoadAllSql(sql.toString(), null);
@@ -149,7 +148,7 @@ public class UpdateDateInfoBean {
 
 
     /**
-     * 查询出所有激活用户(为头条IOS用户的并未渠道为ttIOS01或者为ttIOS02)
+     * 查询出所有激活用户(为头条IOS用户的并渠道为ttIOS01或者为ttIOS02)
      *
      * @return
      */

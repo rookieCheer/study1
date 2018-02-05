@@ -414,7 +414,6 @@ public class UpdateQdtjThreadBean {
 	 */
 	public void updateQdtjByDate(Date queryDate) throws Exception {
 		String date = QwyUtil.fmyyyyMMdd.format(queryDate);
-		//String date ="2017-12-12";
 		// 获取运营数据
 		List<Object[]> jhrsList = activityNum(date);
 		List<Object[]> registList = registNum(date);
@@ -426,8 +425,6 @@ public class UpdateQdtjThreadBean {
 		List<Object[]> scftlist = scftCount(date);
 		List<Object[]> lqglist = lqgCount(date);
 		Map<String, Qdtj> qdtjMap = new HashMap<String, Qdtj>();
-		
-		
 		// 渠道编号,渠道编码,渠道名称,零钱罐投资金额
 		if (!QwyUtil.isNullAndEmpty(lqglist)) {
 			for (Object[] obj : lqglist) {

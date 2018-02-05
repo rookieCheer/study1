@@ -65,7 +65,7 @@ public class BuyProductInfoBean {
 					list.add(DESEncrypt.jiaMiUsername(phone));
 				} 
 				sql.append(" )");
-		sql.append("  UNION  ");
+		sql.append("  UNION ALL ");
 		sql.append("(SELECT * FROM ( ");
 		sql.append(
 				"SELECT u.id , u.username username ,cpf.insert_time insterTime ,cpf.money ,"
