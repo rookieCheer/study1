@@ -69,22 +69,38 @@ public class OutCashBean {
 		if (!QwyUtil.isNullAndEmpty(list)) {
 			for (Object[] object : list) {
 				OutCash outCash = new OutCash();
-				try{
+				if(object[0]!=null){
+				 try{
 				    SimpleDateFormat sdf = new SimpleDateFormat( " yyyyMMdd " );
 	                String format = sdf.format(object[0]);
 	                outCash.setOutCashTime(format);
-				}catch(IllegalArgumentException e){
+				 }catch(IllegalArgumentException e){
 				    outCash.setOutCashTime(object[0]+"");
+				 }
 				}
-				
-				
-				outCash.setOutMoney(object[1]+"");
-				outCash.setRealname(object[2]+"");
-				outCash.setGender(object[3]+"");
-				outCash.setPhone(object[4]+"");
-				outCash.setCategory(object[5] + "");
-				outCash.setProvince(object[6] + "");
-				outCash.setCity(object[7] + "");
+				if(object[1] != null){
+				    outCash.setOutMoney(object[1]+"");
+				}
+				if(object[2] != null){
+				    outCash.setRealname(object[2]+"");
+                }
+				if(object[3] != null){
+				    outCash.setGender(object[3]+"");
+                }
+				if(object[4] != null){
+				    outCash.setPhone(object[4]+"");
+                }
+				if(object[5] != null){
+				    outCash.setCategory(object[5] + "");
+                }else{
+                    outCash.setCategory("客户");//没有设置成客户
+                }
+				if(object[6] != null){
+				    outCash.setProvince(object[6] + "");
+                }
+				if(object[7] != null){
+				    outCash.setCity(object[7] + "");
+                }
 				OutCashs.add(outCash);
 			}
 		}
