@@ -4,7 +4,7 @@ import com.huoq.admin.product.bean.RechargeBean;
 import com.huoq.common.action.BaseAction;
 import com.huoq.common.bean.*;
 import com.huoq.common.util.DESEncrypt;
-import com.huoq.common.util.ListUtils;
+
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.*;
@@ -16,7 +16,7 @@ import org.apache.struts2.config.Results;
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigInteger;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,14 +48,12 @@ public class UserBuyAction extends BaseAction {
     @Resource
     private PlatformBean               platformBean;      // allCapitalStock 平台资金存量
 
-    @Resource
-    private InviteBean                 invitBean;
+
 
     @Resource
     private RechargeBean               rechargeBean;
 
-    @Resource
-    private ToutiaoStatisticsTableBean toutiaoBean;
+
     private Integer                    currentPage = 1;
     private Integer                    pageSize    = 50;
     private String                     insertTime;
@@ -206,7 +204,6 @@ public class UserBuyAction extends BaseAction {
                 if (!QwyUtil.isNullAndEmpty(allCapitalStock)) {
                     // 首页资金存量等于昨日资金存量加今日存量增量
                     allCapitalStock = todayCapitalStock + allCapitalStock;
-                    
                 } else {
                     allCapitalStock = 0.0;
                     allCapitalStock = todayCapitalStock + allCapitalStock;
@@ -356,7 +353,6 @@ public class UserBuyAction extends BaseAction {
             List<BuyProductInfo> list = pageUtil.getList();
             if (list != null && list.size() > 0) {
                 deal(list);
-                //delNull(list);
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);
