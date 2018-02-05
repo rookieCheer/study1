@@ -39,9 +39,9 @@ public class UpdateDateInfoBean {
     public List<Users> findIOSUsers() {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT u.id,u.username,u.regist_channel FROM users u ");
-        sql.append("LEFT JOIN ( ");
+        sql.append(" JOIN ( ");
         sql.append("SELECT ttuc.username username FROM third_toutiao_userinfo ttu ");
-        sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON ttu.idfa = ttuc.idfa WHERE ttu.os = 1 AND ttu.idfa = ttuc.idfa ");
+        sql.append("JOIN third_toutiao_userinfo_callback ttuc ON ttu.idfa = ttuc.idfa WHERE ttu.os = 1 AND ttu.idfa = ttuc.idfa ");
         sql.append("AND ttuc.username != '' AND  ttuc.idfa != '00000000-0000-0000-0000-000000000000' ");
         sql.append("GROUP BY ttu.idfa )t ");
         sql.append("ON t.username = u.username WHERE t.username = u.username   ");
@@ -78,9 +78,9 @@ public class UpdateDateInfoBean {
     public List<Users> findHaveChannelIOSUsers() {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT u.id,u.username,t.channel FROM users u ");
-        sql.append("LEFT JOIN ( ");
+        sql.append("JOIN ( ");
         sql.append("SELECT ttuc.username username ,ttu.channel channel FROM third_toutiao_userinfo ttu ");
-        sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON ttu.idfa = ttuc.idfa WHERE ttu.os = 1 AND ttu.idfa = ttuc.idfa ");
+        sql.append(" JOIN third_toutiao_userinfo_callback ttuc ON ttu.idfa = ttuc.idfa WHERE ttu.os = 1 AND ttu.idfa = ttuc.idfa ");
         sql.append("AND ttuc.username != '' AND  ttuc.idfa != '00000000-0000-0000-0000-000000000000' ");
         sql.append("AND ttu.channel IN ('ttIOS01','ttIOS02') ");
         sql.append("GROUP BY ttu.idfa )t ");
@@ -98,9 +98,9 @@ public class UpdateDateInfoBean {
     public List<Users> findandroidUsers() {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT u.id,u.username,u.regist_channel FROM users u ");
-        sql.append("LEFT JOIN ( ");
+        sql.append("JOIN ( ");
         sql.append("SELECT ttuc.username username FROM third_toutiao_userinfo ttu ");
-        sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON ttu.imei = ttuc.imei WHERE ttu.os = 0 AND ttu.imei = ttuc.imei ");
+        sql.append("JOIN third_toutiao_userinfo_callback ttuc ON ttu.imei = ttuc.imei WHERE ttu.os = 0 AND ttu.imei = ttuc.imei ");
         sql.append("AND ttuc.username != ''  ");
         sql.append("GROUP BY ttu.imei )t ");
         sql.append("ON t.username = u.username WHERE t.username = u.username   ");
@@ -131,9 +131,9 @@ public class UpdateDateInfoBean {
         List<Activity> list = new ArrayList<>();
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ac.id FROM activity ac ");
-        sql.append("LEFT JOIN ( ");
+        sql.append(" JOIN ( ");
         sql.append("SELECT ttuc.idfa idfa FROM third_toutiao_userinfo ttu ");
-        sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON  ttu.idfa = ttuc.idfa WHERE ttu.os = 1  AND ttu.idfa = ttuc.idfa ");
+        sql.append(" JOIN third_toutiao_userinfo_callback ttuc ON  ttu.idfa = ttuc.idfa WHERE ttu.os = 1  AND ttu.idfa = ttuc.idfa ");
         sql.append("AND  ttuc.idfa != '00000000-0000-0000-0000-000000000000' ");
         sql.append("GROUP BY ttu.idfa )t ");
         sql.append("ON t.idfa = ac.imei WHERE t.idfa = ac.imei ");
@@ -156,9 +156,9 @@ public class UpdateDateInfoBean {
         List<Activity> list = new ArrayList<>();
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ac.id,t.channel FROM activity ac ");
-        sql.append("LEFT JOIN ( ");
+        sql.append("JOIN ( ");
         sql.append("SELECT ttuc.idfa idfa ,ttu.channel channel FROM third_toutiao_userinfo ttu ");
-        sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON  ttu.idfa = ttuc.idfa WHERE ttu.os = 1  AND ttu.idfa = ttuc.idfa ");
+        sql.append("JOIN third_toutiao_userinfo_callback ttuc ON  ttu.idfa = ttuc.idfa WHERE ttu.os = 1  AND ttu.idfa = ttuc.idfa ");
         sql.append("AND  ttuc.idfa != '00000000-0000-0000-0000-000000000000'  ");
         sql.append("AND ttu.channel IN ('ttIOS01','ttIOS02') ");
         sql.append("GROUP BY ttu.idfa )t ");
@@ -184,9 +184,9 @@ public class UpdateDateInfoBean {
         List<Activity> list = new ArrayList<>();
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT ac.id FROM activity ac ");
-        sql.append("LEFT JOIN ( ");
+        sql.append("JOIN ( ");
         sql.append("SELECT ttuc.imei imei FROM third_toutiao_userinfo ttu ");
-        sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON  ttu.imei = ttuc.imei WHERE ttu.os = 0  AND ttu.imei = ttuc.imei ");
+        sql.append("JOIN third_toutiao_userinfo_callback ttuc ON  ttu.imei = ttuc.imei WHERE ttu.os = 0  AND ttu.imei = ttuc.imei ");
         sql.append("GROUP BY ttu.imei )t ");
         sql.append("ON t.imei = ac.MD5_IMEI WHERE t.imei = ac.MD5_IMEI ");
         List<String> ac = indexDateInfoDao.LoadAllSql(sql.toString(), null);
@@ -207,7 +207,7 @@ public class UpdateDateInfoBean {
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT id FROM activity WHERE channel LIKE '%ttandriod%' ");
         sql.append("AND MD5_IMEI NOT IN (SELECT ttuc.imei MD5_IMEI FROM third_toutiao_userinfo ttu ");
-        sql.append("LEFT JOIN third_toutiao_userinfo_callback ttuc ON  ttu.imei = ttuc.imei WHERE ttu.os = 0  AND ttu.imei = ttuc.imei ");
+        sql.append("JOIN third_toutiao_userinfo_callback ttuc ON  ttu.imei = ttuc.imei WHERE ttu.os = 0  AND ttu.imei = ttuc.imei ");
         sql.append("GROUP BY ttu.imei) ");
         List<String> ac = indexDateInfoDao.LoadAllSql(sql.toString(), null);
         for (String id : ac) {

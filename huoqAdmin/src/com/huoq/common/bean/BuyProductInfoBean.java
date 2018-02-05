@@ -37,11 +37,11 @@ public class BuyProductInfoBean {
         sql.append("(SELECT * FROM ( ");
         sql.append("SELECT u.id , u.username username ,i.insert_time insterTime ,i.in_money ,p.title productname,DATE_FORMAT(p.finish_time,'%Y%m%d') ,");
         sql.append("DATEDIFF(p.finish_time,NOW()) ,us.real_name ,us.sex ,us.phone as phone,r.realname ,u.province ,u.city ");
-        sql.append("FROM  investors i LEFT JOIN product p ON i.product_id= p.id AND i.investor_status IN ('1','2','3') ");
-        sql.append("LEFT JOIN users_info us ON us.users_id  = i.users_id ");
-        sql.append("LEFT JOIN users u ON u.id = us.users_id ");
-        sql.append("LEFT JOIN (SELECT u.id id ,ui.real_name  realname FROM users u LEFT JOIN invite i ON i.be_invited_id = u.id ");
-        sql.append("LEFT JOIN users_info ui ON ui.users_id = i.invite_id) r ON u.id = r.id ) t WHERE 1=1 AND t.productname IS NOT NULL ");
+        sql.append("FROM  investors i  JOIN product p ON i.product_id= p.id AND i.investor_status IN ('1','2','3') ");
+        sql.append(" JOIN users_info us ON us.users_id  = i.users_id ");
+        sql.append(" JOIN users u ON u.id = us.users_id ");
+        sql.append(" JOIN (SELECT u.id id ,ui.real_name  realname FROM users u JOIN invite i ON i.be_invited_id = u.id ");
+        sql.append(" JOIN users_info ui ON ui.users_id = i.invite_id) r ON u.id = r.id ) t WHERE 1=1 AND t.productname IS NOT NULL ");
         // 充值时间
         if (!QwyUtil.isNullAndEmpty(insertTime)) {
             String[] time = QwyUtil.splitTime(insertTime);
@@ -72,10 +72,10 @@ public class BuyProductInfoBean {
                         + "cpf.TYPE productname, NOW() ,"
                         + "DATEDIFF(NOW(),NOW()) , us.real_name ,"
                         + "us.sex ,us.phone as phone,r.realname ,u.province ,u.city ");
-        sql.append("FROM users_info us LEFT JOIN users u ON u.id = us.users_id ");
-        sql.append("LEFT JOIN (SELECT u.id id ,ui.real_name  realname FROM users u LEFT JOIN invite i ON i.be_invited_id = u.id "
-                + "LEFT JOIN users_info ui ON ui.users_id = i.invite_id ) r ON u.id = r.id  ");
-        sql.append("LEFT JOIN coin_purse_funds_record cpf  ON cpf.users_id = u.id WHERE cpf.TYPE = 'to' ) a WHERE 1=1 ");
+        sql.append("FROM users_info us JOIN users u ON u.id = us.users_id ");
+        sql.append("JOIN (SELECT u.id id ,ui.real_name  realname FROM users u  JOIN invite i ON i.be_invited_id = u.id "
+                + " JOIN users_info ui ON ui.users_id = i.invite_id ) r ON u.id = r.id  ");
+        sql.append(" JOIN coin_purse_funds_record cpf  ON cpf.users_id = u.id WHERE cpf.TYPE = 'to' ) a WHERE 1=1 ");
         // 充值时间
         if (!QwyUtil.isNullAndEmpty(insertTime)) {
             String[] time = QwyUtil.splitTime(insertTime);
