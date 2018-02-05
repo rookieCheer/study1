@@ -102,8 +102,6 @@ public class UserBuyAction extends BaseAction {
             PageUtil<BuyProductInfo> page = BuyProductInfoBean.productInfo(pageUtil, insertTime, phone, isnew);
             if (!QwyUtil.isNullAndEmpty(page)) {
                 List<BuyProductInfo> list = page.getList();
-                delNull(list);
-                setFriend(list);
                 request.setAttribute("pageUtil", page);
                 request.setAttribute("list", list);
                 if (!QwyUtil.isNullAndEmpty(isnew) && isnew.equals("1")) {
@@ -117,119 +115,9 @@ public class UserBuyAction extends BaseAction {
         return null;
     }
 
-    private void delNull(List<BuyProductInfo> list) {
-        if (list != null) {
-            int size = list.size();
-            if (size > 0) {
-                for (int i = 0; i < size; i++) {
+    
 
-                    BuyProductInfo info = list.get(i);
-                    String category = info.getCategory();
-                    category = replaceNullStringToNull(category);
 
-                    String city = info.getCity();
-                    city = replaceNullStringToNull(city);
-
-                    String gender = info.getGender();
-                    gender = replaceNullStringToNull(gender);
-
-                    String phone = info.getPhone();
-                    phone = replaceNullStringToNull(phone);
-
-                    String productName = info.getProductName();
-                    productName = replaceNullStringToNull(productName);
-                    
-                    String username = info.getUsername();
-                    username = replaceNullStringToNull(username);
-
-                    String insertTime = info.getInsterTime();
-                    insertTime = replaceNullStringToNull(insertTime);
-
-                    String finishTime = info.getFinishTime();
-                    finishTime = replaceNullStringToNull(finishTime);
-
-                    String endTime = info.getEndTime();
-                    endTime = replaceNullStringToNull(endTime);
-
-                    String realName = info.getRealName();
-                    realName = replaceNullStringToNull(realName);
-
-                    String province = info.getProvince();
-                    province = replaceNullStringToNull(province);
-                    if(productName!=null){
-                        productName =productName.trim();
-                        if(productName.endsWith("零钱罐")){
-                            info.setEndTime("-");
-                            info.setFinishTime("-");
-                        }else{
-                            info.setEndTime(endTime);
-                            info.setFinishTime(finishTime);
-                        }
-                    }
-                    info.setCategory(category);
-                    info.setCity(city);
-                    info.setPhone(phone);
-                    info.setProductName(productName);
-                    info.setProvince(province);
-                    info.setRealName(realName);
-                    info.setGender(gender);
-                    info.setUsername(username);
-                    list.set(i, info);
-                }
-            }
-        }
-    }
-
-    private void setFriend(List<BuyProductInfo> list) {
-        if (list != null) {
-            int size = list.size();
-            if (size > 0) {
-            
-                List<Integer> ids = new ArrayList<Integer>(size);
-                for (int i = 0; i < size; i++) {
-                    BuyProductInfo info = list.get(i);
-                    ids.add(info.getId());
-                }
-                ids = (List<Integer>) ListUtils.removeNullValue(ids);
-                ids = ListUtils.removeRepeatElement(ids);
-                if (ids != null && ids.size() > 0) {
-                    StringBuffer sql = new StringBuffer("");
-                    sql.append("select inv.be_invited_id,ui.real_name from users u  ");
-                    sql.append(" join invite inv on inv.invite_id=u.id ");
-                    sql.append(" join users_info ui ON ui.users_id = inv.invite_id  where inv.be_invited_id in(:usersIds)");
-                    List result = invitBean.querySql(sql.toString(), null, ids, "usersIds");
-                    if (result != null) {
-                        int resultSize = result.size();
-                        for (int j = 0; j < resultSize; j++) {
-                            Object obj = result.get(j);
-                            if (obj instanceof Object[]) {
-                                Object[] objArray = (Object[]) obj;
-                                BigInteger userId = (BigInteger) objArray[0];
-
-                                if (userId != null) {
-                                    int userIdd = userId.intValue();
-                                    String friendName = (String) objArray[1];
-                                    for (int k = 0; k < size; k++) {
-                                        BuyProductInfo info = list.get(k);
-                                        Integer infoId = info.getId();
-                                        if (infoId != null) {
-                                            if (userIdd == infoId.intValue()) {
-                                                info.setFriend(friendName);
-                                            }else{
-                                                info.setFriend("客户");
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-    }
 
     /**
      * 绑卡统计
@@ -266,7 +154,7 @@ public class UserBuyAction extends BaseAction {
 
             if (!QwyUtil.isNullAndEmpty(pageUtil)) {
                 List<TiedCard> list = pageUtil.getList();
-                list = deleteNull(list);
+                
                 pageUtil.setList(list);
                 request.setAttribute("pageUtil", pageUtil);
                 request.setAttribute("list", pageUtil.getList());
@@ -278,127 +166,10 @@ public class UserBuyAction extends BaseAction {
         return null;
     }
 
-    private String replaceNullStringToNull(String value) {
-        if ("null".equals(value)) {
-            value = null;
-        }
-        return value;
-
-    }
+   
     
-    private void deleteNullOutCash(List<OutCash> list){
-        if(list!=null){
-            int size = list.size();
-            if(size>0){
-                for (int i = 0; i < size; i++) {
-                    OutCash outCash = list.get(i);
-                   String cateGory = outCash.getCategory();
-                   
-                   cateGory = replaceNullStringToNull(cateGory);
-                  String city = outCash.getCity();
-                  
-                  city = replaceNullStringToNull(city);
-                  String gender = outCash.getGender();
-                  
-                  gender =replaceNullStringToNull(gender);
-                 String outCashTime = outCash.getOutCashTime();
-                 
-                 outCashTime =replaceNullStringToNull(outCashTime);
-                 String outMoney=outCash.getOutMoney();
-                 
-                 outMoney =replaceNullStringToNull(outMoney);
-                String phone = outCash.getPhone();
-                
-                phone =replaceNullStringToNull(phone);
-               String province = outCash.getProvince();
-               province =replaceNullStringToNull(province);
-              String realName = outCash.getRealname();
-              realName =replaceNullStringToNull(realName);
-              if(cateGory == null){
-                  cateGory ="客户";
-              }
-              outCash.setCategory(cateGory);
-              outCash.setCity(city);
-              outCash.setGender(gender);
-              outCash.setOutCashTime(outCashTime);
-              outCash.setOutMoney(outMoney);
-              outCash.setPhone(phone);
-              outCash.setProvince(province);
-              outCash.setRealname(realName);
-              list.set(i, outCash);
-                }
-            }
-        }
-    }
-
-    private List<TiedCard> deleteNull(List<TiedCard> list) {
-        if (list != null) {
-            int size = list.size();
-            if (size > 0) {
-                 for (int i = 0; i < size; i++) {
-                    TiedCard tiedCard = list.get(i);
-                    tiedCard.setNo(i + 1);
-                    String age = tiedCard.getAge();
-                    age = replaceNullStringToNull(age);
-                    String bankAccount = tiedCard.getBankAccount();
-                    bankAccount = replaceNullStringToNull(bankAccount);
-                    String bankName = tiedCard.getBankName();
-                    bankName = replaceNullStringToNull(bankName);
-
-                    String zinsertTime = tiedCard.getZinsertTime();
-                    zinsertTime = replaceNullStringToNull(zinsertTime);
-                    String insertTime = tiedCard.getInsertTime();
-                    insertTime = replaceNullStringToNull(insertTime);
-                    String registPlatform = tiedCard.getRegistPlatform();
-                    registPlatform = replaceNullStringToNull(registPlatform);
-                    String id = tiedCard.getId();
-                    id = replaceNullStringToNull(id);
-                    String realName = tiedCard.getRealName();
-                    realName = replaceNullStringToNull(realName);
-                    String phone = tiedCard.getPhone();
-                    phone = replaceNullStringToNull(phone);
-                    String cardType = tiedCard.getCardType();
-                    cardType = replaceNullStringToNull(cardType);
-                    String idCard = tiedCard.getIdCard();
-                    idCard = replaceNullStringToNull(idCard);
-                    String province = tiedCard.getProvince();
-                    province = replaceNullStringToNull(province);
-                    String city = tiedCard.getCity();
-                    city = replaceNullStringToNull(city);
-                    String gender = tiedCard.getGender();
-                    gender = replaceNullStringToNull(gender);
-
-                    String birthday = tiedCard.getBirthday();
-                    birthday = replaceNullStringToNull(birthday);
-                    String cardFriend = tiedCard.getCardFriend();
-                    cardFriend = replaceNullStringToNull(cardFriend);
-                    String channel = tiedCard.getChannel();
-                    channel = replaceNullStringToNull(channel);
-
-                    tiedCard.setId(id);
-                    tiedCard.setAge(age);
-                    tiedCard.setBankAccount(bankAccount);
-                    tiedCard.setBankName(bankName);
-                    tiedCard.setBirthday(birthday);
-                    tiedCard.setCardFriend(cardFriend);
-                    tiedCard.setCardType(cardType);
-                    tiedCard.setChannel(channel);
-                    tiedCard.setCity(city);
-                    tiedCard.setGender(gender);
-                    tiedCard.setIdCard(idCard);
-                    tiedCard.setInsertTime(insertTime);
-                    tiedCard.setPhone(phone);
-                    tiedCard.setProvince(province);
-                    tiedCard.setRealName(realName);
-                    tiedCard.setRegistPlatform(registPlatform);
-                    tiedCard.setZinsertTime(zinsertTime);
-                    list.set(i, tiedCard);
-                }
-            }
-        }
-        return list;
-    }
-
+    
+   
     /**
      * 每日明细表汇总
      * 
@@ -486,7 +257,6 @@ public class UserBuyAction extends BaseAction {
             if (!QwyUtil.isNullAndEmpty(outCashTable)) {
                 request.setAttribute("pageUtil", outCashTable);
                 List<OutCash> list = outCashTable.getList();
-                deleteNullOutCash(list);
                 request.setAttribute("list", list);
                 return "outCash";
             }
@@ -586,8 +356,7 @@ public class UserBuyAction extends BaseAction {
             List<BuyProductInfo> list = pageUtil.getList();
             if (list != null && list.size() > 0) {
                 deal(list);
-                delNull(list);
-                setFriend(list);
+                //delNull(list);
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);
@@ -657,7 +426,6 @@ public class UserBuyAction extends BaseAction {
         if (pageUtil != null) {
             List<TiedCard> list = pageUtil.getList();
             if (list != null && list.size() > 0) {
-                deleteNull(list);
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);
@@ -780,7 +548,6 @@ public class UserBuyAction extends BaseAction {
         if (outCashTable != null) {
             List<OutCash> list = outCashTable.getList();
             if (list != null && list.size() > 0) {
-                deleteNullOutCash(list);
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);
