@@ -424,7 +424,6 @@
             </c:when>
             <c:otherwise>
                 <div style="text-align: center;margin-top: 15px;"><!-- <img src="images/lh.jpg"> -->
-                    <img src="../images/no_record.png"/>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -435,13 +434,11 @@
         attachTo: document.body,
         months: 2,//多少个月显示出来,即看到多少个日历
         mode: 'range'
-        /* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
     });
     var k4 = new Kalendae.Input("acinsertTime", {
         attachTo: document.body,
         months: 2,//多少个月显示出来,即看到多少个日历
         mode: 'range'
-        /* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
     });
     $(function () {
         $("#isbindbank option[value='${isbindbank}']").attr("selected", true);

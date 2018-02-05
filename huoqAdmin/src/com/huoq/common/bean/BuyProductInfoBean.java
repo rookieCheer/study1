@@ -28,8 +28,6 @@ public class BuyProductInfoBean {
 	 * 购买情况统计
 	 * 
 	 * @param pageUtil
-	 * @param username
-	 * @return
 	 * @throws ParseException
 	 */
 	public PageUtil<BuyProductInfo> productInfo(PageUtil pageUtil, String insertTime,String phone,String isnew) throws ParseException {
