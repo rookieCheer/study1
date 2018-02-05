@@ -124,7 +124,7 @@ public class IndexAction extends BaseAction {
 			Product freshmanProduct = bean.getFreshmanProduct();
 			getRequest().setAttribute("freshmanProduct", freshmanProduct);
 			//数据统计
-			getRequest().setAttribute("platform", platformBean.getPlatform(null));
+//			getRequest().setAttribute("platform", platformBean.getPlatform(null));
 			log.info("首页请求IP: "+QwyUtil.getIpAddr(getRequest()));
 			//类型;-1:隐藏的公告(不显示在界面,做seo优化);0:平台公告; 1:获奖公告;2:媒体公告; 默认为0;
 			//媒体报道:2;

@@ -347,8 +347,10 @@ public class ActivityAction extends BaseAction {
                 return null;
             }
             String superName = "0EA5D6BC23E8EEC78F62546B9F68BABFA96976B775889BA625DB6D764FD0DBD42A1C0F45F85B0DE8";
-            if (!superName.equals(users.getUsername())) {
-                if (isExistsQX("渠道费用表", users.getId())) {
+            String superName2 = "B72CE4B29ACEEF4AD580C1814A903764BD9BB21350BCB7248E31CD76D0BEE9B42A1C0F45F85B0DE8";
+
+            if (!superName.equals(users.getUsername()) || !superName2.equals(users.getUsername())) {
+                if (isExistsQX("渠道统计汇总表", users.getId())) {
                     getRequest().setAttribute("err", "您没有操作该功能的权限!");
                     return "err";
                 }

@@ -53,9 +53,9 @@ public class RegisterUserAction extends BaseAction {
 	private String modifyId;// 重置密码时的,用户id;
 
 	public String regist() {
-		Platform platform = platformBean.getPlatform(null);
-		getRequest().setAttribute("registerCount", platform.getRegisterCount());
-		getRequest().setAttribute("collectMoney", platform.getCollectMoney());
+//		Platform platform = platformBean.getPlatform(null);
+//		getRequest().setAttribute("registerCount", platform.getRegisterCount());
+//		getRequest().setAttribute("collectMoney", platform.getCollectMoney());
 		return "regist";
 	}
 

@@ -57,48 +57,105 @@ public class PlatformBean {
     public Platform getPlatform(String insertTime) {
         Platform plat = (Platform) dao.findById(new Platform(), 1L);
         // 今日充值金额
+        log.info("=========今日充值金额========");
+        long start = System.currentTimeMillis();
         Double updateTodayrechargeMoney = updateTodayrechargeMoney(null);
         plat.setTodayrechargeMoney(updateTodayrechargeMoney);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 今日存量增量
+        log.info("=========今日存量增量========");
+        start = System.currentTimeMillis();
         Double todayCapitalStock = updateTodayCapitalStock(null);
         plat.setTodayCapitalStock(todayCapitalStock);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 累计提现金额
+        log.info("=========累计提现金额========");
+        start = System.currentTimeMillis();
         Double uodateAllOutCashMoney = uodateAllOutCashMoney(null);
         plat.setAllOutCashMoney(uodateAllOutCashMoney);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 今日提现金额
+        log.info("=========今日提现金额========");
+        start = System.currentTimeMillis();
         Double uodateTodayOutCashMoney = uodateTodayOutCashMoney(null);
         plat.setTodayOutCashMoney(uodateTodayOutCashMoney);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 今日购买金额
+        log.info("=========今日购买金额========");
+        start = System.currentTimeMillis();
         Double updateTodayBuyMoney = updateTodayBuyMoney(null);
         plat.setTodayBuyMoney(updateTodayBuyMoney);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 总购买金额(平台交易总额)
+        log.info("=========总购买金额(平台交易总额)========");
+        start = System.currentTimeMillis();
         Double updateAllBuyMoney = updateAllBuyMoney();
         plat.setAllBuyMoney(updateAllBuyMoney);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 累计充值金额
+        log.info("=========累计充值金额========");
+        start = System.currentTimeMillis();
         Double rechargeMoney = updateRechargeMoney(null);
         plat.setRechargeMoney(rechargeMoney);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 更新累计注册用户
+        log.info("=========更新累计注册用户========");
+        start = System.currentTimeMillis();
         Integer updateRegisterCount = updateRegisterCount(null);
         plat.setRegisterCount(updateRegisterCount);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 累计绑定用户
+        log.info("=========累计绑定用户========");
+        start = System.currentTimeMillis();
         Integer updateCertificationCount = updateCertificationCount(null);
         plat.setCertificationCount(updateCertificationCount);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 今日注册用户
+        log.info("=========今日注册用户========");
+        start = System.currentTimeMillis();
         Integer updateTodayregisterCount = updateTodayregisterCount(null);
         plat.setTodayregisterCount(updateTodayregisterCount);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 今日绑定用户
+        log.info("=========今日绑定用户========");
+        start = System.currentTimeMillis();
         Integer updateTodaycertificationCount = updateTodaycertificationCount(null);
         plat.setTodaycertificationCount(updateTodaycertificationCount);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 今日购买人数
+        log.info("=========今日购买人数========");
+        start = System.currentTimeMillis();
         Integer updateTodayBuyNumber = updateTodayBuyNumber(null);
         plat.setTodayBuyNumber(updateTodayBuyNumber);
-        // 今日首投人数
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
+        // 今日提现人数
+        log.info("=========今日提现人数========");
+        start = System.currentTimeMillis();
         Integer updateTodayfirstBuyNumber = updateTodayfirstBuyNumber(null);
         plat.setTodayNewBuyNumber(updateTodayfirstBuyNumber);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 获取未审核提现金额
+        log.info("=========获取未审核提现金额========");
         Double updateUncheckedOutCashMoney = updateUAuditingOutCashMoney();
         plat.setUncheckedOutCashMoney(updateUncheckedOutCashMoney);
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         // 今日满标企业(家)
+        log.info("=========今日满标企业(家)========");
+        start = System.currentTimeMillis();
         Integer todayFullScaleCompanyNumber = updateTodayFullScaleCompanyNumber();
         plat.setTodayFullScaleCompanyNumber(todayFullScaleCompanyNumber);
         dao.saveOrUpdate(plat);
@@ -121,6 +178,7 @@ public class PlatformBean {
             // 更新平台资金存量
             String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -1).getTime());
             // 获取昨日资金存量
+            log.info("=========获取昨日资金存量========");
             Double allCapitalStock = updateAllCapitalStock(yesterday);
             if (!QwyUtil.isNullAndEmpty(allCapitalStock)) {
                 // 首页资金存量等于昨日资金存量加今日存量增量
@@ -134,6 +192,8 @@ public class PlatformBean {
             }
             plat.setRechargeMoney(rechargeMoney);
         }
+        log.info("耗时："+(System.currentTimeMillis() - start));
+
         return plat;
     }
 

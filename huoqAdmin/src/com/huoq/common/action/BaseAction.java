@@ -82,40 +82,9 @@ public class BaseAction extends ActionSupport {
 		}
 	}
 
-	/*
-	 * 以excel格式生成文件
-	 * 
-	 */
-	public String excel(List<JasperPrint> list, String name) {
-		String fileName = name + ".xls";
-		// String path="/mnt/apache-tomcat-7.0.64_backend/webapps/Images/file/";
-		SystemConfig sys = (SystemConfig) request.getServletContext().getAttribute("systemConfig");
-		// String path="/Y/apache-tomcat-7.0.64_backend/webapps/Images/file/";
-		String path = sys.getFileUrl() + "/file/";
-		File file = new File(path);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-
-		File file2 = new File(path + fileName);
-		JRExporter exporter = new JRXlsExporter();
-		exporter.setParameter(JRExporterParameter.JASPER_PRINT_LIST, list);
-		/* exporter.setParameter(JRXlsExporterParameter.SHEET_NAMES, page); */
-		exporter.setParameter(JRExporterParameter.OUTPUT_FILE, file2);
-		exporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-		exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-		exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-		try {
-			exporter.exportReport();
-		} catch (JRException e) {
-			log.error("操作异常: ",e);
-		}
-		return fileName;
-	}
-
 	/**
 	 * 判断用户权限是否存在
-	 * 
+	 *
 	 * @param modulName
 	 * @param usersAdminId
 	 * @return
@@ -154,6 +123,37 @@ public class BaseAction extends ActionSupport {
 		}
 
 		return true;
+	}
+	/*
+	 * 以excel格式生成文件
+	 * 
+	 */
+
+	public String excel(List<JasperPrint> list, String name) {
+		String fileName = name + ".xls";
+		// String path="/mnt/apache-tomcat-7.0.64_backend/webapps/Images/file/";
+		SystemConfig sys = (SystemConfig) request.getServletContext().getAttribute("systemConfig");
+		// String path="/Y/apache-tomcat-7.0.64_backend/webapps/Images/file/";
+		String path = sys.getFileUrl() + "/file/";
+		File file = new File(path);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+
+		File file2 = new File(path + fileName);
+		JRExporter exporter = new JRXlsExporter();
+		exporter.setParameter(JRExporterParameter.JASPER_PRINT_LIST, list);
+		/* exporter.setParameter(JRXlsExporterParameter.SHEET_NAMES, page); */
+		exporter.setParameter(JRExporterParameter.OUTPUT_FILE, file2);
+		exporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+		exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+		exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+		try {
+			exporter.exportReport();
+		} catch (JRException e) {
+			log.error("操作异常: ",e);
+		}
+		return fileName;
 	}
 
 }

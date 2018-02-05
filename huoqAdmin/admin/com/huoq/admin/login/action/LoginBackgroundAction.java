@@ -65,8 +65,11 @@ public class LoginBackgroundAction extends BaseAction{
 				status = "ok";
 				getRequest().setAttribute("status", status);
 				getRequest().getSession().setAttribute("usersAdmin", users);
-				Platform platform=platformBean.getPlatform(null);
-				getRequest().getSession().setAttribute("platform", platform);
+				log.info("##############加载首页数据-start##################");
+				long start = System.currentTimeMillis();
+//				Platform platform=platformBean.getPlatform(null);
+				log.info("##############加载首页数据-end 用时："+(System.currentTimeMillis()-start)+"##################");
+//				getRequest().getSession().setAttribute("platform", platform);
 				return "loginOk";
 			}
 			status = "not";
@@ -97,7 +100,13 @@ public class LoginBackgroundAction extends BaseAction{
 						json=QwyUtil.getJSONString("ok", "管理员登录成功");
 						//登录成功
 						getRequest().getSession().setAttribute("usersAdmin", users);
-						Platform platform=platformBean.getPlatform(null);
+						request.getSession().setAttribute("usersLogin", users.getUsername());//用户登录获取
+
+						log.info("##############加载首页数据-start##################");
+						long start = System.currentTimeMillis();
+//						Platform platform=platformBean.getPlatform(null);
+						log.info("##############加载首页数据-end 用时："+(System.currentTimeMillis()-start)+"##################");
+
 
 						String today = QwyUtil.fmyyyyMMdd.format(new Date());
 						String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -1).getTime());
@@ -107,8 +116,8 @@ public class LoginBackgroundAction extends BaseAction{
 						//request.getSession().setAttribute("tomorrowBackMoneyCount", interestDetailsBean.getBackMoneyCount(today));//明天预计返款人数(今天到期明天返款人数)
 						//request.getSession().setAttribute("todayLQGShouyiCount", interestDetailsBean.getBackLQGShouyiCount(today));//今天零钱包剩余发放收益人数
 						//request.getSession().setAttribute("tomorrowLQGShouyiCount", interestDetailsBean.getBackLQGShouyiCount(tomorrow));//明天零钱包剩余发放收益人数
-						request.getSession().setAttribute("usersLogin", users.getUsername());//用户登录获取
-						getRequest().getSession().setAttribute("platform", platform);
+
+//						getRequest().getSession().setAttribute("platform", platform);
 					    }else{
 						   json=QwyUtil.getJSONString("err", "该用户已被禁用，请联系超级管理员——文勇欧巴");
 					         }

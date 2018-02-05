@@ -1133,7 +1133,7 @@ public class ReleaseProductAction extends BaseAction {
             int xsproductCount = bean.getProductCount(new String[]{"1"});
             int ysqproductCount = bean.getProductCount(null,
                     new String[]{"1", "2", "3"});
-            Platform platform = platformBean.getPlatform(null);
+//            Platform platform = platformBean.getPlatform(null);
             Double ptproductAllMoney = bean
                     .getProductAllMoney(new String[]{"0"});
             Double xsproductAllMoney = bean
@@ -1143,8 +1143,8 @@ public class ReleaseProductAction extends BaseAction {
             getRequest().setAttribute("ptproductCount", ptproductCount);
             getRequest().setAttribute("xsproductCount", xsproductCount);
             getRequest().setAttribute("ysqproductCount", ysqproductCount);
-            getRequest().setAttribute("totalMoney", new BigDecimal(platform.getTotalMoney() / 100));
-            getRequest().setAttribute("wsje", new BigDecimal((platform.getTotalMoney() - platform.getCollectMoney()) / 100));
+//            getRequest().setAttribute("totalMoney", new BigDecimal(platform.getTotalMoney() / 100));
+//            getRequest().setAttribute("wsje", new BigDecimal((platform.getTotalMoney() - platform.getCollectMoney()) / 100));
             getRequest().setAttribute("ptproductAllMoney", new BigDecimal(ptproductAllMoney / 100));
             getRequest().setAttribute("xsproductAllMoney", new BigDecimal(xsproductAllMoney / 100));
             return "productSend";

@@ -49,8 +49,8 @@ public class GuestLoginBackgroundAction extends BaseAction {
                             //登录成功
                             log.info("【访客登录成功】---- name: "+guest.getUsername() + "--------------");
                             getRequest().getSession().setAttribute("usersGuest", guest);
-                            Platform platform = platformBean.getPlatform(null);
-                            getRequest().getSession().setAttribute("platform", platform);
+//                            Platform platform = platformBean.getPlatform(null);
+//                            getRequest().getSession().setAttribute("platform", platform);
                         } else {
                             json = QwyUtil.getJSONString("err", "该用户已被禁用，请联系超级管理员——文勇欧巴");
                         }
