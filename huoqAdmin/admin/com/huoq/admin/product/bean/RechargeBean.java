@@ -1,5 +1,6 @@
 package com.huoq.admin.product.bean;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.json.JSONObject;
 import yjpay.api.service.impl.PayAPIServiceImpl;
+
+import static com.huoq.common.util.QwyUtil.calcNumber;
 
 /**
  * 后天管理--发送红包;
@@ -606,12 +609,12 @@ public class RechargeBean {
 					// 注册人数
 					if (QwyUtil.isNullAndEmpty(cr.getRegCount()))
 						cr.setRegCount("0");
-					cr.setCzMoney(QwyUtil.calcNumber(cr.getCzMoney(), capitalRecord.getRechargeCentSum(), "+") + "");
-					cr.setIvsCount(QwyUtil.calcNumber(cr.getIvsCount(), capitalRecord.getInvestUserSum(), "+") + "");
-					cr.setIvsMoney(QwyUtil.calcNumber(cr.getIvsMoney(), capitalRecord.getInvestCentSum() + capitalRecord.getCouponCentSum(), "+") + "");
-					cr.setTxMoney(QwyUtil.calcNumber(cr.getTxMoney(), capitalRecord.getWithdrawCentSum(), "+") + "");
-					cr.setCtxMoney(QwyUtil.calcNumber(cr.getCtxMoney(), capitalRecord.getSuccessWithdrawCentSum(), "+") + "");
-					cr.setRegCount(QwyUtil.calcNumber(cr.getRegCount(), capitalRecord.getRegUserSum(), "+") + "");
+					cr.setCzMoney(calcNumber(cr.getCzMoney(), capitalRecord.getRechargeCentSum(), "+") + "");
+					cr.setIvsCount(calcNumber(cr.getIvsCount(), capitalRecord.getInvestUserSum(), "+") + "");
+					cr.setIvsMoney(calcNumber(cr.getIvsMoney(), capitalRecord.getInvestCentSum() + capitalRecord.getCouponCentSum(), "+") + "");
+					cr.setTxMoney(calcNumber(cr.getTxMoney(), capitalRecord.getWithdrawCentSum(), "+") + "");
+					cr.setCtxMoney(calcNumber(cr.getCtxMoney(), capitalRecord.getSuccessWithdrawCentSum(), "+") + "");
+					cr.setRegCount(calcNumber(cr.getRegCount(), capitalRecord.getRegUserSum(), "+") + "");
 
 				}
 			}
@@ -777,11 +780,11 @@ public class RechargeBean {
 			for (Object[] obj : objects) {
 				UserCzTx userCzTx = new UserCzTx();
 				userCzTx.setDate(QwyUtil.fmyyyyMMdd.format(obj[0]));
-				userCzTx.setCzMoney(!QwyUtil.isNullAndEmpty(obj[1]) ? QwyUtil.calcNumber(obj[1], 100, "/", 2) + "" : "0");
+				userCzTx.setCzMoney(!QwyUtil.isNullAndEmpty(obj[1]) ? calcNumber(obj[1], 100, "/", 2) + "" : "0");
 				userCzTx.setCzCount(!QwyUtil.isNullAndEmpty(obj[2]) ? obj[2] + "" : "0");
-				userCzTx.setTxMoney(!QwyUtil.isNullAndEmpty(obj[3]) ? QwyUtil.calcNumber(obj[3], 100, "/", 2) + "" : "0");
+				userCzTx.setTxMoney(!QwyUtil.isNullAndEmpty(obj[3]) ? calcNumber(obj[3], 100, "/", 2) + "" : "0");
 				userCzTx.setTxCount(!QwyUtil.isNullAndEmpty(obj[4]) ? obj[4] + "" : "0");
-				userCzTx.setCtxMoney(!QwyUtil.isNullAndEmpty(obj[5]) ? QwyUtil.calcNumber(obj[5], 100, "/", 2) + "" : "0");
+				userCzTx.setCtxMoney(!QwyUtil.isNullAndEmpty(obj[5]) ? calcNumber(obj[5], 100, "/", 2) + "" : "0");
 				userCzTx.setCtxCount(!QwyUtil.isNullAndEmpty(obj[6]) ? obj[6] + "" : "0");
 
 				list.add(userCzTx);
@@ -854,27 +857,27 @@ public class RechargeBean {
 					uc.setCtxMoney("0");
 
 				// 充值次数
-				uc.setCzCount(QwyUtil.calcNumber(uc.getCzCount(), czTx.getRechargeCount(), "+") + "");
+				uc.setCzCount(calcNumber(uc.getCzCount(), czTx.getRechargeCount(), "+") + "");
 				// 充值金额
-				uc.setCzMoney(QwyUtil.calcNumber(uc.getCzMoney(), QwyUtil.calcNumber(czTx.getRechargeCentSum(), 100, "/", 2) + "", "+") + "");
+				uc.setCzMoney(calcNumber(uc.getCzMoney(), calcNumber(czTx.getRechargeCentSum(), 100, "/", 2) + "", "+") + "");
 				// 待结算用户总额
-				uc.setDjsUserZe(QwyUtil.calcNumber(uc.getDjsUserZe(), czTx.getStillBalanceUserCentSum(), "+") + "");
+				uc.setDjsUserZe(calcNumber(uc.getDjsUserZe(), czTx.getStillBalanceUserCentSum(), "+") + "");
 				// 待结算项目总额
-				uc.setDjsxmze(QwyUtil.calcNumber(uc.getDjsxmze(), czTx.getStillBalanceProductCentSum(), "+") + "");
+				uc.setDjsxmze(calcNumber(uc.getDjsxmze(), czTx.getStillBalanceProductCentSum(), "+") + "");
 				// 3天内到期用户总额
-				uc.setDqUserZe(QwyUtil.calcNumber(uc.getDqUserZe(), czTx.getDueThreeDayUserCentSum(), "+") + "");
+				uc.setDqUserZe(calcNumber(uc.getDqUserZe(), czTx.getDueThreeDayUserCentSum(), "+") + "");
 				// 3天内到期项目总额
-				uc.setDqxmze(QwyUtil.calcNumber(uc.getDqxmze(), czTx.getDueThreeDayProductCentSum(), "+") + "");
+				uc.setDqxmze(calcNumber(uc.getDqxmze(), czTx.getDueThreeDayProductCentSum(), "+") + "");
 				// 提现次数
-				uc.setTxCount(QwyUtil.calcNumber(uc.getTxCount(), czTx.getWithdrawCount(), "+") + "");
+				uc.setTxCount(calcNumber(uc.getTxCount(), czTx.getWithdrawCount(), "+") + "");
 				// 提现金额
-				uc.setTxMoney(QwyUtil.calcNumber(uc.getTxMoney(), QwyUtil.calcNumber(czTx.getWithdrawCentSum(), 100, "/", 2) + "", "+") + "");
+				uc.setTxMoney(calcNumber(uc.getTxMoney(), calcNumber(czTx.getWithdrawCentSum(), 100, "/", 2) + "", "+") + "");
 				// c提现次数
-				uc.setCtxCount(QwyUtil.calcNumber(uc.getCtxCount(), czTx.getSuccessWithdrawCount(), "+") + "");
+				uc.setCtxCount(calcNumber(uc.getCtxCount(), czTx.getSuccessWithdrawCount(), "+") + "");
 				// c提现金额
-				uc.setCtxMoney(QwyUtil.calcNumber(uc.getCtxMoney(), QwyUtil.calcNumber(czTx.getSuccessWithdrawCentSum(), 100, "/", 2) + "", "+") + "");
+				uc.setCtxMoney(calcNumber(uc.getCtxMoney(), calcNumber(czTx.getSuccessWithdrawCentSum(), 100, "/", 2) + "", "+") + "");
 				// 已到期未结算金额
-				uc.setYdqsxmze(QwyUtil.calcNumber(uc.getYdqsxmze(), czTx.getDueNoBalanceCentSum(), "+") + "");
+				uc.setYdqsxmze(calcNumber(uc.getYdqsxmze(), czTx.getDueNoBalanceCentSum(), "+") + "");
 			}
 		}
 		return uc;
@@ -913,7 +916,8 @@ public class RechargeBean {
 	/**
 	 * 产品待结算的余额
 	 * 
-	 * @param registPlatform
+	 * @param beginDate
+	 * @param endDate
 	 *            yy
 	 */
 	public String productDjsye(String beginDate, String endDate) {
@@ -1009,7 +1013,6 @@ public class RechargeBean {
 	 * 充值提现数据
 	 * 
 	 * @param insertTime
-	 * @param pageUtil
 	 * @param registPlatform
 	 *            注册平台
 	 * @throws Exception
@@ -1121,7 +1124,7 @@ public class RechargeBean {
 		List<String> strList = txMAXCount();
 		String allCzRecord = allCzRecord();
 		String allLeftMoney = allLeftMoney();
-		String avgCzMoney = QwyUtil.calcNumber(QwyUtil.calcNumber(allCzRecord, 0.01, "*"), 30, "/", 2) + "";
+		String avgCzMoney = calcNumber(calcNumber(allCzRecord, 0.01, "*"), 30, "/", 2) + "";
 		ArrayList<Object> list = new ArrayList<Object>();
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("select * from (");
@@ -1143,8 +1146,8 @@ public class RechargeBean {
 	 * @throws Exception
 	 */
 	public List<WeekLeftMoney> findWeekRemainMoneys() throws Exception {
-		String allLeftMoney = allLeftMoney();
-		String lqgMoney = lqgMoney();
+		String allLeftMoney = allLeftMoney();//所有用户当前可用余额
+		String lqgMoney = lqgMoney();//零钱包里面所有的钱的加和
 		ArrayList<Object> list = new ArrayList<Object>();
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("select * from (");
@@ -1160,9 +1163,94 @@ public class RechargeBean {
 		List<WeekLeftMoney> weekLeftMoneys = toWeekRemainMoney(obs,lqgMoney,allLeftMoney);
 		return weekLeftMoneys;
 	}
-	
-	
-	
+
+
+	public double[] reservedFound(String time) throws Exception{
+		Date begin=null;
+		Date end=null;
+		double[] result =null;
+		if(!QwyUtil.isNullAndEmpty(time)){
+          String[] times = QwyUtil.splitTime(time);
+          if(times.length>1){
+			  begin = QwyUtil.fmMMddyyyy.parse(times[0]);
+			  end = QwyUtil.fmMMddyyyy.parse(times[0]);
+		  }else{
+          	begin = QwyUtil.fmMMddyyyy.parse(times[0]);
+          	end = QwyUtil.fmMMddyyyy.parse(times[0]);
+		  }
+		}else{
+			begin = DateUtils.getNowDateShort("yyyy-MM-dd");
+			end = DateUtils.getNowDateShort("yyyy-MM-dd");
+		}
+		Object[] params = new Object[2];
+		params[0]=begin;
+		params[1]=end;
+        StringBuffer sql = new StringBuffer("");
+		sql.append("SELECT\n" +
+				"\t\t DATE_FORMAT(w.insert_time, '%Y-%m-%d') AS insert_time,\n" +
+				"\t\t SUM(ids.pay_money),\n" +
+				"\t\t SUM(ids.pay_interest)")
+				.append("FROM\n" +
+						"\t\t weeks w\n" +
+						"\t\t JOIN interest_details ids ON DATE_FORMAT(w.insert_time, '%Y-%m-%d') = DATE_FORMAT(ids.return_time, '%Y-%m-%d')")
+				.append("AND ids.return_time < DATE_ADD(?,INTERVAL 2 DAY)\n" +
+						"\t\t AND ids.return_time >= DATE_ADD(?,INTERVAL 1 DAY)");
+		List<Object[]> list = dao.LoadAllSql(sql.toString(),params);
+		if(list!=null){
+                int size = list.size();
+                if(size>0){
+					result = new double[2];
+                  for(Object[] objects:list){
+                    String insertTime=(String)objects[0];//时间
+					   Double payMoney =(Double)objects[1];
+					  Double payInterst =(Double)objects[2];
+					  if(payMoney!=null){
+						 BigDecimal bigDecimalPayMoney = QwyUtil.calcNumber(payMoney, 100, "/", 2);
+                         if(bigDecimalPayMoney!=null){
+							 payMoney = bigDecimalPayMoney.doubleValue();
+						 }
+					  }
+					  if(payInterst!=null){
+						  BigDecimal bigDecimalPayInterst = QwyUtil.calcNumber(payInterst, 100, "/", 2);
+                          if(bigDecimalPayInterst!=null){
+							  payInterst =bigDecimalPayInterst.doubleValue();
+						  }
+					  }
+					  double leftMoney = leftMoney(insertTime);//所有用户指定时间之前的所有可用余额
+					  double lqgMoney = lingQianGuanMoney(insertTime);//零钱包里面所有的钱的加和
+
+					  BigDecimal bigDecimalLeftMoney =  QwyUtil.calcNumber(leftMoney, 100, "/", 2);
+					  if(bigDecimalLeftMoney!=null){
+						  leftMoney = bigDecimalLeftMoney.doubleValue();
+					  }
+					  BigDecimal bigDecimalLqgMoney =  QwyUtil.calcNumber(lqgMoney, 100, "/", 2);
+					  if(bigDecimalLqgMoney!=null){
+						  lqgMoney = bigDecimalLqgMoney.doubleValue();
+					  }
+
+					  double sum =leftMoney+lqgMoney+payMoney+payInterst;
+					  result[0]=payMoney;
+                      result[1]=sum;
+
+				  }
+				}
+		}
+
+		/**
+		 * SELECT
+		 DATE_FORMAT(w.insert_time, '%Y-%m-%d') AS insert_time,
+		 SUM(ids.pay_money),
+		 SUM(ids.pay_interest)
+		 FROM
+		 weeks w
+		 JOIN interest_details ids ON DATE_FORMAT(w.insert_time, '%Y-%m-%d') = DATE_FORMAT(ids.return_time, '%Y-%m-%d')
+		 AND ids.return_time < DATE_ADD(?,INTERVAL 2 DAY)
+		 AND ids.return_time >= DATE_ADD(?,INTERVAL 1 DAY)
+		 */
+		return result;
+	}
+
+
 
 	/**
 	 * 将数据转换为WeekLeftMoney
@@ -1187,18 +1275,18 @@ public class RechargeBean {
 				WeekLeftMoney weekLeftMoney = new WeekLeftMoney();
 				Object[] object = list.get(i);
 				weekLeftMoney.setDate(object[0] + "");
-				weekLeftMoney.setAllAccountLeftMoney(QwyUtil.calcNumber(allLeftMoney, 100, "/", 2) + "");
+				weekLeftMoney.setAllAccountLeftMoney(calcNumber(allLeftMoney, 100, "/", 2) + "");
 				weekLeftMoney.setYjtxsxf(strList.get(i) + "");
 				String dqhbfxje = "0";
 				if (!QwyUtil.isNullAndEmpty(object[1])) {
-					dqhbfxje = QwyUtil.calcNumber(object[1], 100, "/", 2) + "";
+					dqhbfxje = calcNumber(object[1], 100, "/", 2) + "";
 				}
-				dqhbfxjeAll = QwyUtil.calcNumber(dqhbfxjeAll, dqhbfxje, "+") + "";
+				dqhbfxjeAll = calcNumber(dqhbfxjeAll, dqhbfxje, "+") + "";
 				weekLeftMoney.setDqhbfxje(dqhbfxjeAll);
-				weekLeftMoney.setYjczsxf(QwyUtil.calcNumber(avgCzMoney,  i+1, "*") + "");
-				String sum = QwyUtil.calcNumber(weekLeftMoney.getAllAccountLeftMoney(), weekLeftMoney.getYjczsxf(), "+") + "";
-				sum = QwyUtil.calcNumber(weekLeftMoney.getDqhbfxje(), sum, "+") + "";
-				sum = QwyUtil.calcNumber(weekLeftMoney.getYjtxsxf(), sum, "+") + "";
+				weekLeftMoney.setYjczsxf(calcNumber(avgCzMoney,  i+1, "*") + "");
+				String sum = calcNumber(weekLeftMoney.getAllAccountLeftMoney(), weekLeftMoney.getYjczsxf(), "+") + "";
+				sum = calcNumber(weekLeftMoney.getDqhbfxje(), sum, "+") + "";
+				sum = calcNumber(weekLeftMoney.getYjtxsxf(), sum, "+") + "";
 				weekLeftMoney.setSum(sum);
 				weekLeftMoneys.add(weekLeftMoney);
 			}
@@ -1212,40 +1300,38 @@ public class RechargeBean {
 	 * 
 	 * @param list
 	 *            到期还本数据
-	 * @param avgCzMoney
-	 *            平均充值金额
-	 * @param allLeftMoney
-	 *            账户剩余金额
+	 * @param lqgMoney  零钱包里面所有的钱的加和
+	 * @param allLeftMoney  所有用户当前可用余额
 	 * @return
 	 * @throws Exception
 	 */
 	public List<WeekLeftMoney> toWeekRemainMoney(List<Object[]> list,String lqgMoney,String allLeftMoney) throws Exception {
 		List<WeekLeftMoney> weekLeftMoneys = new ArrayList<WeekLeftMoney>();
 		// BigDecimal avgMoney ;
-		String dqhbjeAll = "0";
-		String dqfxjeAll = "0";
+		//String dqhbjeAll = "0";
+		//String dqfxjeAll = "0";
 		if (!QwyUtil.isNullAndEmpty(list)) {
 			for (int i = 0; i< list.size(); i++) {
 				WeekLeftMoney weekLeftMoney = new WeekLeftMoney();
 				Object[] object = list.get(i);
 				weekLeftMoney.setDate(object[0] + "");
-				weekLeftMoney.setAllAccountLeftMoney(QwyUtil.calcNumber(allLeftMoney, 100, "/", 2) + "");
-				weekLeftMoney.setLqgMoney(QwyUtil.calcNumber(lqgMoney, 100, "/", 2) + "");
+				weekLeftMoney.setAllAccountLeftMoney(calcNumber(allLeftMoney, 100, "/", 2) + "");
+				weekLeftMoney.setLqgMoney(calcNumber(lqgMoney, 100, "/", 2) + "");
 				String dqhbje = "0";//到期还本
 				String dqfxje = "0";//到期付
 				if (!QwyUtil.isNullAndEmpty(object[1])) {
-					dqhbje = QwyUtil.calcNumber(object[1], 100, "/", 2) + "";
+					dqhbje = calcNumber(object[1], 100, "/", 2) + "";
 				}
 				if (!QwyUtil.isNullAndEmpty(object[2])) {
-					dqfxje = QwyUtil.calcNumber(object[2], 100, "/", 2) + "";
+					dqfxje = calcNumber(object[2], 100, "/", 2) + "";
 				}
-				dqhbjeAll = QwyUtil.calcNumber(dqhbjeAll, dqhbje, "+") + "";
-				dqfxjeAll = QwyUtil.calcNumber(dqfxjeAll, dqfxje, "+") + "";
+				//dqhbjeAll = QwyUtil.calcNumber(dqhbjeAll, dqhbje, "+") + "";
+				//dqfxjeAll = QwyUtil.calcNumber(dqfxjeAll, dqfxje, "+") + "";
 				weekLeftMoney.setDqhbfxje(dqhbje);
 				weekLeftMoney.setDqfxje(dqfxje);//到期还本
-				String sum = QwyUtil.calcNumber(weekLeftMoney.getAllAccountLeftMoney(), weekLeftMoney.getLqgMoney(), "+") + "";
-				sum = QwyUtil.calcNumber(weekLeftMoney.getDqhbfxje(), sum, "+") + "";
-				sum = QwyUtil.calcNumber(weekLeftMoney.getDqfxje(), sum, "+") + "";
+				String sum = calcNumber(weekLeftMoney.getAllAccountLeftMoney(), weekLeftMoney.getLqgMoney(), "+") + "";
+				sum = calcNumber(weekLeftMoney.getDqhbfxje(), sum, "+") + "";
+				sum = calcNumber(weekLeftMoney.getDqfxje(), sum, "+") + "";
 				weekLeftMoney.setSum(sum);
 				weekLeftMoneys.add(weekLeftMoney);
 				//dqhbfxje
@@ -1291,6 +1377,24 @@ public class RechargeBean {
 		}
 		return "0";
 	}
+	public double leftMoney(String insertTime) {
+
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(" SELECT SUM(left_money) FROM users_info ");
+		Object[] params = new Object[1];
+		if(!QwyUtil.isNullAndEmpty(insertTime)){
+			buffer.append(" where insert_time<=?");
+			params[0]=insertTime+" 23:59:59";
+		}
+		Object object = dao.getSqlCount(buffer.toString(),params);
+		if (!QwyUtil.isNullAndEmpty(object)) {
+			if(object instanceof Double){
+               Double sum = (Double)object;
+               return sum.doubleValue();
+			}
+		}
+		return 0.0;
+	}
 	/**
 	 * 获取账户可用余额
 	 * 
@@ -1305,6 +1409,25 @@ public class RechargeBean {
 			return object + "";
 		}
 		return "0";
+	}
+
+	public double lingQianGuanMoney(String insertTime) {
+
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(" SELECT SUM(in_money) FROM coin_purse ");
+		Object[] params = new Object[1];
+		if(!QwyUtil.isNullAndEmpty(insertTime)){
+			buffer.append(" where insert_time<=?");
+			params[0]=insertTime+" 23:59:59";
+		}
+		Object object = dao.getSqlCount(buffer.toString(),params);
+		if (!QwyUtil.isNullAndEmpty(object)) {
+			if(object instanceof Double){
+				Double sum = (Double)object;
+				return sum.doubleValue();
+			}
+		}
+		return 0.0;
 	}
 
 	/**
@@ -1516,7 +1639,7 @@ public class RechargeBean {
 				} else {
 					userCz.setType("快捷支付");
 				}
-				userCz.setMoney(!QwyUtil.isNullAndEmpty(QwyUtil.calcNumber(object[4], "100", "/", 2)) ? QwyUtil.calcNumber(object[4], "100", "/", 2) + "" : "0");
+				userCz.setMoney(!QwyUtil.isNullAndEmpty(calcNumber(object[4], "100", "/", 2)) ? calcNumber(object[4], "100", "/", 2) + "" : "0");
 				userCz.setInsertTime(!QwyUtil.isNullAndEmpty(object[5]) ? QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmyyyyMMddHHmmss.parse(object[5] + "")) : "");
 				userCz.setCheckTime(!QwyUtil.isNullAndEmpty(object[6]) ? QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmyyyyMMddHHmmss.parse(object[6] + "")) : "");
 				userCz.setOrderId(!QwyUtil.isNullAndEmpty(object[7]) ? object[7] + "" : "");
@@ -1635,7 +1758,7 @@ public class RechargeBean {
 				} else {
 					userCz.setDrawType("T+0");
 				}
-				userCz.setMoney(!QwyUtil.isNullAndEmpty(QwyUtil.calcNumber(object[4], "100", "/", 2)) ? QwyUtil.calcNumber(object[4], "100", "/", 2) + "" : "0");
+				userCz.setMoney(!QwyUtil.isNullAndEmpty(calcNumber(object[4], "100", "/", 2)) ? calcNumber(object[4], "100", "/", 2) + "" : "0");
 				userCz.setInsertTime(!QwyUtil.isNullAndEmpty(object[5]) ? QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmyyyyMMddHHmmss.parse(object[5] + "")) : "");
 				userCz.setCheckTime(!QwyUtil.isNullAndEmpty(object[6]) ? QwyUtil.fmyyyyMMddHHmmss.format(QwyUtil.fmyyyyMMddHHmmss.parse(object[6] + "")) : "");
 

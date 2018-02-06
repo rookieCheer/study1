@@ -305,28 +305,16 @@ public class UserBuyAction extends BaseAction {
                 if (foundFlowInto != null) {
                     findSumOperation.setFoundFlowInto(foundFlowInto);
                 }
-                Double reservedFound = 0.0;
-                Double constantReservedFound = 0.0;
-                List<WeekLeftMoney> list = rechargeBean.findWeekRemainMoneys();
-                if (list != null && list.size() > 0) {
-                    WeekLeftMoney weekLeftMoney = list.get(0);
-                    if (weekLeftMoney != null) {
-                        String sum = weekLeftMoney.getSum();
-                        String dqhbfxje = weekLeftMoney.getDqhbfxje();
-                        try {
-                            reservedFound = Double.valueOf(sum);
-                        } catch (NumberFormatException e) {
-                            reservedFound = 0.0;
-                        }
-                        try {
-                            constantReservedFound = Double.valueOf(dqhbfxje);
-                        } catch (NumberFormatException e) {
-                            constantReservedFound = 0.0;
-                        }
+
+                double[] result = rechargeBean.reservedFound(insertTime);
+                if(result!=null){
+                    int length = result.length;
+                    if(length == 2){
+                        findSumOperation.setReservedFound(result[1]);
+                        findSumOperation.setConstantReservedFound(result[0]);
                     }
+
                 }
-                findSumOperation.setReservedFound(reservedFound);
-                findSumOperation.setConstantReservedFound(constantReservedFound);
                 findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
                 getRequest().setAttribute("list", findSumOperation);
             }
@@ -598,28 +586,15 @@ public class UserBuyAction extends BaseAction {
             if (foundFlowInto != null) {
                 findSumOperation.setFoundFlowInto(foundFlowInto);
             }
-            Double reservedFound = 0.0;
-            Double constantReservedFound = 0.0;
-            List<WeekLeftMoney> list = rechargeBean.findWeekRemainMoneys();
-            if (list != null && list.size() > 0) {
-                WeekLeftMoney weekLeftMoney = list.get(0);
-                if (weekLeftMoney != null) {
-                    String sum = weekLeftMoney.getSum();
-                    String dqhbfxje = weekLeftMoney.getDqhbfxje();
-                    try {
-                        reservedFound = Double.valueOf(sum);
-                    } catch (NumberFormatException e) {
-                        reservedFound = 0.0;
-                    }
-                    try {
-                        constantReservedFound = Double.valueOf(dqhbfxje);
-                    } catch (NumberFormatException e) {
-                        constantReservedFound = 0.0;
-                    }
+            double[] result = rechargeBean.reservedFound(insertTime);
+            if(result!=null){
+                int length = result.length;
+                if(length == 2){
+                    findSumOperation.setReservedFound(result[1]);
+                    findSumOperation.setConstantReservedFound(result[0]);
                 }
+
             }
-            findSumOperation.setReservedFound(reservedFound);
-            findSumOperation.setConstantReservedFound(constantReservedFound);
             findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
 
             fieldMap.put("日期", "todayDate");
@@ -660,6 +635,9 @@ public class UserBuyAction extends BaseAction {
             ExcelUtil.exportExcelNew(outputStream, "运营总表", fieldMap, listSum, null);
         }
     }
+
+
+
 
     public Integer getCurrentPage() {
         return currentPage;
