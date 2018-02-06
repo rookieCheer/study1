@@ -412,6 +412,20 @@ public class UserBuyAction extends BaseAction {
         }
     }
 
+
+
+    private void dealList(List<TiedCard> list){
+        if(list!=null){
+             int size = list.size();
+             if(size>0){
+              for(int i =0;i<size;i++){
+                TiedCard tiedCard = list.get(i);
+                tiedCard.setNo(i+1);
+              }
+             }
+        }
+    }
+
     /**
      * 导出绑卡统计表
      */
@@ -436,6 +450,7 @@ public class UserBuyAction extends BaseAction {
         if (pageUtil != null) {
             List<TiedCard> list = pageUtil.getList();
             if (list != null && list.size() > 0) {
+                dealList(list);
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xls";
                 response.setContentType(ExcelUtil.EXCEL_STYLE2007);
                 response.setHeader("Content-disposition", "attachment;filename=" + fileName);
