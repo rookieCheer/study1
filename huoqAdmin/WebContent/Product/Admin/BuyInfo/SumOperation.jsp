@@ -128,8 +128,8 @@ function exportExcel() {
 					<td>${list.todayDealMoney}</td>
 					<td>${list.foundFlowInto}</td><!--资金流入 无 -->
 					<td>${list.txMoney}</td>
-					<td>${list.reservedFound}</td><!-- 预留资金 无 -->
-					<td>${list.constantReservedFound}</td><!-- 定期预留资金 -->
+					<td>${list.reservedFound}</td>
+					<td>${list.constantReservedFound}</td>
 					<td>${list.baofusaveMoney}</td>
 					<td>${list.baofuServiceCharge}</td><!-- 宝付手续费 无-->
 					<td>${list.dealtype}</td>

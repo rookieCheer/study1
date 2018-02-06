@@ -13,10 +13,12 @@ import org.apache.struts2.config.Namespace;
 import org.apache.struts2.config.ParentPackage;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,44 +28,43 @@ import java.util.List;
 @SuppressWarnings("serial")
 @ParentPackage("struts-default")
 @Namespace("/Product/buyInfo")
-@Results({ @Result(name = "productInfo", value = "/Product/Admin/BuyInfo/buyInfo.jsp"), @Result(name = "tiedCardInfo", value = "/Product/Admin/BuyInfo/tiedCardInfo.jsp"),
-           @Result(name = "summaryTable", value = "/Product/Admin/BuyInfo/summaryTable.jsp"), @Result(name = "outCash", value = "/Product/Admin/BuyInfo/OutCash.jsp"),
-           @Result(name = "SumOperation", value = "/Product/Admin/BuyInfo/SumOperation.jsp"),
-           @Result(name = "findToutiaoStatisticsTable", value = "/Product/Admin/BuyInfo/toutiaoStatisticsTable.jsp"),
-           @Result(name = "findtoutiaoStatisticsInfoTable", value = "/Product/Admin/BuyInfo/toutiaoStatisticsTable.jsp"),
-           @Result(name = "noLogin", value = "/Product/loginBackground.jsp") })
+@Results({@Result(name = "productInfo", value = "/Product/Admin/BuyInfo/buyInfo.jsp"), @Result(name = "tiedCardInfo", value = "/Product/Admin/BuyInfo/tiedCardInfo.jsp"),
+        @Result(name = "summaryTable", value = "/Product/Admin/BuyInfo/summaryTable.jsp"), @Result(name = "outCash", value = "/Product/Admin/BuyInfo/OutCash.jsp"),
+        @Result(name = "SumOperation", value = "/Product/Admin/BuyInfo/SumOperation.jsp"),
+        @Result(name = "findToutiaoStatisticsTable", value = "/Product/Admin/BuyInfo/toutiaoStatisticsTable.jsp"),
+        @Result(name = "findtoutiaoStatisticsInfoTable", value = "/Product/Admin/BuyInfo/toutiaoStatisticsTable.jsp"),
+        @Result(name = "noLogin", value = "/Product/loginBackground.jsp")})
 public class UserBuyAction extends BaseAction {
 
     @Resource
-    private BuyProductInfoBean         BuyProductInfoBean;
+    private BuyProductInfoBean BuyProductInfoBean;
     @Resource
-    private TiedCardBean               tiedCardBean;
+    private TiedCardBean tiedCardBean;
     @Resource
-    private SummaryTableBean           stBean;
+    private SummaryTableBean stBean;
     @Resource
-    private OutCashBean                outCashBean;
+    private OutCashBean outCashBean;
     @Resource
-    private SumOperationBean           sOtBean;
+    private SumOperationBean sOtBean;
 
     @Resource
-    private PlatformBean               platformBean;      // allCapitalStock 平台资金存量
-
+    private PlatformBean platformBean;      // allCapitalStock 平台资金存量
 
 
     @Resource
-    private RechargeBean               rechargeBean;
+    private RechargeBean rechargeBean;
 
 
-    private Integer                    currentPage = 1;
-    private Integer                    pageSize    = 50;
-    private String                     insertTime;
-    private String                     phone;
-    private String                     isnew;
-    private Integer                    os;
+    private Integer currentPage = 1;
+    private Integer pageSize = 50;
+    private String insertTime;
+    private String phone;
+    private String isnew;
+    private Integer os;
 
     /**
      * 购买情况统计
-     * 
+     *
      * @return
      */
     public String productInfo() {
@@ -113,13 +114,10 @@ public class UserBuyAction extends BaseAction {
         return null;
     }
 
-    
-
-
 
     /**
      * 绑卡统计
-     * 
+     *
      * @return
      */
     public String tiedCardInfo() {
@@ -152,7 +150,7 @@ public class UserBuyAction extends BaseAction {
 
             if (!QwyUtil.isNullAndEmpty(pageUtil)) {
                 List<TiedCard> list = pageUtil.getList();
-                
+
                 pageUtil.setList(list);
                 request.setAttribute("pageUtil", pageUtil);
                 request.setAttribute("list", pageUtil.getList());
@@ -164,13 +162,10 @@ public class UserBuyAction extends BaseAction {
         return null;
     }
 
-   
-    
-    
-   
+
     /**
      * 每日明细表汇总
-     * 
+     *
      * @return
      */
     public String summaryTable() {
@@ -187,29 +182,15 @@ public class UserBuyAction extends BaseAction {
 
             SummaryTable findSummaryTable = stBean.findSummaryTable(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSummaryTable)) {
-                Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
+                Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(insertTime);
                 if (todayFirstInvestPeople != null) {
                     findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
                 }
+
                 // 今日提现金额
-                Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
+                Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(insertTime);
                 findSummaryTable.setTodayoutMoney(todayOutCashMoney);
-                
-                
-                String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -1).getTime());
-                
-                Double todayCapitalStock =platformBean.updateTodayCapitalStock(null);
-                // 获取昨日资金存量
-                Double allCapitalStock = platformBean.updateAllCapitalStock(yesterday);
-                if (!QwyUtil.isNullAndEmpty(allCapitalStock)) {
-                    // 首页资金存量等于昨日资金存量加今日存量增量
-                    allCapitalStock = todayCapitalStock + allCapitalStock;
-                } else {
-                    allCapitalStock = 0.0;
-                    allCapitalStock = todayCapitalStock + allCapitalStock;
-                   
-                }
-                findSummaryTable.setCapitalStock(allCapitalStock);
+                findSummaryTable.setCapitalStock(getAllCapitalStock(insertTime));
                 getRequest().setAttribute("list", findSummaryTable);
             }
             return "summaryTable";
@@ -221,7 +202,7 @@ public class UserBuyAction extends BaseAction {
 
     /**
      * 提现统计表
-     * 
+     *
      * @return
      */
     public String outCashTable() {
@@ -263,9 +244,43 @@ public class UserBuyAction extends BaseAction {
         return null;
     }
 
+
+    private Double getAllCapitalStock(String time) throws ParseException {
+        Date date = null;
+        if (QwyUtil.isNullAndEmpty(insertTime)) {
+            date = new Date();
+        } else {
+            String[] timeArray = QwyUtil.splitTime(insertTime);
+            if (timeArray.length > 1) {
+                date = QwyUtil.fmMMddyyyy.parse(timeArray[0]);
+                // list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                // list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
+            } else {
+                date = QwyUtil.fmMMddyyyy.parse(timeArray[0]);
+                // list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
+                // list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
+            }
+        }
+        String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(date, -1).getTime());
+
+        Double todayCapitalStock = platformBean.updateTodayCapitalStock(insertTime);
+        // 获取昨日资金存量
+        Double allCapitalStock = platformBean.updateAllCapitalStock(yesterday);
+        if (!QwyUtil.isNullAndEmpty(allCapitalStock)) {
+            // 首页资金存量等于昨日资金存量加今日存量增量
+            allCapitalStock = todayCapitalStock + allCapitalStock;
+        } else {
+            allCapitalStock = 0.0;
+            allCapitalStock = todayCapitalStock + allCapitalStock;
+
+        }
+        return allCapitalStock;
+    }
+
+
     /**
      * 运营总表统计
-     * 
+     *
      * @return
      */
     public String sumOperation() {
@@ -281,39 +296,38 @@ public class UserBuyAction extends BaseAction {
             }
             SumOperation findSumOperation = sOtBean.findSumOperation(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSumOperation)) {
-                Double todayDealMoney = platformBean.updateTodayBuyMoney(null);
+                Double todayDealMoney = platformBean.updateTodayBuyMoney(insertTime);
                 if (todayDealMoney != null) {
                     findSumOperation.setTodayDealMoney(todayDealMoney);
                 }
 
-                Double foundFlowInto = platformBean.updateTodayrechargeMoney(null);
+                Double foundFlowInto = platformBean.updateTodayrechargeMoney(insertTime);
                 if (foundFlowInto != null) {
                     findSumOperation.setFoundFlowInto(foundFlowInto);
                 }
-                Double reservedFound =0.0;
-                Double constantReservedFound =0.0;
+                Double reservedFound = 0.0;
+                Double constantReservedFound = 0.0;
                 List<WeekLeftMoney> list = rechargeBean.findWeekRemainMoneys();
-                if(list!=null && list.size()>0){
+                if (list != null && list.size() > 0) {
                     WeekLeftMoney weekLeftMoney = list.get(0);
-                    if(weekLeftMoney!=null){
-                       String sum = weekLeftMoney.getSum();
-                       String dqhbfxje = weekLeftMoney.getDqhbfxje();
-                      try{
-                          reservedFound =Double.valueOf(sum);
-                      }catch(NumberFormatException e){
-                          reservedFound = 0.0;
-                      }
-                      try{
-                         constantReservedFound = Double.valueOf(dqhbfxje);
-                      }catch(NumberFormatException e){
-                          constantReservedFound = 0.0;
-                      }
+                    if (weekLeftMoney != null) {
+                        String sum = weekLeftMoney.getSum();
+                        String dqhbfxje = weekLeftMoney.getDqhbfxje();
+                        try {
+                            reservedFound = Double.valueOf(sum);
+                        } catch (NumberFormatException e) {
+                            reservedFound = 0.0;
+                        }
+                        try {
+                            constantReservedFound = Double.valueOf(dqhbfxje);
+                        } catch (NumberFormatException e) {
+                            constantReservedFound = 0.0;
+                        }
                     }
                 }
                 findSumOperation.setReservedFound(reservedFound);
                 findSumOperation.setConstantReservedFound(constantReservedFound);
-                
-
+                findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
                 getRequest().setAttribute("list", findSumOperation);
             }
             return "SumOperation";
@@ -463,32 +477,17 @@ public class UserBuyAction extends BaseAction {
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
 
-            Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(null);
+            Integer todayFirstInvestPeople = platformBean.updateTodayfirstBuyNumber(insertTime);
             if (todayFirstInvestPeople != null) {
                 findSummaryTable.setTodayFirstInvestPeople(todayFirstInvestPeople);
             }
+
             // 今日提现金额
-            Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
+            Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(insertTime);
             findSummaryTable.setTodayoutMoney(todayOutCashMoney);
-            
-            
-            String yesterday = QwyUtil.fmyyyyMMdd.format(QwyUtil.addDaysFromOldDate(new Date(), -1).getTime());
-            
-            Double todayCapitalStock =platformBean.updateTodayCapitalStock(null);
-            // 获取昨日资金存量
-            Double allCapitalStock = platformBean.updateAllCapitalStock(yesterday);
-            if (!QwyUtil.isNullAndEmpty(allCapitalStock)) {
-                // 首页资金存量等于昨日资金存量加今日存量增量
-                allCapitalStock = todayCapitalStock + allCapitalStock;
-                
-            } else {
-                allCapitalStock = 0.0;
-                allCapitalStock = todayCapitalStock + allCapitalStock;
-               
-            }
-            findSummaryTable.setCapitalStock(allCapitalStock);
-            
-            
+            findSummaryTable.setCapitalStock(getAllCapitalStock(insertTime));
+
+
             fieldMap.put("日期", "tadayDate");
             fieldMap.put("新增注册客户数A", "nEnrollUser"); //
             fieldMap.put("新增绑卡客户B", "nAutUser");
@@ -575,38 +574,39 @@ public class UserBuyAction extends BaseAction {
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-
-            Double todayDealMoney = platformBean.updateTodayBuyMoney(null);
+            Double todayDealMoney = platformBean.updateTodayBuyMoney(insertTime);
             if (todayDealMoney != null) {
                 findSumOperation.setTodayDealMoney(todayDealMoney);
             }
-            Double foundFlowInto = platformBean.updateTodayrechargeMoney(null);
+
+            Double foundFlowInto = platformBean.updateTodayrechargeMoney(insertTime);
             if (foundFlowInto != null) {
                 findSumOperation.setFoundFlowInto(foundFlowInto);
             }
-            
-            Double reservedFound =0.0;
-            Double constantReservedFound =0.0;
+            Double reservedFound = 0.0;
+            Double constantReservedFound = 0.0;
             List<WeekLeftMoney> list = rechargeBean.findWeekRemainMoneys();
-            if(list!=null && list.size()>0){
+            if (list != null && list.size() > 0) {
                 WeekLeftMoney weekLeftMoney = list.get(0);
-                if(weekLeftMoney!=null){
-                   String sum = weekLeftMoney.getSum();
-                   String dqhbfxje = weekLeftMoney.getDqhbfxje();
-                  try{
-                      reservedFound =Double.valueOf(sum);
-                  }catch(NumberFormatException e){
-                      reservedFound = 0.0;
-                  }
-                  try{
-                     constantReservedFound = Double.valueOf(dqhbfxje);
-                  }catch(NumberFormatException e){
-                      constantReservedFound = 0.0;
-                  }
+                if (weekLeftMoney != null) {
+                    String sum = weekLeftMoney.getSum();
+                    String dqhbfxje = weekLeftMoney.getDqhbfxje();
+                    try {
+                        reservedFound = Double.valueOf(sum);
+                    } catch (NumberFormatException e) {
+                        reservedFound = 0.0;
+                    }
+                    try {
+                        constantReservedFound = Double.valueOf(dqhbfxje);
+                    } catch (NumberFormatException e) {
+                        constantReservedFound = 0.0;
+                    }
                 }
             }
             findSumOperation.setReservedFound(reservedFound);
             findSumOperation.setConstantReservedFound(constantReservedFound);
+            findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
+
             fieldMap.put("日期", "todayDate");
             fieldMap.put("累计资金流入", "allMoneyinflowA");
 
