@@ -401,9 +401,10 @@ public class InvestorsBean {
                 plat.setInsertTime(!QwyUtil.isNullAndEmpty(insertTime) ? insertTime : null);// 注册时间
                 plat.setBandCardTime(!QwyUtil.isNullAndEmpty(bandCardTime) ? bandCardTime : null);// 绑卡时间
                 plat.setFristBuyTime(!QwyUtil.isNullAndEmpty(fristBuyTime) ? fristBuyTime : null);// 首投时间
-                plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? QwyUtil.jieQuFa(Double.valueOf(object[6] + ""), 2) + "" : "0");// 投资总额
+                plat.setCopies(!QwyUtil.isNullAndEmpty(object[6]) ? object[6] + "": "0");// 投资总额
                 plat.setAllMoney(!QwyUtil.isNullAndEmpty(object[7]) ? QwyUtil.jieQuFa(Double.valueOf(object[7] + "") / 100, 2) + "" : "0");// 现存资金
-                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? QwyUtil.jieQuFa(Double.valueOf(object[8] + "") / 100, 2) + "" : "0");// 在贷金额
+                Double buyInMoney =  !QwyUtil.isNullAndEmpty(object[8]) ? QwyUtil.jieQuFa(Double.valueOf(object[8] + "") / 100, 2) : 0.0;
+                plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? (buyInMoney+"").substring(0,buyInMoney.toString().length()-2): "0");// 在贷金额
                 plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? QwyUtil.jieQuFa(Double.valueOf(object[9] + "") / 100, 2) + "" : "0");// 零钱罐金额
                 plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? QwyUtil.jieQuFa(Double.valueOf(object[10] + "") / 100, 2) + "" : "0");// 账户余额
                 plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");// 邀请好友人数

@@ -213,7 +213,6 @@ public class InvestorsAction extends BaseAction {
             FileOutputStream fout = new FileOutputStream(realPath);
             wb.write(fout);
             fout.close();
-            // response.getWriter().write("/report/userInvertors.xls");
             String json = QwyUtil.getJSONString("ok", "/report/userInvertors.xls");
             QwyUtil.printJSON(response, json);
         } catch (Exception e) {
