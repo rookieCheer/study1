@@ -87,8 +87,8 @@ public class MyServletContextListener implements ServletContextListener {
 
                 //固定执行的一些程序,一天执行一次;且有顺序的执行; **********重要**************
                 FixedOrderThread fixedOrderThread = (FixedOrderThread) context.getBean("fixedOrderThread");
-
                 scheduler.scheduleAtFixedRate(fixedOrderThread,  getFixedTime("00:15:00"), oneDay, TimeUnit.MILLISECONDS);
+                
                 //手机归属地补全
                 NumberAssignmentThread numberAssignmentThread=(NumberAssignmentThread) context.getBean("numberAssignmentThread");
                 scheduler.scheduleAtFixedRate(numberAssignmentThread, 2, 10, TimeUnit.MINUTES);
