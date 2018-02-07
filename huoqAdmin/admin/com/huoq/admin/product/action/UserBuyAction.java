@@ -310,8 +310,8 @@ public class UserBuyAction extends BaseAction {
         instertDetail.append("select sum(in_money) from interest_details where status='0' ");//定期预留资金
         if (time.length > 1) {
             params = new Object[2];
-            params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
-            params[2]=QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
+            params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+            params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
             sql.append(" and insert_time>=? and insert_time<=? ");
             rateDetail.append(" and insert_time>=? and insert_time<=? ");
             instertDetail.append(" and insert_time>=? and insert_time<=? ");
