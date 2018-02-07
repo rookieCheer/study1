@@ -52,7 +52,7 @@ public class InvestorsBean {
         buffer.append(" JOIN users_info us  ON i.users_id=us.users_id  ");
         buffer.append(" JOIN users u  ON i.users_id=u.id  ");
         buffer.append(" JOIN coupon c ON c.users_id=u.id  ");
-        buffer.append(" JOIN (SELECT v.pay_time ,v.users_id FROM investors v GROUP BY v.users_id ORDER BY v.pay_time ASC) t  ");
+        buffer.append(" JOIN (SELECT v.pay_time ,v.users_id FROM investors v WHERE v.investor_status IN ('1','2','3') GROUP BY v.users_id ORDER BY v.pay_time ASC) t  ");
         buffer.append(" ON t.users_id = i.users_id  ");
         buffer.append(" GROUP BY i.users_id,i.pay_time  HAVING 1=1 ");
         if (!"all".equals(status)) {
