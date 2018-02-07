@@ -45,14 +45,14 @@ public class InvestorsBean {
         StringBuffer buffer = new StringBuffer();
         buffer.append(" SELECT u.username,us.real_name,u.regist_channel,MIN(t.pay_time), p.title,p.lcqx,  ");
         buffer.append(" i.investor_status,i.copies,i.in_money,i.expect_earnings,i.coupon, ");
-        buffer.append(" c.type,c.note,i.coupon_shouyi,i.hongbao,i.annual_earnings,  ");
+        buffer.append(" aa.type,aa.note,i.coupon_shouyi,i.hongbao,i.annual_earnings,  ");
         buffer.append(" i.pay_time,i.start_time,i.clear_time,i.finish_time ");
         buffer.append(" FROM investors i ");
         buffer.append(" JOIN product p ON i.product_id=p.id ");
         buffer.append(" JOIN users_info us  ON i.users_id=us.users_id  ");
         buffer.append(" JOIN users u  ON i.users_id=u.id  ");
-        buffer.append(" JOIN coupon c ON c.users_id=u.id  ");
-        buffer.append(" JOIN (SELECT v.pay_time ,v.users_id FROM investors v WHERE v.investor_status IN ('1','2','3') GROUP BY v.users_id ORDER BY v.pay_time ASC) t  ");
+        buffer.append(" LEFT JOIN (SELECT c.`users_id`,c.type,c.note,c.use_time,c.id FROM coupon c WHERE c.`use_time`!='null' ) aa  ON i.counpId=aa.id  ");
+        buffer.append(" JOIN (SELECT MIN(v.pay_time) pay_time ,v.users_id FROM investors v WHERE v.investor_status IN ('1','2','3') GROUP BY v.users_id ORDER BY v.pay_time ASC) t  ");
         buffer.append(" ON t.users_id = i.users_id  ");
         buffer.append(" GROUP BY i.users_id,i.pay_time  HAVING 1=1 ");
         if (!"all".equals(status)) {
@@ -111,8 +111,7 @@ public class InvestorsBean {
      */
     private List<Investors> toInvestors(List<Object[]> list) throws ParseException {
         List<Investors> investorsList = new ArrayList<Investors>();
-        if (!QwyUtil.isNullAndEmpty(list)) {
-            for (Object[] object : list) {
+        for (Object[] object : list) {
                 Investors investors = new Investors();
                 if (!QwyUtil.isNullAndEmpty(object)) {
                     investors.setUsername(!QwyUtil.isNullAndEmpty(object[0]) ? DESEncrypt.jieMiUsername(object[0] + "") : "");
@@ -182,7 +181,6 @@ public class InvestorsBean {
                     investorsList.add(investors);
                 }
             }
-        }
         return investorsList;
     }
 
