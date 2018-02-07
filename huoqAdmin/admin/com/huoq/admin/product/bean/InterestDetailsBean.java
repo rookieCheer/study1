@@ -340,5 +340,10 @@ public class InterestDetailsBean {
 		}
 		return 0;
 	}
+
+
+	public List listBySql(Object[] params,String sql){
+		return dao.LoadAllSql(sql,params);
+	}
 	
 }

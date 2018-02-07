@@ -1165,23 +1165,13 @@ public class RechargeBean {
 	}
 
 
-	public double[] reservedFound(String time) throws Exception{
+	public double[] reservedFound() throws Exception{
 		Date begin=null;
 		Date end=null;
 		double[] result =null;
-		if(!QwyUtil.isNullAndEmpty(time)){
-          String[] times = QwyUtil.splitTime(time);
-          if(times.length>1){
-			  begin = QwyUtil.fmMMddyyyy.parse(times[0]);
-			  end = QwyUtil.fmMMddyyyy.parse(times[0]);
-		  }else{
-          	begin = QwyUtil.fmMMddyyyy.parse(times[0]);
-          	end = QwyUtil.fmMMddyyyy.parse(times[0]);
-		  }
-		}else{
-			begin = DateUtils.getNowDateShort("yyyy-MM-dd");
-			end = DateUtils.getNowDateShort("yyyy-MM-dd");
-		}
+
+		begin = DateUtils.getNowDateShort("yyyy-MM-dd");
+		end = DateUtils.getNowDateShort("yyyy-MM-dd");
 		Object[] params = new Object[2];
 		params[0]=begin;
 		params[1]=end;
@@ -1236,17 +1226,6 @@ public class RechargeBean {
 				}
 		}
 
-		/**
-		 * SELECT
-		 DATE_FORMAT(w.insert_time, '%Y-%m-%d') AS insert_time,
-		 SUM(ids.pay_money),
-		 SUM(ids.pay_interest)
-		 FROM
-		 weeks w
-		 JOIN interest_details ids ON DATE_FORMAT(w.insert_time, '%Y-%m-%d') = DATE_FORMAT(ids.return_time, '%Y-%m-%d')
-		 AND ids.return_time < DATE_ADD(?,INTERVAL 2 DAY)
-		 AND ids.return_time >= DATE_ADD(?,INTERVAL 1 DAY)
-		 */
 		return result;
 	}
 

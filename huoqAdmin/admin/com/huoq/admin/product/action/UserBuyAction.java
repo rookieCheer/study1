@@ -1,5 +1,9 @@
 package com.huoq.admin.product.action;
 
+import com.huoq.account.bean.CoinPurseFundRecordBean;
+import com.huoq.account.bean.SendRatesBean;
+import com.huoq.account.bean.SendRatesDetailBean;
+import com.huoq.admin.product.bean.InterestDetailsBean;
 import com.huoq.admin.product.bean.RechargeBean;
 import com.huoq.common.action.BaseAction;
 import com.huoq.common.bean.*;
@@ -48,11 +52,24 @@ public class UserBuyAction extends BaseAction {
     private SumOperationBean sOtBean;
 
     @Resource
+    private InterestDetailsBean interestDetailsBean;
+
+    @Resource
     private PlatformBean platformBean;      // allCapitalStock 平台资金存量
 
 
     @Resource
     private RechargeBean rechargeBean;
+    /**
+     * 发息详情表
+     */
+    @Resource
+    private SendRatesDetailBean sendRatesDetailBean;
+    /**
+     * 流水表
+     */
+    @Resource
+    private CoinPurseFundRecordBean coinPurseFundRecordBean;
 
 
     private Integer currentPage = 1;
@@ -277,6 +294,94 @@ public class UserBuyAction extends BaseAction {
         return allCapitalStock;
     }
 
+    /**
+     * 设置当前结果的预留资金和定期预留资金
+     * @param findSumOperation 被设置的对象
+     * @param insertTime  传递的时间值
+     */
+    private void setReservedFoundAndConstantReservedFound(SumOperation findSumOperation,String insertTime) throws Exception{
+        String[] time = QwyUtil.splitTime(insertTime);
+        StringBuffer sql = new StringBuffer("");
+        StringBuffer rateDetail = new StringBuffer("");
+        StringBuffer instertDetail = new StringBuffer("");
+        Object[] params ;
+        sql.append("select type,sum(money) from coin_purse_funds_record where status=0 and type in ('out','to')");//流入和流出金额
+        rateDetail.append("select sum(pay_interest) from send_rates_detail where status='1' "); //发息详情表数据
+        instertDetail.append("select sum(in_money) from interest_details where status='0' ");//定期预留资金
+        if (time.length > 1) {
+            params = new Object[2];
+            params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+            params[2]=QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
+            sql.append(" and insert_time>=? and insert_time<=? ");
+            rateDetail.append(" and insert_time>=? and insert_time<=? ");
+            instertDetail.append(" and insert_time>=? and insert_time<=? ");
+        } else {
+            params = new Object[1];
+            sql.append(" and insert_time<=?");
+            rateDetail.append(" and insert_time<=?");
+            instertDetail.append("  and insert_time<=? ");
+            params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
+        }
+        sql.append(" group by type");
+        List<Object>  list = coinPurseFundRecordBean.listBySql(params,sql.toString());
+        List<Object> ratesDetails = sendRatesDetailBean.listBySql(params,rateDetail.toString());
+        List<Object> instertDetails = interestDetailsBean.listBySql(params,instertDetail.toString());//定期预留资金
+        Double reservedFound=0.0; //预留资金
+        if(list!=null){
+            int size = list.size();
+            if(size>0){
+                for(Object obj:list){
+                    if(obj instanceof  Object[]){
+                        Object[] objects =(Object[])obj;
+                        String type = (String) objects[0];
+                        Double money =(Double)objects[1];
+                        if(money == null){
+                            money = new Double(0);
+                        }
+                        if("to".equals(type)){
+                            reservedFound = reservedFound+money;
+                        }else{
+                            reservedFound = reservedFound-money;
+                        }
+                    }
+                }
+            }
+        }
+        if(ratesDetails!=null){
+            int size = ratesDetails.size();
+            if(size>0){
+                for(Object obj:ratesDetails){
+                    if(obj instanceof Double){
+                        Double rate =(Double)obj;
+                        if(rate!=null){
+                            reservedFound = reservedFound+rate;
+                        }
+                    }
+                }
+            }
+        }
+        reservedFound = reservedFound/100.0;
+        findSumOperation.setReservedFound(reservedFound);
+        Double constantReservedFound = 0.0;
+        findSumOperation.setConstantReservedFound(constantReservedFound);
+        if(instertDetails!=null){
+            int size = instertDetails.size();
+            if(size>0){
+                for(Object obj:instertDetails){
+                    if(obj instanceof Double){
+                        Double money =(Double)obj;
+                        if(money!=null){
+                            money = money/100.0;
+                            findSumOperation.setReservedFound(money);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
 
     /**
      * 运营总表统计
@@ -305,16 +410,19 @@ public class UserBuyAction extends BaseAction {
                 if (foundFlowInto != null) {
                     findSumOperation.setFoundFlowInto(foundFlowInto);
                 }
-
-                double[] result = rechargeBean.reservedFound(insertTime);
-                if(result!=null){
-                    int length = result.length;
-                    if(length == 2){
-                        findSumOperation.setReservedFound(result[1]);
-                        findSumOperation.setConstantReservedFound(result[0]);
+                if(QwyUtil.isNullAndEmpty(insertTime)){
+                    double[] result = rechargeBean.reservedFound();
+                    if(result!=null){
+                        int length = result.length;
+                        if(length == 2){
+                            findSumOperation.setReservedFound(result[1]);
+                            findSumOperation.setConstantReservedFound(result[0]);
+                        }
                     }
-
+                }else{
+                    setReservedFoundAndConstantReservedFound(findSumOperation,insertTime);
                 }
+
                 findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
                 getRequest().setAttribute("list", findSumOperation);
             }
@@ -586,14 +694,17 @@ public class UserBuyAction extends BaseAction {
             if (foundFlowInto != null) {
                 findSumOperation.setFoundFlowInto(foundFlowInto);
             }
-            double[] result = rechargeBean.reservedFound(insertTime);
-            if(result!=null){
-                int length = result.length;
-                if(length == 2){
-                    findSumOperation.setReservedFound(result[1]);
-                    findSumOperation.setConstantReservedFound(result[0]);
+            if(QwyUtil.isNullAndEmpty(insertTime)){
+                double[] result = rechargeBean.reservedFound();
+                if(result!=null){
+                    int length = result.length;
+                    if(length == 2){
+                        findSumOperation.setReservedFound(result[1]);
+                        findSumOperation.setConstantReservedFound(result[0]);
+                    }
                 }
-
+            }else{
+                setReservedFoundAndConstantReservedFound(findSumOperation,insertTime);
             }
             findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
 

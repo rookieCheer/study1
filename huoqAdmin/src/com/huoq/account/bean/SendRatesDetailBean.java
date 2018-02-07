@@ -69,5 +69,9 @@ public class SendRatesDetailBean{
 		buffer.append(" ORDER BY sd.insertTime DESC ");
 		return dao.LoadAll(buffer.toString(), null);
 	}
+
+	public List listBySql(Object[] params,String sql){
+       return dao.LoadAllSql(sql,params);
+	}
 	
 }

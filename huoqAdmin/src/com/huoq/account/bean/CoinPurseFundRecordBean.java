@@ -2,6 +2,7 @@ package com.huoq.account.bean;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -80,5 +81,9 @@ public class CoinPurseFundRecordBean {
 			log.error("操作异常: ",e);
 		}
 		return null;
+	}
+
+	public List listBySql(Object[] params,String sql){
+      return dao.LoadAllSql(sql,params);
 	}
 }
