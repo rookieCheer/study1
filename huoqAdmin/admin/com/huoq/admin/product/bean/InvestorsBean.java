@@ -104,6 +104,7 @@ public class InvestorsBean {
 
     /**
      * 转换
+     *
      * @param list
      * @return
      * @throws ParseException
@@ -114,9 +115,9 @@ public class InvestorsBean {
             for (Object[] object : list) {
                 Investors investors = new Investors();
                 if (!QwyUtil.isNullAndEmpty(object)) {
-                    investors.setUsername(!QwyUtil.isNullAndEmpty(object[0]) ? DESEncrypt.jieMiUsername(object[0] + ""):"");
-                    investors.setRealname(!QwyUtil.isNullAndEmpty(object[1]) ? object[1] + "" :"");
-                    investors.setRegistChannel(!QwyUtil.isNullAndEmpty(object[2]) ? object[2] + "" :"");
+                    investors.setUsername(!QwyUtil.isNullAndEmpty(object[0]) ? DESEncrypt.jieMiUsername(object[0] + "") : "");
+                    investors.setRealname(!QwyUtil.isNullAndEmpty(object[1]) ? object[1] + "" : "");
+                    investors.setRegistChannel(!QwyUtil.isNullAndEmpty(object[2]) ? object[2] + "" : "");
                     if (!QwyUtil.isNullAndEmpty(object[3]) && !QwyUtil.isNullAndEmpty(object[16])) {
                         if (object[3].toString().equals(object[16].toString())) {
                             investors.setIsFirstInvt("是");
@@ -124,7 +125,7 @@ public class InvestorsBean {
                             investors.setIsFirstInvt("否");
                         }
                     }
-                    investors.setTitle(!QwyUtil.isNullAndEmpty(object[4]) ? object[4] + "" :"");
+                    investors.setTitle(!QwyUtil.isNullAndEmpty(object[4]) ? object[4] + "" : "");
                     investors.setTits(!QwyUtil.isNullAndEmpty(object[5]) ? Integer.valueOf(object[5] + "") : 0);
                     investors.setLcqx(!QwyUtil.isNullAndEmpty(object[5]) ? Integer.valueOf(object[5] + "") : 0);
                     if (!QwyUtil.isNullAndEmpty(object[19])) {
@@ -145,33 +146,33 @@ public class InvestorsBean {
                         investors.setInvestorStatus(object[6] + "");
                     }
                     investors.setCopies(!QwyUtil.isNullAndEmpty(object[7]) ? Long.valueOf(object[7] + "") : 0);
-                    investors.setInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? Double.valueOf(object[8] + "")*0.01 : 0.0);
-                    investors.setExpectEarnings(!QwyUtil.isNullAndEmpty(object[9]) ? Double.valueOf(object[9] + "")*0.01 : 0.00);
-                    investors.setCoupon(!QwyUtil.isNullAndEmpty(object[10]) ? Double.valueOf(object[10] + "")*0.01 : 0.0);
+                    investors.setInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? Double.valueOf(object[8] + "") * 0.01 : 0.0);
+                    investors.setExpectEarnings(!QwyUtil.isNullAndEmpty(object[9]) ? Double.valueOf(object[9] + "") * 0.01 : 0.00);
+                    investors.setCoupon(!QwyUtil.isNullAndEmpty(object[10]) ? Double.valueOf(object[10] + "") * 0.01 : 0.0);
                     if (!QwyUtil.isNullAndEmpty(object[10])) {
-                        Double coupon = Double.valueOf(object[10] + "")*0.01;
+                        Double coupon = Double.valueOf(object[10] + "") * 0.01;
                         if (coupon > 0) {
                             if ("1".equals(object[11]) || "0".equals(object[11])) {
 
-                                investors.setInvestSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12]+"" : null);
+                                investors.setInvestSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : null);
                             }
                         }
                     }
                     if (!QwyUtil.isNullAndEmpty(object[14])) {
-                            Double hongbao = Double.valueOf(object[14] + "");
-                            if (hongbao > 0) {
-                                if ("3".equals(object[11])) {
-                                    investors.setRedPackageSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12]+"" : null);
-                                }
+                        Double hongbao = Double.valueOf(object[14] + "");
+                        if (hongbao > 0) {
+                            if ("3".equals(object[11])) {
+                                investors.setRedPackageSource(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : null);
                             }
                         }
-                    investors.setCouponShouyi(!QwyUtil.isNullAndEmpty(object[13]) ? Double.valueOf(object[13] + "")*0.01 : 0.0);
-                    investors.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? Double.valueOf(object[14] + "")*0.01 : 0.0);
+                    }
+                    investors.setCouponShouyi(!QwyUtil.isNullAndEmpty(object[13]) ? Double.valueOf(object[13] + "") * 0.01 : 0.0);
+                    investors.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? Double.valueOf(object[14] + "") * 0.01 : 0.0);
                     investors.setAnnualEarnings(!QwyUtil.isNullAndEmpty(object[15]) ? Double.valueOf(object[15] + "") : 0.0);
-                    if(!QwyUtil.isNullAndEmpty(object[9]) && !QwyUtil.isNullAndEmpty(object[13]) ){
-                        Double expectEarnings= Double.valueOf(object[9]+"")*0.01;
-                        Double couponShouyi= Double.valueOf(object[13]+"")*0.01;
-                        Double sum=expectEarnings+couponShouyi;
+                    if (!QwyUtil.isNullAndEmpty(object[9]) && !QwyUtil.isNullAndEmpty(object[13])) {
+                        Double expectEarnings = Double.valueOf(object[9] + "") * 0.01;
+                        Double couponShouyi = Double.valueOf(object[13] + "") * 0.01;
+                        Double sum = expectEarnings + couponShouyi;
                         investors.setFinalEarnings(sum);
                     }
                     investors.setPayTime(!QwyUtil.isNullAndEmpty(object[16]) ? QwyUtil.fmyyyyMMddHHmmss.parse(object[16].toString()) : null);
@@ -405,10 +406,8 @@ public class InvestorsBean {
                 plat.setBuyInMoney(!QwyUtil.isNullAndEmpty(object[8]) ? QwyUtil.jieQuFa(Double.valueOf(object[8] + "") / 100, 2) + "" : "0");// 在贷金额
                 plat.setCoinPurseMoney(!QwyUtil.isNullAndEmpty(object[9]) ? QwyUtil.jieQuFa(Double.valueOf(object[9] + "") / 100, 2) + "" : "0");// 零钱罐金额
                 plat.setLeftMoney(!QwyUtil.isNullAndEmpty(object[10]) ? QwyUtil.jieQuFa(Double.valueOf(object[10] + "") / 100, 2) + "" : "0");// 账户余额
-                plat.setCoupon(!QwyUtil.isNullAndEmpty(object[11]) ? QwyUtil.jieQuFa(Double.valueOf(object[11] + "") / 100, 2) + "" : "0");// 投资券金额
-                plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[12]) ? object[12] + "" : "0");// 邀请好友人数
-                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[13]) ? QwyUtil.jieQuFa(Double.valueOf(object[13] + "") / 100, 2) + "" : "0");// 邀请好友人数
-                plat.setHongbao(!QwyUtil.isNullAndEmpty(object[14]) ? QwyUtil.jieQuFa(Double.valueOf(object[14] + "") / 100, 2) + "" : "0");// 红包金额
+                plat.setFriendNumber(!QwyUtil.isNullAndEmpty(object[11]) ? object[11] + "" : "0");// 邀请好友人数
+                plat.setFriendMoney(!QwyUtil.isNullAndEmpty(object[12]) ? QwyUtil.jieQuFa(Double.valueOf(object[12] + "") / 100, 2) + "" : "0");// 邀请好友人数
                 platInverstors.add(plat);
             }
         }
@@ -421,20 +420,18 @@ public class InvestorsBean {
             ArrayList<Object> ob = new ArrayList<Object>();
             StringBuffer buff = new StringBuffer();
             buff.append("SELECT u.id,u.username  AS username, i.real_name AS real_name,IFNULL(u.insert_time,null) ,IFNULL(ac.insert_time,null),IFNULL(zc.insert_time,null),SUM(ins.copies)  AS copies ,");
-            buff.append("i.total_money,c.all_money,lqg.in_money,i.left_money,SUM(cp.coupon)  AS coupon ,inv.num,inv.money,SUM(hb.hongbao) ");
+            buff.append("i.total_money,c.all_money,lqg.in_money,i.left_money,inv.num,inv.money,ins.users_id ");
             buff.append("FROM investors ins ");
-            buff.append("JOIN users u ON ins.users_id = u.id  ");
-            buff.append("JOIN users_info i ON i.users_id = u.id  ");
-            buff.append("JOIN account ac ON ac.users_id = u.id ");
-            buff.append("JOIN (SELECT MIN(i.insert_time) insert_time,i.users_id ");
+            buff.append("LEFT JOIN users u ON ins.users_id = u.id  ");
+            buff.append("LEFT JOIN users_info i ON i.users_id = u.id  ");
+            buff.append("LEFT JOIN account ac ON ac.users_id = u.id ");
+            buff.append("LEFT JOIN (SELECT MIN(i.insert_time) insert_time,i.users_id ");
             buff.append("FROM investors i  GROUP BY i.`users_id` )zc ON zc.users_id = u.id ");
-            buff.append("JOIN (SELECT i.users_id,SUM(i.in_money) all_money ");
+            buff.append("LEFT JOIN (SELECT i.users_id,SUM(i.in_money) all_money ");
             buff.append("FROM investors i WHERE investor_status ='1' GROUP BY i.`users_id` )c ON c.users_id = u.id ");
-            buff.append("JOIN (SELECT in_money,users_id FROM coin_purse cp )lqg ON lqg.users_id = u.id ");
-            buff.append("JOIN (SELECT COUNT(be_invited_id) num,invite_id,SUM(ui.total_money) money FROM invite inv ");
-            buff.append("JOIN users_info ui ON ui.users_id = inv.be_invited_id ");
-            buff.append("JOIN (SELECT cp.users_id, CASE WHEN cp.TYPE='1' THEN cp.money  ELSE cp.money = 0 END coupon FROM coupon cp WHERE cp.STATUS = '0' )cp ON cp.users_id = ins.users_id ");
-            buff.append("JOIN (SELECT cp.users_id, CASE WHEN cp.TYPE='3' THEN cp.money  ELSE cp.money = 0 END hongbao FROM coupon cp WHERE cp.STATUS = '0' )hb ON hb.users_id = ins.users_id ");
+            buff.append("LEFT JOIN (SELECT in_money,users_id FROM coin_purse cp )lqg ON lqg.users_id = u.id ");
+            buff.append("LEFT JOIN (SELECT COUNT(be_invited_id) num,invite_id,SUM(ui.total_money) money FROM invite inv ");
+            buff.append("LEFT JOIN users_info ui ON ui.users_id = inv.be_invited_id ");
             buff.append("GROUP BY invite_id)inv ON inv.invite_id = u.id ");
             buff.append("WHERE investor_status IN ('1', '2', '3') ");
             if (!QwyUtil.isNullAndEmpty(name)) {
@@ -468,6 +465,40 @@ public class InvestorsBean {
             bufferCount.append(") t");
             pageUtil = dao.getBySqlAndSqlCount(pageUtil, buff.toString(), bufferCount.toString(), ob.toArray());
             List<PlatInvestors> platUsers = toMoney(pageUtil.getList());
+            StringBuffer sql = new StringBuffer();
+            List<Object> list = new ArrayList<>();
+            //设置查询红包和投资券金额
+            for (PlatInvestors platUser : platUsers) {
+                String username = platUser.getUsername();
+                //根据username获取userid
+                sql.append("SELECT id FROM users where username = ?");
+                list.add(username);
+                List<Long> id = dao.LoadAllSql(sql.toString(), list.toArray());
+                //根据用户id查询出用户的可用投资券金额和红包金额
+                sql.delete(0, sql.length());
+                list.clear();
+                sql.append("SELECT money,TYPE,STATUS FROM coupon WHERE users_id = ? ");
+                list.add(id.get(0));
+                List<Object[]> coupon = dao.LoadAllSql(sql.toString(), list.toArray());
+                sql.delete(0, sql.length());
+                list.clear();
+                Double sumcoupon = 0.0;
+                Double hongbao = 0.0;
+                for (Object[] objects : coupon) {
+                    if ((objects[1] + "").equals("1")) {
+                        if ((objects[2] + "").equals("0")) {
+                            sumcoupon+=Double.valueOf(objects[0] + "");
+                        }
+                    }
+                    if ((objects[1] + "").equals("3")) {
+                        if ((objects[2] + "").equals("0")) {
+                            hongbao+=Double.valueOf(objects[0] + "");
+                        }
+                    }
+                }
+                platUser.setCoupon(sumcoupon/100 + "");
+                platUser.setHongbao(hongbao/100 + "");
+            }
             pageUtil.setList(platUsers);
             return pageUtil;
         } catch (Exception e) {
