@@ -24,9 +24,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
                     key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 -->
                 <prop key="hibernate.dialect">com.huoq.common.MysqlDailetExtend</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.use_sql_comments">true</prop>  
+                <prop key="hibernate.show_sql">false</prop>
+                <!--<prop key="hibernate.format_sql">false</prop>-->
+                <!--<prop key="hibernate.use_sql_comments">true</prop>  -->
                 <prop key="hibernate.hbm2ddl.auto">none</prop>
                 <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
                 <prop key="hibernate.jdbc.batch_size">150</prop>

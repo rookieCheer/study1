@@ -61,97 +61,97 @@ public class PlatformBean {
         long start = System.currentTimeMillis();
         Double updateTodayrechargeMoney = updateTodayrechargeMoney(null);
         plat.setTodayrechargeMoney(updateTodayrechargeMoney);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日充值金额耗时："+(System.currentTimeMillis() - start));
 
         // 今日存量增量
         log.info("=========今日存量增量========");
         start = System.currentTimeMillis();
         Double todayCapitalStock = updateTodayCapitalStock(null);
         plat.setTodayCapitalStock(todayCapitalStock);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日存量增量耗时："+(System.currentTimeMillis() - start));
 
         // 累计提现金额
         log.info("=========累计提现金额========");
         start = System.currentTimeMillis();
         Double uodateAllOutCashMoney = uodateAllOutCashMoney(null);
         plat.setAllOutCashMoney(uodateAllOutCashMoney);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("累计提现金额耗时："+(System.currentTimeMillis() - start));
 
         // 今日提现金额
         log.info("=========今日提现金额========");
         start = System.currentTimeMillis();
         Double uodateTodayOutCashMoney = uodateTodayOutCashMoney(null);
         plat.setTodayOutCashMoney(uodateTodayOutCashMoney);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日提现金额耗时："+(System.currentTimeMillis() - start));
 
         // 今日购买金额
         log.info("=========今日购买金额========");
         start = System.currentTimeMillis();
         Double updateTodayBuyMoney = updateTodayBuyMoney(null);
         plat.setTodayBuyMoney(updateTodayBuyMoney);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日购买金额耗时："+(System.currentTimeMillis() - start));
 
         // 总购买金额(平台交易总额)
         log.info("=========总购买金额(平台交易总额)========");
         start = System.currentTimeMillis();
         Double updateAllBuyMoney = updateAllBuyMoney();
         plat.setAllBuyMoney(updateAllBuyMoney);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("总购买金额(平台交易总额)耗时："+(System.currentTimeMillis() - start));
 
         // 累计充值金额
         log.info("=========累计充值金额========");
         start = System.currentTimeMillis();
         Double rechargeMoney = updateRechargeMoney(null);
         plat.setRechargeMoney(rechargeMoney);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("累计充值金额耗时："+(System.currentTimeMillis() - start));
 
         // 更新累计注册用户
         log.info("=========更新累计注册用户========");
         start = System.currentTimeMillis();
         Integer updateRegisterCount = updateRegisterCount(null);
         plat.setRegisterCount(updateRegisterCount);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("更新累计注册用户耗时："+(System.currentTimeMillis() - start));
 
         // 累计绑定用户
         log.info("=========累计绑定用户========");
         start = System.currentTimeMillis();
         Integer updateCertificationCount = updateCertificationCount(null);
         plat.setCertificationCount(updateCertificationCount);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("累计绑定用户耗时："+(System.currentTimeMillis() - start));
 
         // 今日注册用户
         log.info("=========今日注册用户========");
         start = System.currentTimeMillis();
         Integer updateTodayregisterCount = updateTodayregisterCount(null);
         plat.setTodayregisterCount(updateTodayregisterCount);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日注册用户耗时："+(System.currentTimeMillis() - start));
 
         // 今日绑定用户
         log.info("=========今日绑定用户========");
         start = System.currentTimeMillis();
         Integer updateTodaycertificationCount = updateTodaycertificationCount(null);
         plat.setTodaycertificationCount(updateTodaycertificationCount);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日绑定用户耗时："+(System.currentTimeMillis() - start));
 
         // 今日购买人数
         log.info("=========今日购买人数========");
         start = System.currentTimeMillis();
         Integer updateTodayBuyNumber = updateTodayBuyNumber(null);
         plat.setTodayBuyNumber(updateTodayBuyNumber);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日购买人数耗时："+(System.currentTimeMillis() - start));
 
         // 今日提现人数
         log.info("=========今日提现人数========");
         start = System.currentTimeMillis();
         Integer updateTodayfirstBuyNumber = updateTodayfirstBuyNumber(null);
         plat.setTodayNewBuyNumber(updateTodayfirstBuyNumber);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日提现人数耗时："+(System.currentTimeMillis() - start));
 
         // 获取未审核提现金额
         log.info("=========获取未审核提现金额========");
         Double updateUncheckedOutCashMoney = updateUAuditingOutCashMoney();
         plat.setUncheckedOutCashMoney(updateUncheckedOutCashMoney);
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("获取未审核提现金额耗时："+(System.currentTimeMillis() - start));
 
         // 今日满标企业(家)
         log.info("=========今日满标企业(家)========");
@@ -192,7 +192,7 @@ public class PlatformBean {
             }
             plat.setRechargeMoney(rechargeMoney);
         }
-        log.info("耗时："+(System.currentTimeMillis() - start));
+        log.info("今日满标企业(家)耗时："+(System.currentTimeMillis() - start));
 
         return plat;
     }
@@ -408,13 +408,13 @@ public class PlatformBean {
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 list.add(insertTime);
                 list.add(insertTime);
-                sql.append("AND insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+                sql.append("AND insert_time >= DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND insert_time <= DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             }
             if (QwyUtil.isNullAndEmpty(insertTime)) {
                 Date date = new Date();
                 list.add(date);
                 list.add(date);
-                sql.append("AND insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+                sql.append("AND insert_time >= DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND insert_time <= DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             }
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double allCapitalStock = 0.0;
@@ -498,7 +498,7 @@ public class PlatformBean {
             }
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT FORMAT(SUM(cz.money)/100,0) money FROM cz_record cz WHERE cz.STATUS = '1' AND TYPE = '1' ");
-            sql.append("AND cz.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59')");
+            sql.append("AND cz.insert_time >= DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND cz.insert_time <= DATE_FORMAT(?,'%Y-%m-%d 23:59:59')");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double todayrechargeMoney = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -542,10 +542,20 @@ public class PlatformBean {
                 list.add(time);
             }
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT SUM(1) FROM ( " + "SELECT SUM(t.number) t FROM ( "
-                       + "SELECT COUNT(i.id) number,i.users_id userid FROM investors i WHERE i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND i.investor_status IN('1','2','3') GROUP BY users_id "
-                       + "UNION ALL "
-                       + "SELECT COUNT(cpfr.id) number,cpfr.users_id userid   FROM coin_purse_funds_record  cpfr WHERE cpfr.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND cpfr.type='to' GROUP BY users_id)t GROUP BY t.userid)a ");
+//            sql.append("SELECT SUM(1) FROM ( " + "SELECT SUM(t.number) t FROM ( "
+//                       + "SELECT COUNT(i.id) number,i.users_id userid FROM investors i WHERE i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND i.investor_status IN('1','2','3') GROUP BY users_id "
+//                       + "UNION ALL "
+//                       + "SELECT COUNT(cpfr.id) number,cpfr.users_id userid   FROM coin_purse_funds_record  cpfr WHERE cpfr.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND cpfr.type='to' GROUP BY users_id)t GROUP BY t.userid)a ");
+
+            sql.append(" SELECT COUNT(DISTINCT(t.num)) FROM( SELECT DISTINCT(i.users_id) num ");
+            sql.append(" FROM investors i WHERE i.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') ");
+            sql.append(" AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') AND i.investor_status IN('1', '2', '3') ");
+            sql.append(" UNION ALL ");
+            sql.append(" SELECT DISTINCT(cpfr.users_id) num ");
+            sql.append(" FROM coin_purse_funds_record cpfr ");
+            sql.append(" WHERE cpfr.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') ");
+            sql.append(" AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') AND cpfr.type= 'to') t ");
+
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Integer todayBuyMoney = 0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -589,10 +599,12 @@ public class PlatformBean {
             }
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT SUM(t.money) FROM ( "
-                       + "SELECT SUM(i.in_money)/100 money FROM investors i WHERE i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND i.investor_status IN('1','2','3') "
+                       + "SELECT SUM(i.in_money)/100 money FROM investors i WHERE i.insert_time >= DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND i.insert_time <= DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND i.investor_status IN('1','2','3') "
                        + "UNION ALL "
-                       + "SELECT SUM(cpfr.money)/100 money  FROM coin_purse_funds_record  cpfr WHERE cpfr.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND cpfr.type='to')t ");
+                       + "SELECT SUM(cpfr.money)/100 money  FROM coin_purse_funds_record  cpfr WHERE cpfr.insert_time >= DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND cpfr.insert_time <= DATE_FORMAT(?,'%Y-%m-%d 23:59:59') AND cpfr.type='to')t ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
+
+
             Double todayBuyMoney = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
                 todayBuyMoney = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
@@ -826,23 +838,23 @@ public class PlatformBean {
             List<Object> list = new ArrayList<Object>();
             // 获取昨日充值金额
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT FORMAT(SUM(cz.money)/100,0) money FROM cz_record cz WHERE cz.STATUS = '1' AND TYPE = '1' ");
+            sql.append("SELECT FORMAT(SUM(cz.money)*0.01,0) money FROM cz_record cz WHERE cz.STATUS = '1' AND TYPE = '1' ");
             if (!QwyUtil.isNullAndEmpty(insertTime)) {
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
-                    sql.append("AND cz.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+                    sql.append("AND cz.insert_time >= DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND cz.insert_time <= DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
-                    sql.append("AND cz.insert_time < DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+                    sql.append("AND cz.insert_time <= DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
                 }
             } else {
                 Date date = new Date();
                 SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
                 String time = sd.format(date);
                 list.add(time);
-                sql.append("AND cz.insert_time < DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+                sql.append("AND cz.insert_time <= DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
             }
             Object object = dao.LoadAllSql(sql.toString(), list.toArray()).get(0);
             Double allmoney = 0.0;
@@ -871,17 +883,17 @@ public class PlatformBean {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                     list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
-                    sql.append("WHERE u.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+                    sql.append("WHERE u.insert_time >= DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND u.insert_time <=(?, '%Y-%m-%d 23:59:59') ");
                 } else {
                     list.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
-                    sql.append("WHERE u.insert_time < DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
+                    sql.append("WHERE u.insert_time <= DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
                 }
             } else {
                 Date date = new Date();
                 SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
                 String time = sd.format(date);
                 list.add(time);
-                sql.append("WHERE u.insert_time < DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
+                sql.append("WHERE u.insert_time <= DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
             }
             Object object = dao.LoadAllSql(sql.toString(), list.toArray()).get(0);
             Integer parseInt = 0;
