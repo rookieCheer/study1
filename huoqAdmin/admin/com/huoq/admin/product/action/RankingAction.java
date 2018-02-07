@@ -139,7 +139,8 @@ public class RankingAction extends BaseAction{
 				row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersId()) ?  rank.getUsersId():"");
 				row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersname())? DESEncrypt.jieMiUsername(rank.getUsersname()):"");
 				row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(rank.getRealname()) ? rank.getRealname():"");
-				row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(rank.getInmoney()) ?  (Double.valueOf(rank.getInmoney())*0.01)+"":"");
+				Double inmoney = !QwyUtil.isNullAndEmpty(rank.getInmoney()) ?  (Double.valueOf(rank.getInmoney())*0.01):0.0;
+				row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(rank.getInmoney()) ?  inmoney.toString().substring(0,inmoney.toString().length()-2)+"":"");
 
 			}
 			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_investors_rank.xls";
