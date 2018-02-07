@@ -21,6 +21,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,50 +37,50 @@ import java.util.List;
 @SuppressWarnings("serial")
 @ParentPackage("struts-default")
 @Namespace("/Product/Admin")
-@Results({ @Result(name = "usersStats", value = "/Product/Admin/operationManager/UsersStat.jsp"),
-           @Result(name = "platUser", value = "/Product/Admin/operationManager/platUsers.jsp"),
-           @Result(name = "loadUserInfo", value = "/Product/Admin/operationManager/userInfo.jsp"),
-           @Result(name = "indexUserInfo", value = "/Product/Admin/operationManager/indexuserInfo.jsp"),
-           @Result(name = "loadUserInfo2", value = "/Product/Admin/operationManager/userInfo2.jsp"),
-           @Result(name = "loadProvince", value = "/Product/Admin/operationManager/provinceStatistics.jsp"),
-           @Result(name = "loadCity", value = "/Product/Admin/operationManager/cityStatistics.jsp"),
-           @Result(name = "loadSex", value = "/Product/Admin/operationManager/sexStatistics.jsp"),
-           @Result(name = "loadAge", value = "/Product/Admin/operationManager/usersAge.jsp"), @Result(name = "err", value = "/Product/Admin/err.jsp"),
-           @Result(name = "searchUserInfo", value = "/Product/Admin/operationManager/searchUserInfo.jsp"),
-           @Result(name = "loadBank", value = "/Product/Admin/operationManager/bankStatistics.jsp"),
-           @Result(name = "loadUserTZTJ", value = "/Product/Admin/operationManager/userTZTJ.jsp") })
+@Results({@Result(name = "usersStats", value = "/Product/Admin/operationManager/UsersStat.jsp"),
+        @Result(name = "platUser", value = "/Product/Admin/operationManager/platUsers.jsp"),
+        @Result(name = "loadUserInfo", value = "/Product/Admin/operationManager/userInfo.jsp"),
+        @Result(name = "indexUserInfo", value = "/Product/Admin/operationManager/indexuserInfo.jsp"),
+        @Result(name = "loadUserInfo2", value = "/Product/Admin/operationManager/userInfo2.jsp"),
+        @Result(name = "loadProvince", value = "/Product/Admin/operationManager/provinceStatistics.jsp"),
+        @Result(name = "loadCity", value = "/Product/Admin/operationManager/cityStatistics.jsp"),
+        @Result(name = "loadSex", value = "/Product/Admin/operationManager/sexStatistics.jsp"),
+        @Result(name = "loadAge", value = "/Product/Admin/operationManager/usersAge.jsp"), @Result(name = "err", value = "/Product/Admin/err.jsp"),
+        @Result(name = "searchUserInfo", value = "/Product/Admin/operationManager/searchUserInfo.jsp"),
+        @Result(name = "loadBank", value = "/Product/Admin/operationManager/bankStatistics.jsp"),
+        @Result(name = "loadUserTZTJ", value = "/Product/Admin/operationManager/userTZTJ.jsp")})
 public class UserStatAction extends BaseAction {
 
     @Resource
-    UserInfoBean           bean;
+    UserInfoBean bean;
     @Resource
-    RegisterUserBean       registerUserBean;
-    private Integer        currentPage = 1;
-    private Integer        pageSize    = 20;
-    private String         insertTime;
-    private String         acinsertTime;
-    private String         channel;
-    private String         username;
-    private String         isbindbank;
-    private String         islqg;
-    private String         province;
-    private String         registPlatform;
-    private String         level;
-    private String         inMoney2;
-    private String         inMoney1;
-    private String         zcpt;                                                                                            // 注册平台
+    RegisterUserBean registerUserBean;
+    private Integer currentPage = 1;
+    private Integer pageSize = 20;
+    private String insertTime;
+    private String acinsertTime;
+    private String channel;
+    private String username;
+    private String isbindbank;
+    private String islqg;
+    private String province;
+    private String registPlatform;
+    private String level;
+    private String inMoney2;
+    private String inMoney1;
+    private String zcpt;                                                                                            // 注册平台
 
-    private String         isBuy;                                                                                           // 是否投资
-    private String         isZero;                                                                                          // 账户余额是否为0
+    private String isBuy;                                                                                           // 是否投资
+    private String isZero;                                                                                          // 账户余额是否为0
 
     @Resource
     private UsersAdminBean usersAdminBean;
     @Resource
-    private InvestorsBean  investorsBean;
+    private InvestorsBean investorsBean;
 
-    private String         goPage;
+    private String goPage;
 
-    private static String  superName   = "0EA5D6BC23E8EEC78F62546B9F68BABFA96976B775889BA625DB6D764FD0DBD42A1C0F45F85B0DE8";
+    private static String superName = "0EA5D6BC23E8EEC78F62546B9F68BABFA96976B775889BA625DB6D764FD0DBD42A1C0F45F85B0DE8";
 
     /**
      * 统计注册人数
@@ -162,7 +163,7 @@ public class UserStatAction extends BaseAction {
 
     /**
      * 首页加载注册的用户
-     * 
+     *
      * @return
      */
     public String indexUserInfo() {
@@ -449,7 +450,7 @@ public class UserStatAction extends BaseAction {
             }
 
             pageUtil.setPageUrl(url.toString());
-            pageUtil = bean.loadCity(province, pageUtil,insertTime);
+            pageUtil = bean.loadCity(province, pageUtil, insertTime);
             getRequest().setAttribute("list", pageUtil.getList());
             getRequest().setAttribute("province", province);
             getRequest().setAttribute("pageUtil", pageUtil);
@@ -491,7 +492,7 @@ public class UserStatAction extends BaseAction {
             cell.setCellValue("注册人数");
             cell.setCellStyle(style);
             cell = row.createCell(3);
-            List<Region> list = bean.loadCity(province,pageUtil, insertTime).getList();
+            List<Region> list = bean.loadCity(province, pageUtil, insertTime).getList();
 
             Region region = null;
             for (int i = 0; i < list.size(); i++) {
@@ -514,9 +515,6 @@ public class UserStatAction extends BaseAction {
         }
         return null;
     }
-
-
-
 
 
     /**
@@ -630,7 +628,15 @@ public class UserStatAction extends BaseAction {
                 row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(age.getRsCount()) ? age.getRsCount() : "");
                 row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getRate()) ? (Double.valueOf(age.getRate()) * 100) + "%" : "");
                 row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getCsCount()) ? age.getCsCount() : "");
-                row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(age.getJeCount()) ? (Double.valueOf(age.getJeCount()) * 0.01) + "" : "");
+                String jeCount = !QwyUtil.isNullAndEmpty(age.getJeCount()) ? age.getJeCount() : "0.0";
+                if (!jeCount.equals("0.0")) {
+                    row.createCell(4).setCellValue(0);
+                } else {
+                    Double aDouble = Double.valueOf(jeCount) / 100;
+                    BigDecimal bd = new BigDecimal(aDouble.toString());
+                    String s = bd.toPlainString();
+                    row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(age.getJeCount()) ? s : "");
+                }
 
             }
             String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_sex.xls";
@@ -737,7 +743,7 @@ public class UserStatAction extends BaseAction {
                 row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getCsCount()) ? age.getCsCount() : "");
                 String price = age.getJeCount();
                 double priceValue = Double.parseDouble(price);
-                int cents = (int)(priceValue * 0.01);
+                int cents = (int) (priceValue * 0.01);
                 String newPrice = Integer.toString(cents);
                 row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getJeCount()) ? newPrice : "");
 
@@ -829,11 +835,11 @@ public class UserStatAction extends BaseAction {
 
     /**
      * 导出银行卡数据统计列表
-     * 
+     *
+     * @throws Exception
      * @author：zhuhaojie
      * @time：2018年1月23日 下午2:21:52
      * @version
-     * @throws Exception
      */
     public void exportExcelList() throws Exception {
 

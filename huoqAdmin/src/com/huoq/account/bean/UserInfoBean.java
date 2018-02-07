@@ -626,18 +626,18 @@ public class UserInfoBean {
         try {
             StringBuffer buffer = new StringBuffer();
             buffer.append("SELECT ");
-            buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex IN('男','女')  ");
+            buffer.append("(SELECT  COUNT(DISTINCT u.users_id )  FROM users_info u JOIN investors i ON i.users_id = u.users_id WHERE 1=1  AND i.investor_status IN ('1','2','3') ");
             if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    buffer.append(" AND u.insert_time >= ? ");
+                    buffer.append(" AND i.insert_time >= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buffer.append(" AND u.insert_time <= ? ");
+                    buffer.append(" AND i.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
-                    buffer.append(" AND u.insert_time >= ? ");
+                    buffer.append(" AND i.insert_time >= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buffer.append(" AND u.insert_time <= ? ");
+                    buffer.append(" AND i.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
             }
@@ -678,23 +678,23 @@ public class UserInfoBean {
 
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
-            buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='男'  ");
+            buffer.append("(SELECT  COUNT(DISTINCT u.users_id )  FROM users_info u  JOIN  investors i ON i.users_id = u.users_id WHERE u.sex ='男' AND i.investor_status IN ('1','2','3') ");
             if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    buffer.append(" AND u.insert_time >= ? ");
+                    buffer.append(" AND i.insert_time >= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buffer.append(" AND u.insert_time <= ? ");
+                    buffer.append(" AND i.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
-                    buffer.append(" AND u.insert_time >= ? ");
+                    buffer.append(" AND i.insert_time >= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buffer.append(" AND u.insert_time <= ? ");
+                    buffer.append(" AND i.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
             }
             buffer.append(" ),");
-            buffer.append("(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男'  ");
+            buffer.append("(SELECT SUM(in_money) FROM investors i LEFT JOIN users_info  ui ON ui.users_id=i.users_id WHERE sex='男' ");
             if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
@@ -730,18 +730,18 @@ public class UserInfoBean {
 
             buffer.append(" UNION ALL  ");
             buffer.append("SELECT ");
-            buffer.append("(SELECT COUNT(*) FROM users_info u WHERE sex='女'  ");
+            buffer.append("(SELECT  COUNT(DISTINCT u.users_id )  FROM users_info u  JOIN  investors i ON i.users_id = u.users_id WHERE u.sex ='女'  AND i.investor_status IN ('1','2','3') ");
             if (!QwyUtil.isNullAndEmpty(insertTime)) { // 按日期查询
                 String[] time = QwyUtil.splitTime(insertTime);
                 if (time.length > 1) {
-                    buffer.append(" AND u.insert_time >= ? ");
+                    buffer.append(" AND i.insert_time >= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buffer.append(" AND u.insert_time <= ? ");
+                    buffer.append(" AND i.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59"));
                 } else {
-                    buffer.append(" AND u.insert_time >= ? ");
+                    buffer.append(" AND i.insert_time >= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00"));
-                    buffer.append(" AND u.insert_time <= ? ");
+                    buffer.append(" AND i.insert_time <= ? ");
                     sexList.add(QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59"));
                 }
             }

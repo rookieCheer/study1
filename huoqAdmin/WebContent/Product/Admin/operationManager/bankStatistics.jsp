@@ -58,7 +58,7 @@
                 <td width="200px;">序号</td>
                 <td width="200px;">银行</td>
                 <td width="200px;">绑定人数</td>
-                <td width="200px;">投资总额(元)</td>
+                <td width="200px;">充值总额(元)</td>
                 <td width="200px;">投资成功次数</td>
                 <td width="200px;">投资失败次数</td>
             </tr>

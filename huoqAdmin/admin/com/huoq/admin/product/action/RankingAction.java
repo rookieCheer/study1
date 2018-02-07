@@ -243,7 +243,8 @@ public class RankingAction extends BaseAction{
 				row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersId()) ?  rank.getUsersId():"");
 				row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(rank.getUsersname())? DESEncrypt.jieMiUsername(rank.getUsersname()):"");
 				row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(rank.getRealname()) ? rank.getRealname():"");
-				row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(rank.getMoney()) ?  (Double.valueOf(rank.getMoney())*0.01)+"":"");
+				Double czMoney = !QwyUtil.isNullAndEmpty(rank.getMoney()) ?  (QwyUtil.jieQuFa(Double.valueOf(rank.getMoney())*0.01,2)):0.0;
+				row.createCell(4).setCellValue(!QwyUtil.isNullAndEmpty(rank.getMoney()) ?  czMoney.toString().substring(0,czMoney.toString().length()-2):"");
 
 			}
 			String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_CzRecord_rank.xls";
