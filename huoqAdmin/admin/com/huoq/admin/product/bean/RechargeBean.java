@@ -1396,7 +1396,7 @@ public class RechargeBean {
 		return 0.0;
 	}
 	/**
-	 * 获取账户可用余额
+	 * 获取零钱罐可用余额
 	 * 
 	 * @return
 	 */
