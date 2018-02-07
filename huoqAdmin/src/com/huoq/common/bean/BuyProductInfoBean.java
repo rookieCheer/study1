@@ -40,7 +40,7 @@ public class BuyProductInfoBean {
         sql.append("FROM  investors i  JOIN product p ON i.product_id= p.id AND i.investor_status IN ('1','2','3') ");
         sql.append(" JOIN users_info us ON us.users_id  = i.users_id ");
         sql.append(" JOIN users u ON u.id = us.users_id ");
-        sql.append(" JOIN (SELECT u.id id ,ui.real_name  realname FROM users u JOIN invite i ON i.be_invited_id = u.id ");
+        sql.append(" left JOIN (SELECT u.id id ,ui.real_name  realname FROM users u JOIN invite i ON i.be_invited_id = u.id ");
         sql.append(" JOIN users_info ui ON ui.users_id = i.invite_id) r ON u.id = r.id ) t WHERE 1=1 AND t.productname IS NOT NULL ");
         // 充值时间
         if (!QwyUtil.isNullAndEmpty(insertTime)) {
@@ -73,7 +73,7 @@ public class BuyProductInfoBean {
                         + "DATEDIFF(NOW(),NOW()) , us.real_name ,"
                         + "us.sex ,us.phone as phone,r.realname ,u.province ,u.city ");
         sql.append("FROM users_info us JOIN users u ON u.id = us.users_id ");
-        sql.append("JOIN (SELECT u.id id ,ui.real_name  realname FROM users u  JOIN invite i ON i.be_invited_id = u.id "
+        sql.append("LEFT JOIN (SELECT u.id id ,ui.real_name  realname FROM users u  JOIN invite i ON i.be_invited_id = u.id "
                 + " JOIN users_info ui ON ui.users_id = i.invite_id ) r ON u.id = r.id  ");
         sql.append(" JOIN coin_purse_funds_record cpf  ON cpf.users_id = u.id WHERE cpf.TYPE = 'to' ) a WHERE 1=1 ");
         // 充值时间
