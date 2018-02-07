@@ -9,9 +9,11 @@ import com.huoq.common.action.BaseAction;
 import com.huoq.common.bean.*;
 import com.huoq.common.util.DESEncrypt;
 
+import com.huoq.common.util.DateUtils;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.*;
+import com.huoq.thread.bean.UpdateDataOverviewThreadBean;
 import com.huoq.util.ExcelUtil;
 import org.apache.struts2.config.Namespace;
 import org.apache.struts2.config.ParentPackage;
@@ -70,6 +72,9 @@ public class UserBuyAction extends BaseAction {
      */
     @Resource
     private CoinPurseFundRecordBean coinPurseFundRecordBean;
+
+    @Resource
+    private UpdateDataOverviewThreadBean updateDataOverviewThreadBean;
 
 
     private Integer currentPage = 1;
@@ -380,7 +385,59 @@ public class UserBuyAction extends BaseAction {
         }
     }
 
-
+    /**
+     * today_out_cash_money,-- 今日提现金额
+     today_recharge_money, -- 今日充值===资金流入
+     today_buy_money, -- 今日购买 == 交易金额
+     * 设置当日交易金额，资金流入，提现金额
+     * @param findSumOperation
+     * @param insertTime
+     * @throws Exception
+     */
+    private void setTodayBuyMoney(SumOperation findSumOperation,String insertTime)throws Exception{
+        StringBuffer sql = new StringBuffer("");
+        sql.append("select today_out_cash_money,today_recharge_money,today_buy_money from data_overview WHERE insert_time>=? and insert_time<=?");
+        Object[] params = new Object[2];
+        if(!QwyUtil.isNullAndEmpty(insertTime)){
+            String[] time = QwyUtil.splitTime(insertTime);
+            if (time.length > 1) {
+                params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+                params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
+            } else {
+                params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+                params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
+            }
+        }else{
+            params[0]= DateUtils.getNowDateNewShort()+" 00:00:00";
+            params[1]= DateUtils.getNowDateNewShort()+" 23:59:59";
+        }
+        List<Object>  list = updateDataOverviewThreadBean.listBySql(params,sql.toString());
+        if(list!=null){
+            int size = list.size();
+            if(size>0){
+                for(Object obj:list){
+                    if(obj instanceof  Object[]){
+                        Object[] objects =(Object[])obj;
+                        Double todayOutCashMoney =(Double)objects[0];
+                        if(todayOutCashMoney!=null){
+                            todayOutCashMoney = todayOutCashMoney/100.0;
+                        }
+                        Double todayRechargeMoney =(Double)objects[1];
+                        Double todayBuyMoney =(Double)objects[2];
+                        if(todayRechargeMoney!=null){
+                            todayRechargeMoney = todayRechargeMoney/100.0;
+                        }
+                        if(todayBuyMoney!=null){
+                            todayBuyMoney = todayBuyMoney/100.0;
+                        }
+                        findSumOperation.setFoundFlowInto(todayRechargeMoney);//今日资金流入
+                        findSumOperation.setTodayDealMoney(todayBuyMoney); //今日购买
+                        findSumOperation.setTxMoney(todayOutCashMoney);//提现交易
+                    }
+                }
+            }
+        }
+    }
 
 
     /**
@@ -401,15 +458,7 @@ public class UserBuyAction extends BaseAction {
             }
             SumOperation findSumOperation = sOtBean.findSumOperation(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSumOperation)) {
-                Double todayDealMoney = platformBean.updateTodayBuyMoney(insertTime);
-                if (todayDealMoney != null) {
-                    findSumOperation.setTodayDealMoney(todayDealMoney);
-                }
-
-                Double foundFlowInto = platformBean.updateTodayrechargeMoney(insertTime);
-                if (foundFlowInto != null) {
-                    findSumOperation.setFoundFlowInto(foundFlowInto);
-                }
+                setTodayBuyMoney(findSumOperation,insertTime);
                 if(QwyUtil.isNullAndEmpty(insertTime)){
                     double[] result = rechargeBean.reservedFound();
                     if(result!=null){
@@ -685,15 +734,7 @@ public class UserBuyAction extends BaseAction {
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-            Double todayDealMoney = platformBean.updateTodayBuyMoney(insertTime);
-            if (todayDealMoney != null) {
-                findSumOperation.setTodayDealMoney(todayDealMoney);
-            }
-
-            Double foundFlowInto = platformBean.updateTodayrechargeMoney(insertTime);
-            if (foundFlowInto != null) {
-                findSumOperation.setFoundFlowInto(foundFlowInto);
-            }
+            setTodayBuyMoney(findSumOperation,insertTime);
             if(QwyUtil.isNullAndEmpty(insertTime)){
                 double[] result = rechargeBean.reservedFound();
                 if(result!=null){
