@@ -626,7 +626,7 @@ public class UserStatAction extends BaseAction {
                 age = (Age) list.get(i);
                 row.createCell(0).setCellValue(!QwyUtil.isNullAndEmpty(age.getSexChina()) ? age.getSexChina() : "");
                 row.createCell(1).setCellValue(!QwyUtil.isNullAndEmpty(age.getRsCount()) ? age.getRsCount() : "");
-                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getRate()) ? (Double.valueOf(age.getRate()) * 100) + "%" : "");
+                row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getRate()) ? (QwyUtil.jieQuFa(Double.valueOf(age.getRate()) * 100,2)) + "%" : "");
                 row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getCsCount()) ? age.getCsCount() : "");
                 String jeCount = !QwyUtil.isNullAndEmpty(age.getJeCount()) ? age.getJeCount() : "0.0";
                 if (!jeCount.equals("0.0")) {
@@ -854,16 +854,13 @@ public class UserStatAction extends BaseAction {
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-
             fieldMap.put("银行", "bankName");
             fieldMap.put("绑定人数", "rsCount");
             fieldMap.put("投资金额(元)", "jeCount");
             fieldMap.put("投资成功次数", "cgCount");
             fieldMap.put("投资失败次数", "sbCount");
             ExcelUtil.exportExcelNew(outputStream, "银行卡数据统计列表", fieldMap, bankList, null);
-
         }
-
     }
 
     /**
