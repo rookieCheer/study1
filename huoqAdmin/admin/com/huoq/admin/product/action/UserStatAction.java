@@ -629,7 +629,7 @@ public class UserStatAction extends BaseAction {
                 row.createCell(2).setCellValue(!QwyUtil.isNullAndEmpty(age.getRate()) ? (QwyUtil.jieQuFa(Double.valueOf(age.getRate()) * 100,2)) + "%" : "");
                 row.createCell(3).setCellValue(!QwyUtil.isNullAndEmpty(age.getCsCount()) ? age.getCsCount() : "");
                 String jeCount = !QwyUtil.isNullAndEmpty(age.getJeCount()) ? age.getJeCount() : "0.0";
-                if (!jeCount.equals("0.0")) {
+                if (jeCount.equals("0.0")) {
                     row.createCell(4).setCellValue(0);
                 } else {
                     Double aDouble = Double.valueOf(jeCount) / 100;
