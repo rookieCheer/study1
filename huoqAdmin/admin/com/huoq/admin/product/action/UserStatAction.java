@@ -263,9 +263,6 @@ public class UserStatAction extends BaseAction {
             StringBuffer url = new StringBuffer();
             url.append(getRequest().getServletContext().getContextPath());
             url.append("/Product/Admin/userStat!loadUserInfo.action?");
-            // if(!QwyUtil.isNullAndEmpty(username)){
-            // username=new String (username.getBytes("ISO-8859-1"),"UTF-8");
-            // }
             if (!QwyUtil.isNullAndEmpty(channel)) {
                 url.append("&channel=" + channel);
             }

@@ -128,5 +128,16 @@
         </c:choose>
     </div>
 </div>
+<script type="text/javascript">
+    var k4 = new Kalendae.Input("insertTime", {
+        attachTo: document.body,
+        months: 2,//多少个月显示出来,即看到多少个日历
+        mode: 'range'
+        /* selected:[Kalendae.moment().subtract({d:7}), Kalendae.moment().add({d:0})] */
+    });
+    $(function () {
+        $("#isbindbank option[value='${isbindbank}']").attr("selected", true);
+    });
+</script>
 </body>
 </html>
