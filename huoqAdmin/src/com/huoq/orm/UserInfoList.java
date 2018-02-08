@@ -25,7 +25,7 @@ public class UserInfoList {
     private String Title;
 	private Date payTime;// 支付时间
 	private String inMoney1;
-
+    private String usersId;
 	private String category;//持卡人好友
 
 	public String getCategory() {
@@ -173,5 +173,13 @@ public class UserInfoList {
 
 	public void setInMoney1(String inMoney1) {
 		this.inMoney1 = inMoney1;
+	}
+
+	public String getUsersId() {
+		return usersId;
+	}
+
+	public void setUsersId(String usersId) {
+		this.usersId = usersId;
 	}
 }

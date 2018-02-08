@@ -261,13 +261,14 @@ public class UserInfoBean {
             buff.append(" a.city,a.card_type ,IFNULL(a.insert_time,'') , IFNULL(ac.insert_time,''), ");
             buff.append(" a.regist_platform ,b.real_name ,	b.sex ,");
             buff.append(" b.age ,b.birthday,b.level as level,");
-            buff.append(" b.is_bind_bank ,t.in_money,lqg.money/100 ,a.regist_channel,t.pay_time,t.title,t.in_money1/100 ");
-            buff.append(" FROM users a JOIN users_info b ON a.id = b.users_id left join");
-            buff.append(" (select SUM(i.in_money/100) as in_money , i.users_id as users_id,p.title AS title,i.pay_time AS pay_time,i.in_money AS in_money1  from investors i  "
-                        + "LEFT JOIN product p ON i.product_id =p.id  ");
-            buff.append(" where 1=1 and i.investor_status in ('1','2','3') GROUP BY i.users_id  ORDER BY i.insert_time ASC )t ");
-            buff.append("  on t.users_id = b.users_id ");
-            buff.append("  LEFT JOIN account ac ON ac.users_id = a.id  AND ac.STATUS = 1  ");
+            buff.append(" b.is_bind_bank,w.in_money ,lqg.money/100 ,a.regist_channel,w.pay_time  ");
+            buff.append(" FROM users a JOIN users_info b ON a.id = b.users_id ");
+            buff.append(" LEFT JOIN  ");
+            buff.append(" (SELECT v.users_id,MIN(v.pay_time) pay_time ,SUM(v.in_money)/100  in_money ");
+            buff.append(" FROM investors v ");
+            buff.append(" LEFT JOIN product p ON v.product_id =p.id ");
+            buff.append(" WHERE 1=1 AND  v.investor_status IN ('1','2','3') GROUP BY v.users_id  ORDER BY v.pay_time ASC) w ON w.users_id = a.id  ");
+            buff.append(" LEFT JOIN account ac ON ac.users_id = a.id  AND ac.STATUS = 1  ");
             buff.append(" LEFT JOIN ( ");
             buff.append(" SELECT cpfr.users_id 'users_id',SUM(cpfr.money) 'money', cpfr.insert_time 'insert_time' ");
             buff.append(" FROM coin_purse_funds_record cpfr WHERE cpfr.type = 'to'  AND  cpfr.status = 0  ");
@@ -356,7 +357,7 @@ public class UserInfoBean {
                 }
             }
             buff.append(" GROUP BY a.id ");
-            buff.append(" ORDER BY t.in_money DESC,b.is_bind_bank DESC  ");
+            buff.append(" ORDER BY w.in_money DESC,b.is_bind_bank DESC  ");
 
             StringBuffer bufferCount = new StringBuffer();
             bufferCount.append(" SELECT COUNT(*)  ");
@@ -365,7 +366,26 @@ public class UserInfoBean {
             bufferCount.append(") t");
             pageUtil = dao.getBySqlAndSqlCount(pageUtil, buff.toString(), bufferCount.toString(), list.toArray());
             List<UserInfoList> platUsers = toDateMoney(pageUtil.getList());
-            pageUtil.setList(platUsers);
+            List<UserInfoList> platusers = new ArrayList<>();
+            StringBuffer sql = new StringBuffer();
+            List<Object> ids = new ArrayList<>();
+            for (UserInfoList platUser : platUsers) {
+                String usersId = platUser.getId();
+                sql.append(" SELECT p.title, i.in_money/100 FROM product  p  JOIN  investors i ON i.product_id=p.id ");
+                sql.append(" WHERE  i.users_id = ? AND i.pay_time =  ");
+                sql.append(" (SELECT MIN(i.pay_time) FROM product  p  JOIN  investors i ON i.product_id=p.id WHERE  i.users_id = ? ) ");
+                ids.add(usersId);
+                ids.add(usersId);
+                List<Object[]> list1 = dao.LoadAllSql(sql.toString(), ids.toArray());
+                for (Object[] objects : list1) {
+                    platUser.setTitle(objects[0]+"");
+                    platUser.setInMoney1(objects[1]+"");
+                }
+                platusers.add(platUser);
+                sql.delete(0,sql.length());
+                ids.clear();
+            }
+            pageUtil.setList(platusers);
             return pageUtil;
         } catch (Exception e) {
             log.error("操作异常: ", e);
@@ -403,8 +423,6 @@ public class UserInfoBean {
                 plat.setCoinPurseFundsRecordMoney(object[15] == null ? "" : object[15] + "");
                 plat.setRegistChannel(object[16] == null ? "" : object[16] + "");
                 plat.setPayTime(!QwyUtil.isNullAndEmpty(object[17]) ? sd.parse(object[17] + "") : null);
-                plat.setTitle(object[18] == null ? "" : object[18] + "");
-                plat.setInMoney1(object[19] == null ? "" : object[19] + "");
                 meowPay.add(plat);
 
             }
