@@ -882,11 +882,12 @@ public class UpdateDailyStatementBean {
             list.add(insertTime);
             list.add(insertTime);
             list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT COUNT(nb) FROM ( ");
             sql.append("SELECT COUNT(i.id) nb ,i.users_id,i.investor_status FROM users u ");
             sql.append("LEFT JOIN  investors i ON u.id = i.users_id ");
-            sql.append("WHERE i.insert_time BETWEEN DATE_FORMAT('?','%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+            sql.append("WHERE i.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             sql.append("AND u.insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             sql.append("GROUP BY users_id ");
             sql.append(")t WHERE t.nb >= 1 AND t.investor_status IN ('1','2','3') ");

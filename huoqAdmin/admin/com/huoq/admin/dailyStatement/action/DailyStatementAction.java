@@ -277,7 +277,7 @@ public class DailyStatementAction extends BaseAction {
                 // 复投客单金额（元）
                 row.createCell(30).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getSumMoney()) ? tjDailyStatement.getSumMoney(): 0.0);
                 // 人均投资金额（元）
-                row.createCell(31).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getCapitaInvestmentMoney() )? tjDailyStatement.getCapitaInvestmentMoney() : 0.0);
+                row.createCell(31).setCellValue(!QwyUtil.isNullAndEmpty(tjDailyStatement.getCapitaInvestmentMoney() )? QwyUtil.jieQuFa(tjDailyStatement.getCapitaInvestmentMoney(),2) : 0.0);
             }
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
             DailyStatement dailyStatement = null;
@@ -347,7 +347,7 @@ public class DailyStatementAction extends BaseAction {
                 // 复投客单金额（元）
                 row.createCell(30).setCellValue(!QwyUtil.isNullAndEmpty(dailyStatement.getSumMoney()) ? dailyStatement.getSumMoney(): 0.0);
                 // 人均投资金额（元）
-                row.createCell(31).setCellValue(!QwyUtil.isNullAndEmpty(dailyStatement.getCapitaInvestmentMoney() )? dailyStatement.getCapitaInvestmentMoney() : 0.0);
+                row.createCell(31).setCellValue(!QwyUtil.isNullAndEmpty(dailyStatement.getCapitaInvestmentMoney() )? QwyUtil.jieQuFa(dailyStatement.getCapitaInvestmentMoney(),2) : 0.0);
                 }
             String pathname = QwyUtil.fmyyyyMMddHHmmss3.format(new Date()) + "_find_daily_statement.xls";
             String realPath = request.getServletContext().getRealPath("/report/" + pathname);
