@@ -385,7 +385,7 @@ public class ActivityBean {
         return buffer.toString();
     }
     /*public String ftjl(String insertTime,List<Object> arrayList) throws Exception{
-		StringBuffer buffer=new StringBuffer();
+        StringBuffer buffer=new StringBuffer();
 		buffer.append(" SELECT COUNT(DISTINCT ivs.users_id) ,us.regist_channel  ");
 		buffer.append(" FROM investors ivs ");
 		buffer.append("	LEFT JOIN users us on us.id = ivs.users_id ");
@@ -2055,7 +2055,7 @@ public class ActivityBean {
         if (!QwyUtil.isNullAndEmpty(channelType)) {
             sb.append(" AND qd.channel_type = ? ");
             list.add(channelType);
-        }else{
+        } else {
             sb.append(" AND qd.channel_type = 1 ");
         }
         sb.append("GROUP BY qd.channelCode ");
@@ -2259,12 +2259,12 @@ public class ActivityBean {
      * @return
      */
 
-    public PageUtil<Qdtj> loadQdtj(PageUtil<Qdtj> pageUtil, String Date, String channelType,String channelName) {
+    public PageUtil<Qdtj> loadQdtj(PageUtil<Qdtj> pageUtil, String Date, String channelType, String channelName) {
         StringBuffer sb = new StringBuffer();
         List<Object> list = new ArrayList<Object>();
-        if(!QwyUtil.isNullAndEmpty(Date)){
+        if (!QwyUtil.isNullAndEmpty(Date)) {
             sb.append("SELECT qd.channel,qd.channelName,qd.channel_cost,qd.date,qd.id ");
-        }else {
+        } else {
             sb.append("SELECT qd.channel,qd.channelName,qd.channel_cost,'0',qd.id ");
         }
         sb.append("FROM qdtj qd  WHERE 1 = 1 ");
@@ -2278,11 +2278,11 @@ public class ActivityBean {
         if (!QwyUtil.isNullAndEmpty(channelType)) {
             sb.append(" AND qd.channel_type = ? ");
             list.add(channelType);
-        }else{
+        } else {
             sb.append(" AND qd.channel_type = 1 ");
         }
         if (!QwyUtil.isNullAndEmpty(channelName)) {
-            sb.append(" AND qd.channelName like '%"+channelName+"%' ");
+            sb.append(" AND qd.channelName like '%" + channelName + "%' ");
         }
         sb.append("GROUP BY qd.channelCode ");
         sb.append(" ORDER BY qd.channel+0 ASC ");
@@ -2323,48 +2323,60 @@ public class ActivityBean {
     public void updateQdtj(Qdtj qdtj) {
         try {
             Double channelCost = Double.valueOf(qdtj.getChannelCost());//获取渠道成本,根据渠道成本计算其他相关数据
-            if (!QwyUtil.isNullAndEmpty(channelCost)&& channelCost > 0) {
+            if (!QwyUtil.isNullAndEmpty(channelCost) && channelCost > 0) {
                 //获取激活人数
                 Integer activityCount = Integer.valueOf(qdtj.getActivityCount());
                 //计算激活成本
-                if(!QwyUtil.isNullAndEmpty(activityCount)&& activityCount > 0){
-                    qdtj.setActivityCost((channelCost/activityCount)+"");
-                }else{
+                if (!QwyUtil.isNullAndEmpty(activityCount) && activityCount > 0) {
+                    qdtj.setActivityCost((channelCost / activityCount) + "");
+                } else {
                     qdtj.setActivityCost("0");
                 }
                 //获取注册人数
                 Integer regCount = Integer.valueOf(qdtj.getRegCount());
                 //计算注册成本
-                if(!QwyUtil.isNullAndEmpty(regCount)&& regCount > 0){
-                    qdtj.setRegisterCost((channelCost/regCount)+"");
-                }else{
+                if (!QwyUtil.isNullAndEmpty(regCount) && regCount > 0) {
+                    qdtj.setRegisterCost((channelCost / regCount) + "");
+                } else {
                     qdtj.setRegisterCost("0");
                 }
                 //获取首投人数
                 Integer strs = Integer.valueOf(qdtj.getStrs());
                 //计算首投成本
-                if(!QwyUtil.isNullAndEmpty(strs)&& strs > 0){
-                    qdtj.setFristBuyCost((channelCost/strs)+"");
-                }else{
+                if (!QwyUtil.isNullAndEmpty(strs) && strs > 0) {
+                    qdtj.setFristBuyCost((channelCost / strs) + "");
+                } else {
                     qdtj.setFristBuyCost("0");
                 }
                 //获取首投总金额
-                Double stje = Double.valueOf(qdtj.getStje())/100;
+                Double stje = Double.valueOf(qdtj.getStje()) / 100;
                 //计算首投ROI
                 //计算首投成本
-                if(!QwyUtil.isNullAndEmpty(stje) && stje > 0){
-                    qdtj.setFristBuyROI((stje/channelCost)+"");
-                }else{
+                if (!QwyUtil.isNullAndEmpty(stje) && stje > 0) {
+                    qdtj.setFristBuyROI((stje / channelCost) + "");
+                } else {
                     qdtj.setFristBuyROI("0");
                 }
                 //获取投资金额
-                Double tzje = Double.valueOf(qdtj.getTzje())/100;
+                Double tzje = Double.valueOf(qdtj.getTzje()) / 100;
                 //计算投资ROI
-                if(!QwyUtil.isNullAndEmpty(tzje)&& tzje > 0){
-                    qdtj.setBuyROI((tzje/channelCost)+"");
-                }else{
+                if (!QwyUtil.isNullAndEmpty(tzje) && tzje > 0) {
+                    qdtj.setBuyROI((tzje / channelCost) + "");
+                } else {
                     qdtj.setBuyROI("0");
                 }
+                dao.update(qdtj);
+            } else {
+                //计算激活成本
+                qdtj.setActivityCost("0");
+                //计算注册成本
+                qdtj.setRegisterCost("0");
+                //计算首投成本
+                qdtj.setFristBuyCost("0");
+                //计算首投ROI
+                qdtj.setFristBuyROI("0");
+                //计算投资ROI
+                qdtj.setBuyROI("0");
                 dao.update(qdtj);
             }
         } catch (Exception e) {
