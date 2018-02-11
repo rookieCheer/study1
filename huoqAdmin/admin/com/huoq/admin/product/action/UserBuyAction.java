@@ -301,22 +301,23 @@ public class UserBuyAction extends BaseAction {
 
     /**
      * 设置当前结果的预留资金和定期预留资金
+     *
      * @param findSumOperation 被设置的对象
-     * @param insertTime  传递的时间值
+     * @param insertTime       传递的时间值
      */
-    private void setReservedFoundAndConstantReservedFound(SumOperation findSumOperation,String insertTime) throws Exception{
+    private void setReservedFoundAndConstantReservedFound(SumOperation findSumOperation, String insertTime) throws Exception {
         String[] time = QwyUtil.splitTime(insertTime);
         StringBuffer sql = new StringBuffer("");
         StringBuffer rateDetail = new StringBuffer("");
         StringBuffer instertDetail = new StringBuffer("");
-        Object[] params ;
+        Object[] params;
         sql.append("select type,sum(money) from coin_purse_funds_record where status=0 and type in ('out','to')");//流入和流出金额
         rateDetail.append("select sum(pay_interest) from send_rates_detail where status='1' "); //发息详情表数据
         instertDetail.append("select sum(in_money) from interest_details where status='0' ");//定期预留资金
         if (time.length > 1) {
             params = new Object[2];
-            params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
-            params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
+            params[0] = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+            params[1] = QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
             sql.append(" and insert_time>=? and insert_time<=? ");
             rateDetail.append(" and insert_time>=? and insert_time<=? ");
             instertDetail.append(" and insert_time>=? and insert_time<=? ");
@@ -325,58 +326,58 @@ public class UserBuyAction extends BaseAction {
             sql.append(" and insert_time<=?");
             rateDetail.append(" and insert_time<=?");
             instertDetail.append("  and insert_time<=? ");
-            params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
+            params[0] = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
         }
         sql.append(" group by type");
-        List<Object>  list = coinPurseFundRecordBean.listBySql(params,sql.toString());
-        List<Object> ratesDetails = sendRatesDetailBean.listBySql(params,rateDetail.toString());
-        List<Object> instertDetails = interestDetailsBean.listBySql(params,instertDetail.toString());//定期预留资金
-        Double reservedFound=0.0; //预留资金
-        if(list!=null){
+        List<Object> list = coinPurseFundRecordBean.listBySql(params, sql.toString());
+        List<Object> ratesDetails = sendRatesDetailBean.listBySql(params, rateDetail.toString());
+        List<Object> instertDetails = interestDetailsBean.listBySql(params, instertDetail.toString());//定期预留资金
+        Double reservedFound = 0.0; //预留资金
+        if (list != null) {
             int size = list.size();
-            if(size>0){
-                for(Object obj:list){
-                    if(obj instanceof  Object[]){
-                        Object[] objects =(Object[])obj;
+            if (size > 0) {
+                for (Object obj : list) {
+                    if (obj instanceof Object[]) {
+                        Object[] objects = (Object[]) obj;
                         String type = (String) objects[0];
-                        Double money =(Double)objects[1];
-                        if(money == null){
+                        Double money = (Double) objects[1];
+                        if (money == null) {
                             money = new Double(0);
                         }
-                        if("to".equals(type)){
-                            reservedFound = reservedFound+money;
-                        }else{
-                            reservedFound = reservedFound-money;
+                        if ("to".equals(type)) {
+                            reservedFound = reservedFound + money;
+                        } else {
+                            reservedFound = reservedFound - money;
                         }
                     }
                 }
             }
         }
-        if(ratesDetails!=null){
+        if (ratesDetails != null) {
             int size = ratesDetails.size();
-            if(size>0){
-                for(Object obj:ratesDetails){
-                    if(obj instanceof Double){
-                        Double rate =(Double)obj;
-                        if(rate!=null){
-                            reservedFound = reservedFound+rate;
+            if (size > 0) {
+                for (Object obj : ratesDetails) {
+                    if (obj instanceof Double) {
+                        Double rate = (Double) obj;
+                        if (rate != null) {
+                            reservedFound = reservedFound + rate;
                         }
                     }
                 }
             }
         }
-        reservedFound = reservedFound/100.0;
+        reservedFound = reservedFound / 100.0;
         findSumOperation.setReservedFound(reservedFound);
         Double constantReservedFound = 0.0;
         findSumOperation.setConstantReservedFound(constantReservedFound);
-        if(instertDetails!=null){
+        if (instertDetails != null) {
             int size = instertDetails.size();
-            if(size>0){
-                for(Object obj:instertDetails){
-                    if(obj instanceof Double){
-                        Double money =(Double)obj;
-                        if(money!=null){
-                            money = money/100.0;
+            if (size > 0) {
+                for (Object obj : instertDetails) {
+                    if (obj instanceof Double) {
+                        Double money = (Double) obj;
+                        if (money != null) {
+                            money = money / 100.0;
                             findSumOperation.setReservedFound(money);
                         }
                     }
@@ -387,54 +388,62 @@ public class UserBuyAction extends BaseAction {
 
     /**
      * today_out_cash_money,-- 今日提现金额
-     today_recharge_money, -- 今日充值===资金流入
-     today_buy_money, -- 今日购买 == 交易金额
+     * today_recharge_money, -- 今日充值===资金流入
+     * today_buy_money, -- 今日购买 == 交易金额
      * 设置当日交易金额，资金流入，提现金额
+     *
      * @param findSumOperation
      * @param insertTime
      * @throws Exception
      */
-    private void setTodayBuyMoney(SumOperation findSumOperation,String insertTime)throws Exception{
+    private void setTodayBuyMoney(SumOperation findSumOperation, String insertTime) throws Exception {
         StringBuffer sql = new StringBuffer("");
         sql.append("select today_out_cash_money,today_recharge_money,today_buy_money from data_overview WHERE insert_time>=? and insert_time<=?");
         Object[] params = new Object[2];
-        if(!QwyUtil.isNullAndEmpty(insertTime)){
+        if (!QwyUtil.isNullAndEmpty(insertTime)) {
             String[] time = QwyUtil.splitTime(insertTime);
             if (time.length > 1) {
-                params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
-                params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
+                params[0] = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+                params[1] = QwyUtil.fmMMddyyyyHHmmss.parse(time[1] + " 23:59:59");
             } else {
-                params[0]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
-                params[1]=QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
+                params[0] = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 00:00:00");
+                params[1] = QwyUtil.fmMMddyyyyHHmmss.parse(time[0] + " 23:59:59");
             }
-        }else{
-            params[0]= DateUtils.getNowDateNewShort()+" 00:00:00";
-            params[1]= DateUtils.getNowDateNewShort()+" 23:59:59";
+        } else {
+            params[0] = DateUtils.getNowDateNewShort() + " 00:00:00";
+            params[1] = DateUtils.getNowDateNewShort() + " 23:59:59";
         }
-        List<Object>  list = updateDataOverviewThreadBean.listBySql(params,sql.toString());
-        if(list!=null){
+        List<Object> list = updateDataOverviewThreadBean.listBySql(params, sql.toString());
+        if (list != null) {
             int size = list.size();
-            if(size>0){
-                for(Object obj:list){
-                    if(obj instanceof  Object[]){
-                        Object[] objects =(Object[])obj;
-                        Double todayOutCashMoney =(Double)objects[0];
-                        if(todayOutCashMoney!=null){
-                            todayOutCashMoney = todayOutCashMoney/100.0;
+            if (size > 0) {
+                for (Object obj : list) {
+                    if (obj instanceof Object[]) {
+                        Object[] objects = (Object[]) obj;
+                        Double todayOutCashMoney = (Double) objects[0];
+                        Double todayRechargeMoney = (Double) objects[1];
+                        Double todayBuyMoney = (Double) objects[2];
+                        if (todayOutCashMoney == null) {
+                            findSumOperation.setTxMoney(new Double(0));//提现交易
+                        } else {
+                            findSumOperation.setTxMoney(todayOutCashMoney);//提现交易
                         }
-                        Double todayRechargeMoney =(Double)objects[1];
-                        Double todayBuyMoney =(Double)objects[2];
-                        if(todayRechargeMoney!=null){
-                            todayRechargeMoney = todayRechargeMoney/100.0;
+                        if (todayRechargeMoney == null) {
+                            findSumOperation.setFoundFlowInto(new Double(0));//今日资金流入
+                        } else {
+                            findSumOperation.setFoundFlowInto(todayRechargeMoney);//今日资金流入
                         }
-                        if(todayBuyMoney!=null){
-                            todayBuyMoney = todayBuyMoney/100.0;
+                        if (todayBuyMoney == null) {
+                            findSumOperation.setTodayDealMoney(new Double(0)); //今日购买
+                        } else {
+                            findSumOperation.setTodayDealMoney(todayBuyMoney); //今日购买
                         }
-                        findSumOperation.setFoundFlowInto(todayRechargeMoney);//今日资金流入
-                        findSumOperation.setTodayDealMoney(todayBuyMoney); //今日购买
-                        findSumOperation.setTxMoney(todayOutCashMoney);//提现交易
                     }
                 }
+            } else {
+                findSumOperation.setTxMoney(new Double(0));//提现交易
+                findSumOperation.setFoundFlowInto(new Double(0));//今日资金流入
+                findSumOperation.setTodayDealMoney(new Double(0)); //今日购买
             }
         }
     }
@@ -458,18 +467,18 @@ public class UserBuyAction extends BaseAction {
             }
             SumOperation findSumOperation = sOtBean.findSumOperation(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSumOperation)) {
-                setTodayBuyMoney(findSumOperation,insertTime);
-                if(QwyUtil.isNullAndEmpty(insertTime)){
+                setTodayBuyMoney(findSumOperation, insertTime);
+                if (QwyUtil.isNullAndEmpty(insertTime)) {
                     double[] result = rechargeBean.reservedFound();
-                    if(result!=null){
+                    if (result != null) {
                         int length = result.length;
-                        if(length == 2){
+                        if (length == 2) {
                             findSumOperation.setReservedFound(result[1]);
                             findSumOperation.setConstantReservedFound(result[0]);
                         }
                     }
-                }else{
-                    setReservedFoundAndConstantReservedFound(findSumOperation,insertTime);
+                } else {
+                    setReservedFoundAndConstantReservedFound(findSumOperation, insertTime);
                 }
 
                 findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
@@ -558,16 +567,15 @@ public class UserBuyAction extends BaseAction {
     }
 
 
-
-    private void dealList(List<TiedCard> list){
-        if(list!=null){
-             int size = list.size();
-             if(size>0){
-              for(int i =0;i<size;i++){
-                TiedCard tiedCard = list.get(i);
-                tiedCard.setNo(i+1);
-              }
-             }
+    private void dealList(List<TiedCard> list) {
+        if (list != null) {
+            int size = list.size();
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+                    TiedCard tiedCard = list.get(i);
+                    tiedCard.setNo(i + 1);
+                }
+            }
         }
     }
 
@@ -734,18 +742,18 @@ public class UserBuyAction extends BaseAction {
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-            setTodayBuyMoney(findSumOperation,insertTime);
-            if(QwyUtil.isNullAndEmpty(insertTime)){
+            setTodayBuyMoney(findSumOperation, insertTime);
+            if (QwyUtil.isNullAndEmpty(insertTime)) {
                 double[] result = rechargeBean.reservedFound();
-                if(result!=null){
+                if (result != null) {
                     int length = result.length;
-                    if(length == 2){
+                    if (length == 2) {
                         findSumOperation.setReservedFound(result[1]);
                         findSumOperation.setConstantReservedFound(result[0]);
                     }
                 }
-            }else{
-                setReservedFoundAndConstantReservedFound(findSumOperation,insertTime);
+            } else {
+                setReservedFoundAndConstantReservedFound(findSumOperation, insertTime);
             }
             findSumOperation.setFoundStock(getAllCapitalStock(insertTime));
 
@@ -787,8 +795,6 @@ public class UserBuyAction extends BaseAction {
             ExcelUtil.exportExcelNew(outputStream, "运营总表", fieldMap, listSum, null);
         }
     }
-
-
 
 
     public Integer getCurrentPage() {
