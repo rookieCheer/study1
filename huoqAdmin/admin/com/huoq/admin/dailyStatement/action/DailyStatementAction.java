@@ -1,11 +1,10 @@
 package com.huoq.admin.dailyStatement.action;
 
-import com.huoq.admin.dailyStatement.bean.UpdateDailyStatementThreadBean;
+import com.huoq.admin.dailyStatement.bean.UpdateDailyStatementBean;
 import com.huoq.common.action.BaseAction;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.DailyStatement;
-import com.huoq.orm.TiedCard;
 import com.huoq.orm.UsersAdmin;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.struts2.config.Namespace;
@@ -36,7 +35,7 @@ import java.util.List;
 public class DailyStatementAction extends BaseAction {
 
     @Autowired
-    private UpdateDailyStatementThreadBean bean;
+    private UpdateDailyStatementBean bean;
     private String insertTime;
     private Integer currentPage = 1;
     private Integer pageSize = 20;
@@ -58,7 +57,8 @@ public class DailyStatementAction extends BaseAction {
                 return "noLogin";
             }
             DailyStatement dataOverview = new DailyStatement();
-
+            //更新日报表数据
+            bean.addDailyStatement(insertTime);
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
             //新建分页实体类
             PageUtil<DailyStatement> pageUtil = new PageUtil<DailyStatement>();

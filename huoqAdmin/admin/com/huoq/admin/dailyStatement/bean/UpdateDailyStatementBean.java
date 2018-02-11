@@ -3,14 +3,15 @@ package com.huoq.admin.dailyStatement.bean;
 import com.huoq.common.util.PageUtil;
 import com.huoq.common.util.QwyUtil;
 import com.huoq.orm.DailyStatement;
-import com.huoq.orm.Qdtj;
 import com.huoq.thread.dao.ThreadDAO;
 import com.huoq.util.MyLogger;
+import javafx.beans.binding.When;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +20,146 @@ import java.util.List;
  * @Date: Created in 17:53 2018/1/16
  */
 @Service
-public class UpdateDailyStatementThreadBean {
+public class UpdateDailyStatementBean {
     @Resource
     private ThreadDAO dao;
-    private static MyLogger log = MyLogger.getLogger(UpdateDailyStatementThreadBean.class);
+    private static MyLogger log = MyLogger.getLogger(UpdateDailyStatementBean.class);
+
+    /**
+     * 新增日报表数据
+     */
+    public void addDailyStatement(String insertTime) {
+        StringBuffer sql = new StringBuffer();
+        List<Date> list = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            //根据需要查询的时间查询日报表内的数据
+            sql.append("SELECT * FROM daily_statement WHERE 1=1 ");
+            if (!QwyUtil.isNullAndEmpty(insertTime)) {
+                String[] time = QwyUtil.splitTime(insertTime);
+                if (time.length > 1) {
+                    sql.append(" AND insert_time  BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+                    list.add(QwyUtil.fmMMddyyyy.parse(time[1]));
+                } else {
+                    sql.append(" AND insert_time  BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
+                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+                    list.add(QwyUtil.fmMMddyyyy.parse(time[0]));
+                }
+            }
+            //将查询的时间段转换为具体的时间
+            List<Date> arrayList = new ArrayList<Date>();
+            for (int i = 0; i < list.size(); i++) {
+                Date start_time = list.get(0);
+                Date end_time = list.get(1);
+                if (start_time != null && end_time != null) {
+                    if (start_time.equals(end_time)) {
+                        //处理开始日期＝结束日期，重复的问题
+                        arrayList.add(start_time);
+                        break;
+                    } else {
+                        arrayList = getDatesBetweenTwoDate(start_time, end_time);
+                    }
+                }
+            }
+            //查询日报表中有没有这个时间段的数据
+            List<Object[]> dailyStatementList = dao.LoadAllSql(sql.toString(), list.toArray());
+            //如果查询出的结果为存遍历
+            if (!QwyUtil.isNullAndEmpty(dailyStatementList)) {
+                SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+                if (dailyStatementList.size() == arrayList.size()) {
+                    String time1 = null;
+                    for (Object[] objects : dailyStatementList) {
+                        String object = objects[1] + "";
+                        time1 += object + ",";
+                    }
+                    for (int i = 0; i < dailyStatementList.size(); i++) {
+                        String time2 = dailyStatementList.get(i)[1].toString();
+                        Date parse = sd.parse(time2);
+                        if (time1.contains(time2)) {
+
+                        } else {
+                            //更新平台资金概览数据
+                            updateDailyStatement(parse);
+                            arrayList.remove(i);
+                        }
+                    }
+                } else {
+                    //将新的时间拼接为字符串
+                    String olddate = "";
+                    Date date1 = null;
+                    for (int i = 0; i < dailyStatementList.size(); i++) {
+                        String date = dailyStatementList.get(i)[1].toString();
+                        date1 = sd.parse(date);
+                        olddate += date1 + ",";
+                    }
+                    //遍历传入的数据
+                    for (int i = 0; i < arrayList.size(); i++) {
+                        //遍历查询出的数据
+                        Date date = arrayList.get(i);
+                        if (i <= dailyStatementList.size() - 1) {
+                            //查询的时间在日报表中存在则不做任何处理
+                            if (olddate.contains(date.toString())) {
+
+                            } else {
+                                //更新平台资金概览数据
+                                updateDailyStatement(date);
+                            }
+                        }
+                        if (i > dailyStatementList.size() - 1) {
+                            //查询的时间在日报表中存在则不做任何处理
+                            if (olddate.contains(date.toString())) {
+
+                            } else {
+                                //更新平台资金概览数据
+                                updateDailyStatement(date);
+                            }
+                        }
+                    }
+                }
+            } else {
+                //如果查询没有结果则直接更新数据(将时间段转换为具体的时间)
+                for (Date date : arrayList) {
+                    //更新平台资金概览数据
+                    updateDailyStatement(date);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
+        long et = System.currentTimeMillis();
+    }
+
+
+    /**
+     * 将时间段转换为具体的时间
+     *
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    public List<Date> getDatesBetweenTwoDate(Date beginDate, Date endDate) {
+        List<Date> lDate = new ArrayList<Date>();
+        lDate.add(beginDate);
+        // 把开始时间加入集合
+        Calendar cal = Calendar.getInstance();
+        // 使用给定的 Date 设置此 Calendar 的时间
+        cal.setTime(beginDate);
+        boolean bContinue = true;
+        while (bContinue) {
+            // 根据日历的规则，为给定的日历字段添加或减去指定的时间量
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            // 测试此日期是否在指定日期之后
+            if (endDate.after(cal.getTime())) {
+                lDate.add(cal.getTime());
+            } else {
+                break;
+            }
+        }
+        lDate.add(endDate);
+        // 把结束时间加入集合
+        return lDate;
+    }
 
     /**
      * 分页查询日报表数据
@@ -493,7 +630,7 @@ public class UpdateDailyStatementThreadBean {
             }
             //获取当日回款用户
             list.clear();
-            sql.delete(0,sql.length());
+            sql.delete(0, sql.length());
             list.add(insertTime);
             list.add(insertTime);
             sql.append("SELECT COUNT(users_id)FROM( ");
@@ -506,8 +643,8 @@ public class UpdateDailyStatementThreadBean {
                 todaybackCashNumber = Double.valueOf((todaybackCashNumberList.get(0) + "").replaceAll(",", ""));
             }
             Double outInRate = 0.0;
-            if(todaybackCashNumberin != 0.0 && todaybackCashNumber != 0.0){
-                outInRate = (todaybackCashNumberin/todaybackCashNumber);
+            if (todaybackCashNumberin != 0.0 && todaybackCashNumber != 0.0) {
+                outInRate = (todaybackCashNumberin / todaybackCashNumber);
             }
             return outInRate;
         } catch (Exception e) {
@@ -618,7 +755,7 @@ public class UpdateDailyStatementThreadBean {
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append(" SELECT COUNT(id) FROM activity a WHERE  a.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
-           // sql.append("SELECT SUM(q.activityCount) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
+            // sql.append("SELECT SUM(q.activityCount) FROM qdtj  q WHERE q.insert_time BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00') AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Integer activationCount = 0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
@@ -765,8 +902,8 @@ public class UpdateDailyStatementThreadBean {
                 todayNewBuyNumber = Integer.valueOf((loadAllSql.get(0) + ""));
             }
             Double firstPercentConversion = 0.0;
-            if(integer != 0 && todayNewBuyNumber != 0.0){
-                firstPercentConversion = todayNewBuyNumber.doubleValue()/integer.doubleValue();
+            if (integer != 0 && todayNewBuyNumber != 0.0) {
+                firstPercentConversion = todayNewBuyNumber.doubleValue() / integer.doubleValue();
             }
             return firstPercentConversion;
         } catch (Exception e) {
@@ -816,8 +953,8 @@ public class UpdateDailyStatementThreadBean {
             //首投金额
             Double aDouble = updateFirstInvestmentTotalMoney(insertTime);
             Double reInvestmentMoney = 0.0;
-            if(integer != 0 && aDouble != 0.0){
-                reInvestmentMoney = aDouble/integer;
+            if (integer != 0 && aDouble != 0.0) {
+                reInvestmentMoney = aDouble / integer;
             }
             return reInvestmentMoney;
         } catch (Exception e) {
@@ -1035,7 +1172,7 @@ public class UpdateDailyStatementThreadBean {
             Integer addReInvestmentCount = updateAddReInvestmentCount(insertTime);
             Double addReInvestmentMoney = 0.0;
             if (reInvestmentCount != 0 && addReInvestmentCount != 0) {
-                addReInvestmentMoney = addReInvestmentCount.doubleValue()/reInvestmentCount.doubleValue();
+                addReInvestmentMoney = addReInvestmentCount.doubleValue() / reInvestmentCount.doubleValue();
             }
             return addReInvestmentMoney;
         } catch (Exception e) {
@@ -1053,7 +1190,7 @@ public class UpdateDailyStatementThreadBean {
      */
     private Double updateOccupationRatio(String insertTime) {
         try {
-            //查询复投用户
+            //查询复投用户金额
             Double reInvestmentMoney = updateReInvestmentMoney(insertTime);
             //查询今日平台投资金额
             List<Object> list = new ArrayList<Object>();
@@ -1063,13 +1200,13 @@ public class UpdateDailyStatementThreadBean {
             sql.append("SELECT SUM(in_money)/100 FROM investors WHERE  investor_status IN ('1','2','3') ");
             sql.append("AND insert_time BETWEEN DATE_FORMAT(?,'%Y-%m-%d 00:00:00') AND DATE_FORMAT(?,'%Y-%m-%d 23:59:59') ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
-            Integer investmentCount = 0;
+            Double investmentCount = 0.0;
             Double investmentMoney = 0.0;
-            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
-                investmentCount = Integer.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
+            if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0)) && !QwyUtil.isNullAndEmpty(loadAllSql)) {
+                investmentCount = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
             }
             if (reInvestmentMoney != 0.0 && investmentCount != 0) {
-                investmentMoney = reInvestmentMoney.doubleValue()/investmentCount.doubleValue();
+                investmentMoney = reInvestmentMoney.doubleValue() / investmentCount.doubleValue();
             }
             return investmentMoney;
         } catch (Exception e) {
@@ -1093,7 +1230,7 @@ public class UpdateDailyStatementThreadBean {
             Integer investCount = updateInvestCount(insertTime);
             Double investmentMoney = 0.0;
             if (reInvestmentCount != 0 && investCount != 0) {
-                investmentMoney = reInvestmentCount.doubleValue()/investCount.doubleValue();
+                investmentMoney = reInvestmentCount.doubleValue() / investCount.doubleValue();
             }
             return investmentMoney;
         } catch (Exception e) {
@@ -1117,7 +1254,7 @@ public class UpdateDailyStatementThreadBean {
             Double reInvestmentMoney = updateReInvestmentMoney(insertTime);
             Double addReInvestmentMoney = 0.0;
             if (reInvestmentCount != 0 && reInvestmentMoney != 0.0) {
-                addReInvestmentMoney = reInvestmentMoney/reInvestmentCount;
+                addReInvestmentMoney = reInvestmentMoney / reInvestmentCount;
             }
             return addReInvestmentMoney;
         } catch (Exception e) {
@@ -1140,7 +1277,7 @@ public class UpdateDailyStatementThreadBean {
             Double tradingVolume = updateTradingVolume(insertTime);
             Double addReInvestmentMoney = 0.0;
             if (investCount != 0 && tradingVolume != 0.0) {
-                addReInvestmentMoney = investCount/tradingVolume;
+                addReInvestmentMoney = investCount / tradingVolume;
             }
             return addReInvestmentMoney;
         } catch (Exception e) {
@@ -1258,8 +1395,8 @@ public class UpdateDailyStatementThreadBean {
         if (!QwyUtil.isNullAndEmpty(dailyStatements)) {
             for (DailyStatement dailyStatement : dailyStatements) {
                 if (!QwyUtil.isNullAndEmpty(dailyStatement))
-                //交易额
-                ds.setTradingVolume(QwyUtil.calcNumber(dailyStatement.getTradingVolume(), ds.getTradingVolume(), "+").doubleValue());
+                    //交易额
+                    ds.setTradingVolume(QwyUtil.calcNumber(dailyStatement.getTradingVolume(), ds.getTradingVolume(), "+").doubleValue());
                 //在贷金额（含零钱罐）
                 ds.setLoanAmountAll(QwyUtil.calcNumber(dailyStatement.getLoanAmountAll(), ds.getLoanAmountAll(), "+").doubleValue());
                 //在贷金额（不含零钱罐）
