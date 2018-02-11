@@ -1391,7 +1391,7 @@ public class UpdateDailyStatementBean {
             for (DailyStatement dailyStatement : dailyStatements) {
                 if (!QwyUtil.isNullAndEmpty(dailyStatement))
                     //交易额
-                    ds.setTradingVolume(QwyUtil.calcNumber(dailyStatement.getTradingVolume(), ds.getTradingVolume(), "+").doubleValue());
+                ds.setTradingVolume(QwyUtil.calcNumber(dailyStatement.getTradingVolume(), ds.getTradingVolume(), "+").doubleValue());
                 //在贷金额（含零钱罐）
                 ds.setLoanAmountAll(QwyUtil.calcNumber(dailyStatement.getLoanAmountAll(), ds.getLoanAmountAll(), "+").doubleValue());
                 //在贷金额（不含零钱罐）
