@@ -409,6 +409,26 @@ public class UpdateQdtjThreadBean {
 	}
 
 	/**
+	 *激活成本 首投成本 首投ROI 投资ROI 渠道费用
+	 * @param date
+	 * @return
+	 */
+	private List<Object[]> cost(String date) {
+		ArrayList<Object> obList = new ArrayList<Object>();
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT q.channel, q.channelCode, q.`channelName`,q.channel_cost,q.activity_cost, ");
+		sb.append(" q.frist_buy_cost,q.frist_buy_ROI,q.second_cost,q. second_ROI,q.buy_ROI,q.register_cost ");
+		sb.append(" FROM  qdtj  q ");
+		if (!QwyUtil.isNullAndEmpty(date)) {
+			sb.append(" WHERE q.date  BETWEEN ? AND ? ");
+			obList.add(date + " 00:00:00");
+			obList.add(date + " 23:59:59");
+		}
+		sb.append("GROUP BY q.channelCode ORDER BY q.channel ASC  ");
+		return (List<Object[]>) dao.LoadAllSql(sb.toString(), obList.toArray());
+	}
+
+	/**
 	 * 根据日期来更新对应的运营数据【Android渠道统计汇总】
 	 *
 	 * @throws ParseException
@@ -653,21 +673,6 @@ public class UpdateQdtjThreadBean {
 				qdtjMap.put(channelCode, qdtj);
 			}
 		}
-		// 对运营数据进行操作;
-		if (!QwyUtil.isNullAndEmpty(qdtjMap)) {
-			// 先删除旧数据;
-			deleteQdtjByDate(queryDate);
-			Set<String> keys = qdtjMap.keySet();
-			List<Qdtj> listQdtj = new ArrayList<Qdtj>();
-			for (String key : keys) {
-				listQdtj.add(qdtjMap.get(key));
-			}
-			// 添加改日期的运营数据
-			if (!QwyUtil.isNullAndEmpty(listQdtj)) {
-				dao.saveList(listQdtj);
-			}
-
-		}
 		// 渠道编号,渠道编码,渠道名称,渠道费用
 		if (!QwyUtil.isNullAndEmpty(costList)) {
 			for (Object[] obj : costList) {
@@ -683,25 +688,34 @@ public class UpdateQdtjThreadBean {
 					qdtj.setInsertTime(new Date());
 				}
 				qdtj.setChannelCost(isNullReturnZero(obj[3]));//渠道费用
-				qdtj.setActivityCost(isNullReturnZero(obj[4]));///激活成本
+				qdtj.setActivityCost(isNullReturnZero(obj[4]));//激活成本
+				qdtj.setFristBuyCost(isNullReturnZero(obj[5]));
+				qdtj.setFristBuyROI(isNullReturnZero(obj[6]));
+				qdtj.setSecondCost(isNullReturnZero(obj[7]));
+				qdtj.setSecondROI(isNullReturnZero(obj[8]));
+				qdtj.setBuyROI(isNullReturnZero(obj[9]));
+				qdtj.setRegisterCost(isNullReturnZero(obj[10]));
 				qdtjMap.put(channelCode, qdtj);
 			}
 		}
+		// 对运营数据进行操作;
+		if (!QwyUtil.isNullAndEmpty(qdtjMap)) {
+			// 先删除旧数据;
+			deleteQdtjByDate(queryDate);
+			Set<String> keys = qdtjMap.keySet();
+			List<Qdtj> listQdtj = new ArrayList<Qdtj>();
+			for (String key : keys) {
+				listQdtj.add(qdtjMap.get(key));
+			}
+			// 添加改日期的运营数据
+			if (!QwyUtil.isNullAndEmpty(listQdtj)) {
+				dao.saveList(listQdtj);
+			}
 
-	}
-
-	private List<Object[]> cost(String date) {
-		ArrayList<Object> obList = new ArrayList<Object>();
-		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT q.channel, q.`channelCode`, q.`channelName`,q.channel_cost,q.activity_cost  ");
-		sb.append("FROM  qdtj  q ");
-		if (!QwyUtil.isNullAndEmpty(date)) {
-			sb.append(" WHERE q.date  BETWEEN ? AND ? ");
-			obList.add(date + " 00:00:00");
-			obList.add(date + " 23:59:59");
 		}
-		sb.append("GROUP BY q.channelCode ORDER BY q.channel ASC  ");
-		return (List<Object[]>) dao.LoadAllSql(sb.toString(), obList.toArray());
+
+
 	}
+
 
 }
