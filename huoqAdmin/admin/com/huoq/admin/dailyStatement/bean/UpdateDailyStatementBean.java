@@ -9,6 +9,7 @@ import javafx.beans.binding.When;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -255,7 +256,13 @@ public class UpdateDailyStatementBean {
                 // 复投客单金额（元）
                 dailyStatement.setSumMoney(!QwyUtil.isNullAndEmpty(obj[30]) ? Double.valueOf(obj[30] + "") : 0.0);
                 //人均投资金额（元）
-                dailyStatement.setCapitaInvestmentMoney(!QwyUtil.isNullAndEmpty(obj[31]) ? Double.valueOf(obj[31] + "") : 0.0);
+                if(!QwyUtil.isNullAndEmpty(obj[31])){
+                    BigDecimal bd = new BigDecimal(obj[31] + "");
+                    String capitaInvestmentMoney = bd.toPlainString();
+                    dailyStatement.setCapitaInvestmentMoney(Double.valueOf(capitaInvestmentMoney));
+                }else{
+                    dailyStatement.setCapitaInvestmentMoney(0.0);
+                }
                 list.add(dailyStatement);
             }
             return list;
@@ -419,12 +426,16 @@ public class UpdateDailyStatementBean {
     private Double updateLoanAmountAll(String insertTime) {
         try {
             List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT FORMAT(SUM(money)/100,2) FROM (SELECT i.in_money money FROM investors i WHERE 1=1 ");
             sql.append(" AND i.investor_status IN('1','2','3') ");
+            sql.append(" AND i.insert_time < DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
             sql.append(" UNION ALL ");
-            sql.append(" SELECT in_money money FROM coin_purse cp WHERE in_money > 0)t ");
-            List loadAllSql = dao.LoadAllSql(sql.toString(), null);
+            sql.append(" SELECT in_money money FROM coin_purse cp WHERE in_money > 0 ");
+            sql.append(" AND cp.insert_time < DATE_FORMAT(?, '%Y-%m-%d 23:59:59') )t ");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double tradingVolume = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
                 tradingVolume = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
@@ -445,10 +456,12 @@ public class UpdateDailyStatementBean {
     private Double updateLoanAmount(String insertTime) {
         try {
             List<Object> list = new ArrayList<Object>();
+            list.add(insertTime);
             StringBuffer sql = new StringBuffer();
             sql.append("SELECT SUM(i.in_money)/100 money FROM investors i WHERE 1=1 ");
             sql.append(" AND i.investor_status IN('1','2','3') ");
-            List loadAllSql = dao.LoadAllSql(sql.toString(), null);
+            sql.append(" AND i.insert_time < DATE_FORMAT(?, '%Y-%m-%d 23:59:59')");
+            List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double tradingVolume = 0.0;
             if (!QwyUtil.isNullAndEmpty(loadAllSql.get(0))) {
                 tradingVolume = Double.valueOf((loadAllSql.get(0) + "").replaceAll(",", ""));
@@ -987,7 +1000,7 @@ public class UpdateDailyStatementBean {
             list.add(insertTime);
             list.add(insertTime);
             StringBuffer sql = new StringBuffer();
-            sql.append("SELECT SUM(money) FROM coin_purse_funds_record  cpfr  WHERE  cpfr.insert_time " +
+            sql.append("SELECT SUM(money)/100 FROM coin_purse_funds_record  cpfr  WHERE  cpfr.insert_time " +
                     "BETWEEN DATE_FORMAT(?, '%Y-%m-%d 00:00:00')  AND DATE_FORMAT(?, '%Y-%m-%d 23:59:59') AND  cpfr.type='to' ");
             List loadAllSql = dao.LoadAllSql(sql.toString(), list.toArray());
             Double todayOutCashMoney = 0.0;
@@ -1258,7 +1271,7 @@ public class UpdateDailyStatementBean {
             Double tradingVolume = updateTradingVolume(insertTime);
             Double addReInvestmentMoney = 0.0;
             if (investCount != 0 && tradingVolume != 0.0) {
-                addReInvestmentMoney = investCount / tradingVolume;
+                addReInvestmentMoney =  tradingVolume/ investCount;
             }
             return addReInvestmentMoney;
         } catch (Exception e) {
