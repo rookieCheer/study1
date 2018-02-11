@@ -67,53 +67,34 @@ public class UpdateDailyStatementBean {
             //如果查询出的结果为存遍历
             if (!QwyUtil.isNullAndEmpty(dailyStatementList)) {
                 SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-                if (dailyStatementList.size() == arrayList.size()) {
-                    String time1 = null;
-                    for (Object[] objects : dailyStatementList) {
-                        String object = objects[1] + "";
-                        time1 += object + ",";
-                    }
-                    for (int i = 0; i < dailyStatementList.size(); i++) {
-                        String time2 = dailyStatementList.get(i)[1].toString();
-                        Date parse = sd.parse(time2);
-                        if (time1.contains(time2)) {
+                //将旧的时间拼接为字符串
+                String olddate = "";
+                Date date1 = null;
+                for (int i = 0; i < dailyStatementList.size(); i++) {
+                    String date = dailyStatementList.get(i)[1].toString();
+                    date1 = sd.parse(date);
+                    olddate += date1 + ",";
+                }
+                //遍历传入的数据
+                for (int i = 0; i < arrayList.size(); i++) {
+                    //遍历查询出的数据
+                    Date date = arrayList.get(i);
+                    if (i <= dailyStatementList.size() - 1) {
+                        //查询的时间在日报表中存在则不做任何处理
+                        if (olddate.contains(date.toString())) {
 
                         } else {
                             //更新平台资金概览数据
-                            updateDailyStatement(parse);
-                            arrayList.remove(i);
+                            updateDailyStatement(date);
                         }
                     }
-                } else {
-                    //将新的时间拼接为字符串
-                    String olddate = "";
-                    Date date1 = null;
-                    for (int i = 0; i < dailyStatementList.size(); i++) {
-                        String date = dailyStatementList.get(i)[1].toString();
-                        date1 = sd.parse(date);
-                        olddate += date1 + ",";
-                    }
-                    //遍历传入的数据
-                    for (int i = 0; i < arrayList.size(); i++) {
-                        //遍历查询出的数据
-                        Date date = arrayList.get(i);
-                        if (i <= dailyStatementList.size() - 1) {
-                            //查询的时间在日报表中存在则不做任何处理
-                            if (olddate.contains(date.toString())) {
+                    if (i > dailyStatementList.size() - 1) {
+                        //查询的时间在日报表中存在则不做任何处理
+                        if (olddate.contains(date.toString())) {
 
-                            } else {
-                                //更新平台资金概览数据
-                                updateDailyStatement(date);
-                            }
-                        }
-                        if (i > dailyStatementList.size() - 1) {
-                            //查询的时间在日报表中存在则不做任何处理
-                            if (olddate.contains(date.toString())) {
-
-                            } else {
-                                //更新平台资金概览数据
-                                updateDailyStatement(date);
-                            }
+                        } else {
+                            //更新平台资金概览数据
+                            updateDailyStatement(date);
                         }
                     }
                 }
