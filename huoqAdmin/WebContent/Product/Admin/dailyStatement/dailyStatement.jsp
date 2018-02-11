@@ -46,8 +46,25 @@
         }
     </style>
     <script type="text/javascript">
+        var formatDate=function (date) {
+            //获取当前日期
+            date=new Date(date);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? '0' + m : m;
+            var d = date.getDate()-1;
+            d = d < 10 ? ('0' + d) : d;
+            return y + '/' + m + '/' + d;
+        };
         function queryProduct() {
+            var now = new Date();
+            var date = formatDate(now);
             var insertTime = $("#insertTime").val();
+            var time =  formatDate(insertTime);
+            if(date <= time){
+                alert("时间不能选择今天及以后的日期");
+                return false;
+            }
             var url = "${pageContext.request.contextPath}/Product/Admin/dailyStatement!findDailyStatement.action?insertTime=" + insertTime;
             window.location.href = url;
         }
@@ -60,24 +77,6 @@
         }
 
         function ireportDo() {
-            var interval = $("#insertTime").val();
-            if (interval == null || interval == '' || interval.length == 0) {
-                alert("请选择要导出报表日期！");
-                return false;
-            }
-            if (interval.indexOf("-") != -1) {
-                var startDate = interval.split("-")[0];
-                var endDate = interval.split("-")[1];
-                var startTime = new Date(Date.parse(startDate.replace(/-/g, "/")))
-                    .getTime();
-                var endTime = new Date(Date.parse(endDate.replace(/-/g, "/")))
-                    .getTime();
-                var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
-                if (31 - dates <= 0) {
-                    alert("请选择日期间隔为31天的数据导出！")
-                    return false;
-                }
-            }
             var insertTime = $("#insertTime").val();
             var url = "${pageContext.request.contextPath}/Product/Admin/dailyStatement!exportDailyStatement.action?insertTime=" + insertTime;
             var list = "${list}";
