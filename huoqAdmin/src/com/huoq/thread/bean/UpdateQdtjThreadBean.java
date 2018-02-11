@@ -187,6 +187,7 @@ public class UpdateQdtjThreadBean {
 				qdtj.setQdzhl(QwyUtil.calcNumber(qdzhlStrNew, 100, "*").toString());
 				qdtj.setDate(QwyUtil.fmyyyyMMdd.parse(QwyUtil.fmyyyyMMdd.format(date)));
 				qdtj.setInsertTime(new Date());
+				//qdtj.setChannelCost();
 				qdtjList.add(qdtj);
 			} catch (Exception e) {
 				log.error("操作异常: ", e);
@@ -424,6 +425,7 @@ public class UpdateQdtjThreadBean {
 		List<Object[]> czList = czCount(date);
 		List<Object[]> scftlist = scftCount(date);
 		List<Object[]> lqglist = lqgCount(date);
+		List<Object[]> costList = cost(date);
 		Map<String, Qdtj> qdtjMap = new HashMap<String, Qdtj>();
 		// 渠道编号,渠道编码,渠道名称,零钱罐投资金额
 		if (!QwyUtil.isNullAndEmpty(lqglist)) {
@@ -666,7 +668,40 @@ public class UpdateQdtjThreadBean {
 			}
 
 		}
+		// 渠道编号,渠道编码,渠道名称,渠道费用
+		if (!QwyUtil.isNullAndEmpty(costList)) {
+			for (Object[] obj : costList) {
+				if (QwyUtil.isNullAndEmpty(obj))
+					continue;
+				String channelCode = isNullReturnZero(obj[1]);// 渠道编码
+				Qdtj qdtj = qdtjMap.get(channelCode);
+				if (QwyUtil.isNullAndEmpty(qdtj)) {
+					qdtj = new Qdtj();
+					qdtj.setChannel(isNullReturnZero(obj[0]));// 渠道编号
+					qdtj.setChannelCode(channelCode);// 渠道编码
+					qdtj.setChannelName(isNullReturnZero(obj[2]));// 渠道名称
+					qdtj.setInsertTime(new Date());
+				}
+				qdtj.setChannelCost(isNullReturnZero(obj[3]));//渠道费用
+				qdtj.setActivityCost(isNullReturnZero(obj[4]));///激活成本
+				qdtjMap.put(channelCode, qdtj);
+			}
+		}
 
+	}
+
+	private List<Object[]> cost(String date) {
+		ArrayList<Object> obList = new ArrayList<Object>();
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT q.channel, q.`channelCode`, q.`channelName`,q.channel_cost,q.activity_cost  ");
+		sb.append("FROM  qdtj  q ");
+		if (!QwyUtil.isNullAndEmpty(date)) {
+			sb.append(" WHERE q.date  BETWEEN ? AND ? ");
+			obList.add(date + " 00:00:00");
+			obList.add(date + " 23:59:59");
+		}
+		sb.append("GROUP BY q.channelCode ORDER BY q.channel ASC  ");
+		return (List<Object[]>) dao.LoadAllSql(sb.toString(), obList.toArray());
 	}
 
 }
