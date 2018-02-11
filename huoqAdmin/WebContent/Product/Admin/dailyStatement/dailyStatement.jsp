@@ -46,25 +46,8 @@
         }
     </style>
     <script type="text/javascript">
-        var formatDate=function (date) {
-            //获取当前日期
-            date=new Date(date);
-            var y = date.getFullYear();
-            var m = date.getMonth() + 1;
-            m = m < 10 ? '0' + m : m;
-            var d = date.getDate()-1;
-            d = d < 10 ? ('0' + d) : d;
-            return y + '/' + m + '/' + d;
-        };
         function queryProduct() {
-            var now = new Date();
-            var date = formatDate(now);
             var insertTime = $("#insertTime").val();
-            var time =  formatDate(insertTime);
-            if(date <= time){
-                alert("时间不能选择今天及以后的日期");
-                return false;
-            }
             var url = "${pageContext.request.contextPath}/Product/Admin/dailyStatement!findDailyStatement.action?insertTime=" + insertTime;
             window.location.href = url;
         }
@@ -246,7 +229,8 @@
     var k4 = new Kalendae.Input("insertTime", {
         attachTo: document.body,
         months: 2,//多少个月显示出来,即看到多少个日历
-        mode: 'range'
+        mode: 'range',
+        direction:'past'
 
     });
     $(function () {
