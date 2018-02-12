@@ -472,7 +472,7 @@ public class UserBuyAction extends BaseAction {
                     if (todayOutCashMoney == null) {
                         todayOutCashMoney = new Double(0);
                     }
-                    Double todayrechargeMoney = platformBean.updateRechargeMoney(null);
+                    Double todayrechargeMoney = platformBean.updateTodayrechargeMoney(null);
                     if (todayrechargeMoney == null) {
                         todayrechargeMoney = new Double(0);
                     }
@@ -768,7 +768,7 @@ public class UserBuyAction extends BaseAction {
                 if (todayOutCashMoney == null) {
                     todayOutCashMoney = new Double(0);
                 }
-                Double todayrechargeMoney = platformBean.updateRechargeMoney(null);
+                Double todayrechargeMoney = platformBean.updateTodayrechargeMoney(null);
                 if (todayrechargeMoney == null) {
                     todayrechargeMoney = new Double(0);
                 }
