@@ -467,7 +467,27 @@ public class UserBuyAction extends BaseAction {
             }
             SumOperation findSumOperation = sOtBean.findSumOperation(insertTime);
             if (!QwyUtil.isNullAndEmpty(findSumOperation)) {
-                setTodayBuyMoney(findSumOperation, insertTime);
+                if (QwyUtil.isNullAndEmpty(insertTime)) {
+                    Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
+                    if (todayOutCashMoney == null) {
+                        todayOutCashMoney = new Double(0);
+                    }
+                    Double todayrechargeMoney = platformBean.updateRechargeMoney(null);
+                    if (todayrechargeMoney == null) {
+                        todayrechargeMoney = new Double(0);
+                    }
+                    Double todayBuyMoney = platformBean.updateTodayBuyMoney(null);
+                    if (todayBuyMoney == null) {
+                        todayBuyMoney = new Double(0);
+                    }
+                    //取首页的值
+                    findSumOperation.setTxMoney(todayOutCashMoney);//今日提现金额 todayOutCashMoney
+                    findSumOperation.setFoundFlowInto(todayrechargeMoney);//今日资金流入 todayrechargeMoney
+                    findSumOperation.setTodayDealMoney(todayBuyMoney); //今日购买 todayBuyMoney
+                } else {
+                    setTodayBuyMoney(findSumOperation, insertTime);
+                }
+
                 if (QwyUtil.isNullAndEmpty(insertTime)) {
                     double[] result = rechargeBean.reservedFound();
                     if (result != null) {
@@ -742,7 +762,27 @@ public class UserBuyAction extends BaseAction {
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             ServletOutputStream outputStream = response.getOutputStream(); // 取得输出流
             LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-            setTodayBuyMoney(findSumOperation, insertTime);
+
+            if (QwyUtil.isNullAndEmpty(insertTime)) {
+                Double todayOutCashMoney = platformBean.uodateTodayOutCashMoney(null);
+                if (todayOutCashMoney == null) {
+                    todayOutCashMoney = new Double(0);
+                }
+                Double todayrechargeMoney = platformBean.updateRechargeMoney(null);
+                if (todayrechargeMoney == null) {
+                    todayrechargeMoney = new Double(0);
+                }
+                Double todayBuyMoney = platformBean.updateTodayBuyMoney(null);
+                if (todayBuyMoney == null) {
+                    todayBuyMoney = new Double(0);
+                }
+                //取首页的值
+                findSumOperation.setTxMoney(todayOutCashMoney);//今日提现金额 todayOutCashMoney
+                findSumOperation.setFoundFlowInto(todayrechargeMoney);//今日资金流入 todayrechargeMoney
+                findSumOperation.setTodayDealMoney(todayBuyMoney); //今日购买 todayBuyMoney
+            } else {
+                setTodayBuyMoney(findSumOperation, insertTime);
+            }
             if (QwyUtil.isNullAndEmpty(insertTime)) {
                 double[] result = rechargeBean.reservedFound();
                 if (result != null) {
