@@ -274,7 +274,7 @@ public class ReleaseProductAction extends BaseAction {
             String filePath = request.getServletContext().getRealPath("/WEB-INF/classes/releaseProduct.jasper");
             log.info("报表路径: " + filePath);
             //根据状态来加载提现的记录;
-            PageUtil<Product> pageUtil = new PageUtil<Product>();
+            PageUtil<Object[]> pageUtil = new PageUtil<Object[]>();
             pageUtil.setCurrentPage(currentPage);
             pageUtil.setPageSize(pageSize);
             //产品名称
@@ -327,7 +327,9 @@ public class ReleaseProductAction extends BaseAction {
             pageUtil.setPageUrl(url.toString());
             if (!QwyUtil.isNullAndEmpty(pageUtil)) {
                 getRequest().setAttribute("pageUtil", pageUtil);
-                getRequest().setAttribute("list", pageUtil.getList());
+                List<Object[]> list = pageUtil.getList();
+                dealList(list);
+                getRequest().setAttribute("list", list);
                 getRequest().setAttribute("table", "1");
                 return "productrecord";
             }
@@ -336,6 +338,31 @@ public class ReleaseProductAction extends BaseAction {
             json = QwyUtil.getJSONString("err", "查询记录异常");
         }
         return null;
+    }
+
+    /**
+     * 修改虚拟记录
+     * @param list
+     */
+    private void dealList(List<Object[]> list){
+      if(list!=null){
+           int size = list.size();
+           if(size>0){
+               Map<String, Double> mapProductToVirtual = virtualInsRecordBean.MapProductToVirtual();
+              if(mapProductToVirtual!=null){
+                for(int i=0;i<size;i++){
+                  Object[] object = list.get(i);
+                  String id =(String) object[11];
+                   Double virtualInv = mapProductToVirtual.get(id);
+                   if(virtualInv!=null){
+                       virtualInv = virtualInv*0.01;
+                       object[8]=virtualInv;
+                       list.set(i,object);
+                   }
+                }
+              }
+           }
+      }
     }
 
     /**

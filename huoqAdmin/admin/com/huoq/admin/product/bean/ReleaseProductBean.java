@@ -392,7 +392,7 @@ public class ReleaseProductBean {
 	 * @return
 	 * @throws Exception
 	 */
-	public PageUtil<Product> findProductsPageUtil(PageUtil<Product> pageUtil,Product product, String finishTime, String insertTime, String username, String productStatus, String DESCName,String realName) throws Exception{
+	public PageUtil<Object[]> findProductsPageUtil(PageUtil<Object[]> pageUtil,Product product, String finishTime, String insertTime, String username, String productStatus, String DESCName,String realName) throws Exception{
 		StringBuffer sql=new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		sql.append(" SELECT p.product_status,p.title,p.invest_type,p.annual_earnings,jiang_li_earnings,financing_amount,finish_time,insert_time,");
