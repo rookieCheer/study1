@@ -80,23 +80,12 @@ public class UpdateDailyStatementBean {
                 for (int i = 0; i < arrayList.size(); i++) {
                     //遍历查询出的数据
                     Date date = arrayList.get(i);
-                    if (i <= dailyStatementList.size() - 1) {
-                        //查询的时间在日报表中存在则不做任何处理
-                        if (olddate.contains(date.toString())) {
+                    //查询的时间在日报表中存在则不做任何处理
+                    if (olddate.contains(date.toString())) {
 
-                        } else {
-                            //更新平台资金概览数据
-                            updateDailyStatement(date);
-                        }
-                    }
-                    if (i > dailyStatementList.size() - 1) {
-                        //查询的时间在日报表中存在则不做任何处理
-                        if (olddate.contains(date.toString())) {
-
-                        } else {
-                            //更新平台资金概览数据
-                            updateDailyStatement(date);
-                        }
+                    } else {
+                        //更新平台资金概览数据
+                        updateDailyStatement(date);
                     }
                 }
             } else {
@@ -256,11 +245,11 @@ public class UpdateDailyStatementBean {
                 // 复投客单金额（元）
                 dailyStatement.setSumMoney(!QwyUtil.isNullAndEmpty(obj[30]) ? Double.valueOf(obj[30] + "") : 0.0);
                 //人均投资金额（元）
-                if(!QwyUtil.isNullAndEmpty(obj[31])){
+                if (!QwyUtil.isNullAndEmpty(obj[31])) {
                     BigDecimal bd = new BigDecimal(obj[31] + "");
                     String capitaInvestmentMoney = bd.toPlainString();
                     dailyStatement.setCapitaInvestmentMoney(Double.valueOf(capitaInvestmentMoney));
-                }else{
+                } else {
                     dailyStatement.setCapitaInvestmentMoney(0.0);
                 }
                 list.add(dailyStatement);
@@ -1272,7 +1261,7 @@ public class UpdateDailyStatementBean {
             Double tradingVolume = updateTradingVolume(insertTime);
             Double addReInvestmentMoney = 0.0;
             if (investCount != 0 && tradingVolume != 0.0) {
-                addReInvestmentMoney =  tradingVolume/ investCount;
+                addReInvestmentMoney = tradingVolume / investCount;
             }
             return addReInvestmentMoney;
         } catch (Exception e) {
@@ -1391,7 +1380,7 @@ public class UpdateDailyStatementBean {
             for (DailyStatement dailyStatement : dailyStatements) {
                 if (!QwyUtil.isNullAndEmpty(dailyStatement))
                     //交易额
-                ds.setTradingVolume(QwyUtil.calcNumber(dailyStatement.getTradingVolume(), ds.getTradingVolume(), "+").doubleValue());
+                    ds.setTradingVolume(QwyUtil.calcNumber(dailyStatement.getTradingVolume(), ds.getTradingVolume(), "+").doubleValue());
                 //在贷金额（含零钱罐）
                 ds.setLoanAmountAll(QwyUtil.calcNumber(dailyStatement.getLoanAmountAll(), ds.getLoanAmountAll(), "+").doubleValue());
                 //在贷金额（不含零钱罐）
